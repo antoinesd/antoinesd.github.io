@@ -1,0 +1,516 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Next Presso | </title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/asciidoctor.css"><link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css"><link rel="stylesheet" href="/stylesheets/styles.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><!--[if lt IE 9]><script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><script>hljs.initHighlightingOnLoad(); </script></head><body><div class="container"><div class="row"><div class="col-md-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-md-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://localhost:4242"><i class="fa fa-home fa-fw"></i> Home </a></div></div></nav><script type="text/javascript">var indexOfSharp = window.location.pathname.indexOf('#');
+var pathname = indexOfSharp > 0 ? window.location.pathname.substring(0, indexOfSharp) : window.location.pathname;
+var selector = "body > .container > .row > .col-md-12 > .navbar > .container-fluid > .navbar-collapse a[href='http://localhost:4242" + pathname + "']";
+$(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-md-12"><div class="row"><div class="col-md-9"><div class="posts"><article class="post"><div class="panel panel-primary"><div class="panel-body"><h1><a href="/2014/06/you-think-you-know-everything-about-cdi-events-think-again/">You think you know everything about CDI events… Think again!</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Jun 10, 2014</span> |  <a href="http://localhost:4242/2014/06/you-think-you-know-everything-about-cdi-events-think-again/#disqus_thread">Comments</a> </strong></div><div class="content"><div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="float: left">
+<div class="content">
+<img src="/images/Event-bus.jpg" alt="Event bus" width="310">
+</div>
+<div class="title">Event Bus may surprise you</div>
+</div>
+<div class="paragraph">
+<p>CDI events are one of the shiniest feature in the CDI specification. They are a easy to understand and use and are a straight forward implementation of the Observer Design Pattern. To sum up they add more decoupling to the Dependency Injection by allowing notification of unknown target at development time (great to develop framework). Yet, documentation about event is often misleading and contains inaccurate information, probably due to the fact that the specification was wrong before we corrected it for CDI 1.2 release ;). This post is the opportunity to update or clarify your knowledge  about how events work in CDI 1.0  and 1.1+ and what could come in CDI 2.0.
+If you want to “play” with event you can checkout my Github project EventsTest to use it as a sandbox.</p>
+</div>
+<div class="paragraph">
+<p>If you are familiar with events you can directly go to the more advanced or less know features</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="back-to-the-basics"><a class="anchor" href="#back-to-the-basics"></a>Back to the basics</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before going further, let’s introduce basic concepts around CDI events.</p>
+</div>
+<div class="sect2">
+<h3 id="what-s-an-event"><a class="anchor" href="#what-s-an-event"></a>What’s an event?</h3>
+<div class="paragraph">
+<p>CDI events are defined by 2 things :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A java object (the event object)</p>
+</li>
+<li>
+<p>A set of qualifiers (annotations having the meta annotation @Qualifier)
+The event Object could be of any Java type and don’t have to be CDI related (try to avoid using bean instance as event object, it’s confusing and if the bean scope is not @Dependent could bring issues related to bean lifecycle). Qualifiers are the same used to define CDI Bean or injection point. They can have members or not. And their members value are part of the qualifier definition or not (if they have the @NonBinding annotation).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="how-to-fire-an-event"><a class="anchor" href="#how-to-fire-an-event"></a>How to fire an event?</h3>
+<div class="paragraph">
+<p>The most universal way to fire an event is to use the BeanManager.fireEvent(Object event,Annotation&#8230;&#8203; qualifiers) method. BeanManger is directly accessible in CDI bean by injecting it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>@Inject
+BeanManager beanManager;
+
+public void doSomething() {
+  beanManager.fireEvent(new Payload());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Outside CDI you can alway retrieve it by JNDI (by looking up for “java:comp/BeanManager” name)or more easily in CDI 1.1+ via CDI class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>BeanManager beanManager = CDI.current().getBeanManager();
+
+public void doSomething() {
+  beanManager.fireEvent(new Payload());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In CDI bean, it is more common and natural to use the Event&lt;T&gt; interface to get possibility to fire an event like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>@Inject
+Event&lt;Payload&gt; payloadEvent;
+
+public void doSomething() {
+  payloadEvent.fire(new Payload());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Event&lt;T&gt;</code> interface is an helper to fire event whose type is totally CDI agnostic and thus doesn’t include a way of being fired. To make a gun fire analogy, In the previous example, see payloadEvent as the bullet case while the bullet is the instance of Payload you gave as parameter of the fire() method.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="observing-events"><a class="anchor" href="#observing-events"></a>Observing events</h3>
+<div class="paragraph">
+<p>To observe an event you’ll have to add an observer method in an enable bean of your application. An observer method is a method whose first parameter has the @Observes annotation. The type of the parameter with @Observes will be used to resolve target observer when an event is fired as we’ll see later. So:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>public void listenToPayload(@Observes Payload event) {
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will be triggered (if the method is in an active bean) for all events whose type are Payload or a super type of Payload. Off course qualifier may be added to the observer to restrict event triggering:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>public void listenToPayload(@Observes @Qualified Payload event) {
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The observers resolution occurs at runtime when an event is fired. All the observers that match the event will be triggered by the CDI container. Note that the observer method may have other beans as parameters. They will be injected by the container before calling the method :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>public void listenToPayload(@Observes Payload event, PayloadService service) {
+  ...
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="features-you-may-have-missed-regarding-cdi-events"><a class="anchor" href="#features-you-may-have-missed-regarding-cdi-events"></a>Features you may have missed regarding CDI events</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following CDI events feature are less known or badly documented.</p>
+</div>
+<div class="sect2">
+<h3 id="no-type-erasure-for-event-type"><a class="anchor" href="#no-type-erasure-for-event-type"></a>No type erasure for event type</h3>
+<div class="paragraph">
+<p>It’s not an hidden feature but more something implicit in CDI than can be missed. As CDI is a type centric specification (I always sigh when I see and injection point with a @Name qualifier), it does a better job than standard Java regarding parameterized type.</p>
+</div>
+<div class="paragraph">
+<p>For instance take these 2 observer methods:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>public void processNumberList(@Observes List&lt;Number&gt; event) {
+  ...
+}
+
+public void processIntegerList(@Observes List&lt;Integer&gt; event) {
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The container will make the distinction between both when resolving observer depending of the parameterized type of the event.  And in CDI 1.1+ (wildcards are not allowed in observer event parameter in CDI 1.0) if you declare the following observers :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>public void processIntegerList(@Observes List&lt;? super Integer&gt; event) {
+...
+}
+
+public void processNumberList(@Observes List&lt;? extends Number&gt; event) {
+...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Both will be called if your event type is List&lt;Integer&gt; or List&lt;Number&gt;. Although the first observer will fit for add elements to the list while the second will be used to fetch elements from the list.</p>
+</div>
+<div class="paragraph">
+<p>Remember that if wildcards are allowed in observer in CDI 1.1+ if they aren’t in Event injection point.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="qualifiers-don-t-work-with-event-as-they-work-with-beans"><a class="anchor" href="#qualifiers-don-t-work-with-event-as-they-work-with-beans"></a>Qualifiers don’t work with event as they work with beans</h3>
+<div class="paragraph">
+<p>That’s an important point that was very badly explained in the spec before CDI 1.2. Developers often assume that Event&lt;&gt; and Instance&lt;&gt; have quite similar way of functioning regarding qualifiers, that’s a big mistake. But let’s start with the most important here :</p>
+</div>
+<div class="paragraph">
+<p>An observer matches an event if its type is in the event types set and if the observer has a subset of the qualifier of the event.</p>
+</div>
+<div class="paragraph">
+<p>Better check this with a piece of code</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>/**
+ * Qualifier with binding member
+ */
+@Qualifier
+@Target({TYPE, METHOD, PARAMETER, FIELD})
+@Retention(RUNTIME)
+@Documented
+public @interface Qualified {
+    String value() default "";
+}
+
+public class EventTestService {
+
+    @Inject
+    @Qualified("strong")
+    Event&lt;Payload&gt; payLoadEvent;
+
+    public void fireEvent() {
+      payloadEvent.fire(new Payload());
+    }
+
+    public void processUnqualifiedPayload(@Observes Payload event) {}
+
+    public void processQualifiedPayload(@Observes @Qualified("strong") Payload event) {}
+
+    public void processUnqualifiedObject(@Observes Object event) {}
+
+    public void processQualifiedObject(@Observes @Qualified("strong") Object event) {}
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Yes, all the 4 declared observers will be called by the container when the event is fired. Useful to know that ;).</p>
+</div>
+<div class="paragraph">
+<p>So <code>@Any</code> qualifier is totally useless on events or observers</p>
+</div>
+<div class="paragraph">
+<p>The spec requires that all created events should have the <code>@Any</code> automatically added, but as we just saw <code>@Any</code> has the same behavior in event that @Default qualifier (no qualifier), so prefer using no qualifier instead of using @Any, it’ll be less confusing.</p>
+</div>
+<div class="paragraph">
+<p><code>Event&lt;&gt;</code> is here to build events not filter them</p>
+</div>
+<div class="paragraph">
+<p>Again <code>Event</code> looks like <code>Instance</code> but is very different. While <code>Instance</code> is a tool to lookup for beans, <code>Event</code> is a tool to build an event from an object and qualifiers.
+So keep in mind that when you use <code>Event.select(Annotation... qualifiers)</code> you are adding qualifier to the event you’ll be firing.
+For instance :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>public class EventTestService {
+
+    @Inject
+    @MyQualifier
+    Event&lt;Payload&gt; payLoadEvent;
+
+    public void fireEvent() {
+      payloadEvent.select(new QualifiedLiteral()).fire(new Payload());
+    }
+}
+
+public class QualifiedLiteral extends AnnotationLiteral&lt;Qualified&gt; implements Qualified {
+
+    private String value="";
+
+    public QualifiedLiteral(String value) {
+        this.value = value;
+    }
+
+    public QualifiedLiteral() {
+        this("");
+    }
+
+    public String value() {
+        return value;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will add the <code>@Qualified</code> qualifier to the event before firing it. So the final event will have <code>@MyQualifier @Qualified("")</code> qualifiers.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="advanced-event-features"><a class="anchor" href="#advanced-event-features"></a>Advanced Event Features</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="conditional-observer-methods"><a class="anchor" href="#conditional-observer-methods"></a>Conditional Observer methods</h3>
+<div class="paragraph">
+<p>As we saw, observer methods have to be in a bean to be registered by the container. If the bean containing the observer has a different scope than @Dependent we may want to control if the call to the observer should trigger bean instantiation.
+You can do that with the receive member of @Observes annotation which can take the enum values javax.enterprise.event.Reception.ALWAYS (by default) or javax.enterprise.event.Reception.IF_EXISTS.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>@RequestScoped
+public class EventTestService {
+
+    // will always be called (bean my be instantiated for this call)
+    public void processQualifiedPayload(@Observes(receive=ALWAYS) Type1 event) {}
+
+    // will be called only if the bean already exists in Request scope
+    public void processUnqualifiedPayload(@Observes(receive=IF_EXISTS) Type2 event) {}
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Remember that IF_EXISTS cannot be used in a bean having @Dependent scope since the bean cannot exists before observer is called. If you do the mistake the container will remember you that at startup.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="transactional-observer-methods"><a class="anchor" href="#transactional-observer-methods"></a>Transactional observer methods</h3>
+<div class="paragraph">
+<p>Transactional observer methods are observer methods which receive event notifications during the before or after completion phase of the transaction in which the event was fired. If no transaction is in progress when the event is fired, they are notified at the same time as other observers.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A before completion observer method is called during the before completion phase of the transaction.</p>
+</li>
+<li>
+<p>An after completion observer method is called during the after completion phase of the transaction.</p>
+</li>
+<li>
+<p>An after success observer method is called during the after completion phase of the transaction, only when the transaction completes successfully.</p>
+</li>
+<li>
+<p>An after failure observer method is called during the after completion phase of the transaction, only when the transaction fails.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can specify the transaction phase of the observer call with the during member of the <code>@Observes</code> annotation.
+The enumeration <code>javax.enterprise.event.TransactionPhase</code> identifies the kind of transactional observer method the enum values are:</p>
+</div>
+<div class="paragraph">
+<p>IN_PROGRESS: default value
+BEFORE_COMPLETION
+AFTER_COMPLETION
+AFTER_FAILURE
+AFTER_SUCCESS
+For instance:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>@RequestScoped
+public class EventTestService {
+
+    // is called when the event is fired
+    public void processCustomerUpdateRequest(@Observes(during=IN_PROGRESS) @Updated customer cust) {}
+
+    // is called by the same event fired than previous observer but only after the trnsaction complete successufully
+    public void processCustomerUpdated(@Observes(during=AFTER_SUCCESS) @Updated customer cust) {}
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the transaction observer mechanism is the only way to differ and order some observer right now.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="built-in-events-linked-to-scope-lifecycle-cdi-1-1"><a class="anchor" href="#built-in-events-linked-to-scope-lifecycle-cdi-1-1"></a>Built-in events linked to scope lifecycle (CDI 1.1+)</h3>
+<div class="paragraph">
+<p>Since CDI 1.1, the container fire events when context are created and destroyed, thanks to the provided @Intialized and @Destroyed qualifiers.
+If your application is deployed in a servlet container, the event payload correspond to the servlet scope object corresponding to the initialized or destroyed CDI scope. Otherwise payload will be java.lang.object
+You can observe these event in your application like this (if it’s deployed in a servlet container) :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>public void processApplicationScopedInit(@Observes @Initialized(ApplicationScoped.class) ServletContext payload) {}
+
+public void processApplicationScopedDestroyed(@Observes @Destroyed(ApplicationScoped.class) ServletContext payload) {}
+
+public void processSessionScopedInit(@Observes @Initialized(SessionScoped.class) HttpSession payload) {}
+
+public void processSessionScopedDestroyed(@Observes @Destroyed(SessionScoped.class) HttpSession payload) {}
+
+public void processRequestScopedInit(@Observes @Initialized(RequestScoped.class) ServletRequest payload) {}
+
+public void processRequestScopedDestroyed(@Observes @Destroyed(RequestScoped.class) ServletRequest payload) {}
+
+public void processConversationScopedInit(@Observes @Initialized(ConversationScoped.class) ServletRequest payload) {}
+
+public void processConversationScopedDestroyed(@Observes @Destroyed(ConversationScoped.class) ServletRequest payload) {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Specification encourage third party extension to do the same for custom context.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="events-metadata-cdi-1-1"><a class="anchor" href="#events-metadata-cdi-1-1"></a>Events Metadata (CDI 1.1+)</h3>
+<div class="paragraph">
+<p>Version 1.1 of the spec introduced EventMetadata interface. It allows an observer to get all the metadata about an event.
+You get the EventMetadata by adding it to the observer parameters :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>public void processPayload(@Observes Payload event, EventMetadata meta) {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The EventMetadata contains the following methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>getQualifiers() returns the set of qualifiers with which the event was fired.</p>
+</li>
+<li>
+<p>getInjectionPoint() returns the InjectionPoint from which this event payload was fired, or null if it was fired from BeanManager.fireEvent(…).</p>
+</li>
+<li>
+<p>getType() returns the type representing runtime class of the event object with type variables resolved.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This bring a solution to add more fine-grained filtering on observer execution depending on actual metadata of the triggered event</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="events-limitation"><a class="anchor" href="#events-limitation"></a>Events limitation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Right now, CDI events have two big limitation out of the box</p>
+</div>
+<div class="sect2">
+<h3 id="events-are-only-synchronous"><a class="anchor" href="#events-are-only-synchronous"></a>Events are only synchronous</h3>
+<div class="paragraph">
+<p>Out of the box events are synchronous: method firing an event has to wait the end of all observers invocation before executing instruction after event firing. So no fire and forget option and off course no callback approach.
+The obvious solution if you need asynchronous event approach is to use an EJB method as an observer and annotate it @Asynchronous. Other options exists but you need to create a CDI portable extension and play with threads. I’ll try to explore that in a future post.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="observers-have-no-orders"><a class="anchor" href="#observers-have-no-orders"></a>Observers have no orders</h3>
+<div class="paragraph">
+<p>Yes, there’s no out of the box solution to guarantee order of observers execution. The only tiny exception is using transaction phase to do so but it’s very limited. Perhaps a CDI extension could help us here again. I’ll try to explore this approach in a future post.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="pattern-and-tips-with-events"><a class="anchor" href="#pattern-and-tips-with-events"></a>Pattern and tips with events</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Putting all the knowledge we have now on event and other CDI stuff we can figure out some interesting pattern for our developement.</p>
+</div>
+<div class="sect2">
+<h3 id="the-plugin-pattern"><a class="anchor" href="#the-plugin-pattern"></a>The plugin Pattern</h3>
+<div class="paragraph">
+<p>We saw that CDI event data is totally free. You can choose any object (again avoid no dependent bean) to fire an event and this object will be received as a playlod by each observer matching the event type and qualifier.
+An other interesting fact is that this payload is mutable and can be modified by its observers. Following this idea, observers can become a way to enrich a given object with new data. We can use this approach to seamlessly enhance content by adding a CDI archive to an existing application.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-catch-them-all-pattern"><a class="anchor" href="#the-catch-them-all-pattern"></a>The catch them all pattern</h3>
+<div class="paragraph">
+<p>Need to observe all fired event and have their info (for logging purpose for instance), you only have to observe Object.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>public void processPayload(@Observes Object event, EventMetadata meta) {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>EventMetadata will even help you to know in which bean the event was fired. A nice way to build a bridge with a messaging service (did I say JMS? ;) )</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="don-t-forget-interceptors-and-decorators"><a class="anchor" href="#don-t-forget-interceptors-and-decorators"></a>Don’t forget Interceptors and Decorators</h3>
+<div class="paragraph">
+<p>While it’s forbidden to declare observer in decorators or interceptors, you can still fire event from them. So they can be used to enhance existing bean and add event triggering to them without touching their code.
+A nice way to add event notification only when needed.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="future-for-cdi-events"><a class="anchor" href="#future-for-cdi-events"></a>Future for CDI events</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We have a lot of idea in CDI 2.0 regarding event enhancement. Off course adding observer priority and asynchronous treatment are on the top of the list. On asynchronous event we could even think of adding callback method support based on java.lang.invoke package.
+More ambitious ideas are floating around like giving a range to events making them cross the War or Ear barrer and spread across the server or the cluster. That could lead us to provide an event bus at the server level and help java EE to adopt new application architectures in the future  EE versions.</p>
+</div>
+</div>
+</div></div><div class="footer"><a href="/2014/06/you-think-you-know-everything-about-cdi-events-think-again/"> Permalink</a> <a href="http://localhost:4242/2014/06/you-think-you-know-everything-about-cdi-events-think-again/#disqus_thread">Comments</a> </div><ul class="pager visible-md-block visible-lg-block"></ul><ul class="pager visible-sm-block visible-xs-block"></ul>
+            <script type="text/javascript">
+            var disqus_shortname = 'nextpresso';
+            (function () {
+              var s = document.createElement('script'); s.async = true;
+              s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+              (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+            }());
+            </script>
+          <div class="comments">
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+            var disqus_shortname = 'nextpresso';
+            var disqus_url = "http://localhost:4242/2014/06/you-think-you-know-everything-about-cdi-events-think-again/";
+            var disqus_developer = 1;
+            var disqus_identifier = null;
+            (function() {
+              var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+            })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=nextpresso">comments powered by Disqus.</a></noscript>
+          </div></div></div></article></div>
+            <script type="text/javascript">
+            var disqus_shortname = 'nextpresso';
+            (function () {
+              var s = document.createElement('script'); s.async = true;
+              s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+              (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+            }());
+            </script>
+          <div class="visible-xs"><ul class="pager"><li class="previous disabled"><a href="#"> Previous</a></li><li class="disabled"><a href="#">1 of 1</a></li><li class="next disabled"><a href="#"> Next</a></li></ul></div><div class="hidden-xs"><ul class="pager"><li class="disabled"><a href="#"> First</a></li><li class="disabled"><a href="#"> Previous</a></li><li class="active"><a href="#">1 of 1</a></li><li class="disabled"><a href="#"> Next</a></li><li class="disabled"><a href="#"> Last</a></li></ul></div></div><div class="col-md-3"><div class="follow-scroll hidden-xs"><div style="margin-bottom:20px;text-align:center;"><a class="btn btn-default" href="http://localhost:4242/news.atom">Subscribe RSS</a></div><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">Tag Cloud</h3></div><div class="panel-footer" style="text-align:justify;"><div class="tag-cloud">
+  <span class="tag tag-0">
+    <a href="http://localhost:4242/tags/CDI/">CDI</a>
+  </span>
+</div>
+</div></div><a class="twitter-timeline" data-widget-id="666631820319019009" href="https://twitter.com/antoine_sd"> Tweets by @antoine_sd</a><script type="text/javascript">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div><div class="visible-xs"><div style="margin-bottom:20px;text-align:center;"><a class="btn btn-default" href="http://localhost:4242/news.atom">Subscribe RSS</a></div><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">Tag Cloud</h3></div><div class="panel-footer" style="text-align:justify;"><div class="tag-cloud">
+  <span class="tag tag-0">
+    <a href="http://localhost:4242/tags/CDI/">CDI</a>
+  </span>
+</div>
+</div></div></div></div></div></div></div></div><hr><footer></footer></body></html>
