@@ -1,0 +1,37 @@
+name: Next Presso
+title: Next Presso
+org: Organization
+encoding: UTF-8
+asciidoc:
+  engine: asciidoctor
+asciidoctor:
+  :safe: unsafe
+  :base_dir: null
+  :attributes:
+    source-highlighter: highlight.js
+    compat-mode: '@'
+    attribute-missing: warn
+    relfileprefix: '../'
+    outfilesuffix: '/'
+    idprefix: ''
+    idseparator: '-'
+    icons: font
+    sectanchors: ''
+    linkattrs: ''
+    source-highlighter: highlightjs
+    prewrap: null
+    figure-caption: null
+profiles:
+  development:
+    base_url: http://localhost:4242/
+    minify: false
+    disqus_developer: true
+    disqus: nextpresso
+  production:
+    base_url: http://www.next-presso.com/
+    minify: true
+    disqus: nextpresso
+    google_analytics: UA-5919317-1
+    deploy:
+      host: github_pages
+      branch: master

@@ -1,0 +1,51 @@
+doctype 5
+html lang='en'
+  head
+    meta charset='utf-8'
+    meta name='viewport' content='width=device-width, initial-scale=1.0'
+    title=(page.title && page.title != site.title ? [page.title, site.title] : [site.title, site.description]) * ' | '
+    link rel='shortcut icon' href='/favicon.ico'
+    link rel='stylesheet' href='/stylesheets/asciidoctor.css'
+    link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css'
+    link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css'
+    link rel='stylesheet' href='/stylesheets/styles.css'
+    link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css'
+    script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js'
+    script type='text/javascript' src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js'
+    script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js'
+    /[if lt IE 9]
+      script type='text/javascript' src='//html5shim.googlecode.com/svn/trunk/html5.js'
+    script
+      'hljs.initHighlightingOnLoad();
+  body
+    .container
+      .row
+        .col-md-12
+          .bannerhome
+            .container
+              .row
+                .col-md-12.maintitle
+                  h1 Next Presso (CDI, Java EE and friends)
+          nav.navbar.navbar-default.navbar-static-top. role='navigation'
+            .container-fluid
+              .navbar-header
+                button.navbar-toggle.collasped type='button' data-toggle='collapse' data-target='.navbar-collapse'
+                  span.sr-only Toggle navigation
+                  span.icon-bar
+                  span.icon-bar
+                  span.icon-bar
+                a.navbar-brand href='#{site.base_url}'
+                  i.fa.fa-home.fa-fw
+                  '  Home
+          javascript:
+            var indexOfSharp = window.location.pathname.indexOf('#');
+            var pathname = indexOfSharp > 0 ? window.location.pathname.substring(0, indexOfSharp) : window.location.pathname;
+            var selector = "body > .container > .row > .col-md-12 > .navbar > .container-fluid > .navbar-collapse a[href='#{site.base_url}" + pathname + "']";
+            $(selector).closest("li").addClass("active");
+      .row
+        .col-md-12
+          =content
+    hr
+    footer
+    - if site.google_analytics
+      = google_analytics_async

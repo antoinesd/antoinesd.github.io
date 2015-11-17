@@ -1,0 +1,367 @@
+---
+title: "You think you know everything about CDI events… Think again!"
+summary: CDI events are one of the shiniest feature in the CDI specification. They are a easy to understand and use and are a straight forward implementation of the Observer Design Pattern. To sum up they add more decoupling to the Dependency Injection by allowing notification of unknown target at development time (great to develop framework). Yet, documentation about event is often misleading and contains inaccurate information, probably due to the fact that the specification was wrong before we corrected it for CDI 1.2 release ;). This post is the opportunity to update or clarify your knowledge  about how events work in CDI 1.0  and 1.1+ and what could come in CDI 2.0.
+layout: post
+authors: [asd]
+tags: [CDI]
+---
+
+= You think you know everything about CDI events… Think again!
+
+.Event Bus may surprise you
+image::Event-bus.jpg[width="310",float="left"]
+CDI events are one of the shiniest feature in the CDI specification. They are a easy to understand and use and are a straight forward implementation of the Observer Design Pattern. To sum up they add more decoupling to the Dependency Injection by allowing notification of unknown target at development time (great to develop framework). Yet, documentation about event is often misleading and contains inaccurate information, probably due to the fact that the specification was wrong before we corrected it for CDI 1.2 release ;). This post is the opportunity to update or clarify your knowledge  about how events work in CDI 1.0  and 1.1+ and what could come in CDI 2.0.
+If you want to “play” with event you can checkout my Github project EventsTest to use it as a sandbox.
+
+If you are familiar with events you can directly go to the more advanced or less know features
+
+== Back to the basics
+
+Before going further, let’s introduce basic concepts around CDI events.
+
+=== What’s an event?
+
+CDI events are defined by 2 things :
+
+* A java object (the event object)
+* A set of qualifiers (annotations having the meta annotation @Qualifier)
+The event Object could be of any Java type and don’t have to be CDI related (try to avoid using bean instance as event object, it’s confusing and if the bean scope is not @Dependent could bring issues related to bean lifecycle). Qualifiers are the same used to define CDI Bean or injection point. They can have members or not. And their members value are part of the qualifier definition or not (if they have the @NonBinding annotation).
+
+=== How to fire an event?
+
+The most universal way to fire an event is to use the BeanManager.fireEvent(Object event,Annotation... qualifiers) method. BeanManger is directly accessible in CDI bean by injecting it:
+
+[source]
+----
+@Inject
+BeanManager beanManager;
+
+public void doSomething() {
+  beanManager.fireEvent(new Payload());
+}
+----
+
+Outside CDI you can alway retrieve it by JNDI (by looking up for “java:comp/BeanManager” name)or more easily in CDI 1.1+ via CDI class:
+
+[source]
+----
+BeanManager beanManager = CDI.current().getBeanManager();
+
+public void doSomething() {
+  beanManager.fireEvent(new Payload());
+}
+----
+
+In CDI bean, it is more common and natural to use the Event<T> interface to get possibility to fire an event like this:
+
+[source]
+----
+@Inject
+Event<Payload> payloadEvent;
+
+public void doSomething() {
+  payloadEvent.fire(new Payload());
+}
+----
+
+The `Event<T>` interface is an helper to fire event whose type is totally CDI agnostic and thus doesn’t include a way of being fired. To make a gun fire analogy, In the previous example, see payloadEvent as the bullet case while the bullet is the instance of Payload you gave as parameter of the fire() method.
+
+=== Observing events
+
+To observe an event you’ll have to add an observer method in an enable bean of your application. An observer method is a method whose first parameter has the @Observes annotation. The type of the parameter with @Observes will be used to resolve target observer when an event is fired as we’ll see later. So:
+
+[source]
+----
+public void listenToPayload(@Observes Payload event) {
+  ...
+}
+----
+
+will be triggered (if the method is in an active bean) for all events whose type are Payload or a super type of Payload. Off course qualifier may be added to the observer to restrict event triggering:
+
+[source]
+----
+public void listenToPayload(@Observes @Qualified Payload event) {
+  ...
+}
+----
+
+The observers resolution occurs at runtime when an event is fired. All the observers that match the event will be triggered by the CDI container. Note that the observer method may have other beans as parameters. They will be injected by the container before calling the method :
+
+[source]
+----
+public void listenToPayload(@Observes Payload event, PayloadService service) {
+  ...
+}
+----
+
+== Features you may have missed regarding CDI events
+
+The following CDI events feature are less known or badly documented.
+
+=== No type erasure for event type
+
+It’s not an hidden feature but more something implicit in CDI than can be missed. As CDI is a type centric specification (I always sigh when I see and injection point with a @Name qualifier), it does a better job than standard Java regarding parameterized type.
+
+For instance take these 2 observer methods:
+
+[source]
+----
+public void processNumberList(@Observes List<Number> event) {
+  ...
+}
+
+public void processIntegerList(@Observes List<Integer> event) {
+  ...
+}
+----
+
+The container will make the distinction between both when resolving observer depending of the parameterized type of the event.  And in CDI 1.1+ (wildcards are not allowed in observer event parameter in CDI 1.0) if you declare the following observers :
+
+[source]
+----
+public void processIntegerList(@Observes List<? super Integer> event) {
+...
+}
+
+public void processNumberList(@Observes List<? extends Number> event) {
+...
+}
+----
+
+Both will be called if your event type is List<Integer> or List<Number>. Although the first observer will fit for add elements to the list while the second will be used to fetch elements from the list.
+
+Remember that if wildcards are allowed in observer in CDI 1.1+ if they aren’t in Event injection point.
+
+=== Qualifiers don’t work with event as they work with beans
+
+That’s an important point that was very badly explained in the spec before CDI 1.2. Developers often assume that Event<> and Instance<> have quite similar way of functioning regarding qualifiers, that’s a big mistake. But let’s start with the most important here :
+
+An observer matches an event if its type is in the event types set and if the observer has a subset of the qualifier of the event.
+
+Better check this with a piece of code
+
+[source]
+----
+/**
+ * Qualifier with binding member
+ */
+@Qualifier
+@Target({TYPE, METHOD, PARAMETER, FIELD})
+@Retention(RUNTIME)
+@Documented
+public @interface Qualified {
+    String value() default "";
+}
+
+public class EventTestService {
+
+    @Inject
+    @Qualified("strong")
+    Event<Payload> payLoadEvent;
+
+    public void fireEvent() {
+      payloadEvent.fire(new Payload());
+    }
+
+    public void processUnqualifiedPayload(@Observes Payload event) {}
+
+    public void processQualifiedPayload(@Observes @Qualified("strong") Payload event) {}
+
+    public void processUnqualifiedObject(@Observes Object event) {}
+
+    public void processQualifiedObject(@Observes @Qualified("strong") Object event) {}
+
+}
+----
+
+Yes, all the 4 declared observers will be called by the container when the event is fired. Useful to know that ;).
+
+So `@Any` qualifier is totally useless on events or observers
+
+The spec requires that all created events should have the `@Any` automatically added, but as we just saw `@Any` has the same behavior in event that @Default qualifier (no qualifier), so prefer using no qualifier instead of using @Any, it’ll be less confusing.
+
+`Event<>` is here to build events not filter them
+
+Again `Event` looks like `Instance` but is very different. While `Instance` is a tool to lookup for beans, `Event` is a tool to build an event from an object and qualifiers.
+So keep in mind that when you use `Event.select(Annotation... qualifiers)` you are adding qualifier to the event you’ll be firing.
+For instance :
+
+[source]
+----
+public class EventTestService {
+
+    @Inject
+    @MyQualifier
+    Event<Payload> payLoadEvent;
+
+    public void fireEvent() {
+      payloadEvent.select(new QualifiedLiteral()).fire(new Payload());
+    }
+}
+
+public class QualifiedLiteral extends AnnotationLiteral<Qualified> implements Qualified {
+
+    private String value="";
+
+    public QualifiedLiteral(String value) {
+        this.value = value;
+    }
+
+    public QualifiedLiteral() {
+        this("");
+    }
+
+    public String value() {
+        return value;
+    }
+}
+----
+
+will add the `@Qualified` qualifier to the event before firing it. So the final event will have `@MyQualifier @Qualified("")` qualifiers.
+
+== Advanced Event Features
+
+=== Conditional Observer methods
+
+As we saw, observer methods have to be in a bean to be registered by the container. If the bean containing the observer has a different scope than @Dependent we may want to control if the call to the observer should trigger bean instantiation.
+You can do that with the receive member of @Observes annotation which can take the enum values javax.enterprise.event.Reception.ALWAYS (by default) or javax.enterprise.event.Reception.IF_EXISTS.
+
+[source]
+----
+@RequestScoped
+public class EventTestService {
+
+    // will always be called (bean my be instantiated for this call)
+    public void processQualifiedPayload(@Observes(receive=ALWAYS) Type1 event) {}
+
+    // will be called only if the bean already exists in Request scope
+    public void processUnqualifiedPayload(@Observes(receive=IF_EXISTS) Type2 event) {}
+
+}
+----
+
+Remember that IF_EXISTS cannot be used in a bean having @Dependent scope since the bean cannot exists before observer is called. If you do the mistake the container will remember you that at startup.
+
+=== Transactional observer methods
+
+Transactional observer methods are observer methods which receive event notifications during the before or after completion phase of the transaction in which the event was fired. If no transaction is in progress when the event is fired, they are notified at the same time as other observers.
+
+* A before completion observer method is called during the before completion phase of the transaction.
+* An after completion observer method is called during the after completion phase of the transaction.
+* An after success observer method is called during the after completion phase of the transaction, only when the transaction completes successfully.
+* An after failure observer method is called during the after completion phase of the transaction, only when the transaction fails.
+
+You can specify the transaction phase of the observer call with the during member of the `@Observes` annotation.
+The enumeration `javax.enterprise.event.TransactionPhase` identifies the kind of transactional observer method the enum values are:
+
+IN_PROGRESS: default value
+BEFORE_COMPLETION
+AFTER_COMPLETION
+AFTER_FAILURE
+AFTER_SUCCESS
+For instance:
+
+[source]
+----
+@RequestScoped
+public class EventTestService {
+
+    // is called when the event is fired
+    public void processCustomerUpdateRequest(@Observes(during=IN_PROGRESS) @Updated customer cust) {}
+
+    // is called by the same event fired than previous observer but only after the trnsaction complete successufully
+    public void processCustomerUpdated(@Observes(during=AFTER_SUCCESS) @Updated customer cust) {}
+
+}
+----
+
+Note that the transaction observer mechanism is the only way to differ and order some observer right now.
+
+=== Built-in events linked to scope lifecycle (CDI 1.1+)
+
+Since CDI 1.1, the container fire events when context are created and destroyed, thanks to the provided @Intialized and @Destroyed qualifiers.
+If your application is deployed in a servlet container, the event payload correspond to the servlet scope object corresponding to the initialized or destroyed CDI scope. Otherwise payload will be java.lang.object
+You can observe these event in your application like this (if it’s deployed in a servlet container) :
+
+[source]
+----
+public void processApplicationScopedInit(@Observes @Initialized(ApplicationScoped.class) ServletContext payload) {}
+
+public void processApplicationScopedDestroyed(@Observes @Destroyed(ApplicationScoped.class) ServletContext payload) {}
+
+public void processSessionScopedInit(@Observes @Initialized(SessionScoped.class) HttpSession payload) {}
+
+public void processSessionScopedDestroyed(@Observes @Destroyed(SessionScoped.class) HttpSession payload) {}
+
+public void processRequestScopedInit(@Observes @Initialized(RequestScoped.class) ServletRequest payload) {}
+
+public void processRequestScopedDestroyed(@Observes @Destroyed(RequestScoped.class) ServletRequest payload) {}
+
+public void processConversationScopedInit(@Observes @Initialized(ConversationScoped.class) ServletRequest payload) {}
+
+public void processConversationScopedDestroyed(@Observes @Destroyed(ConversationScoped.class) ServletRequest payload) {}
+----
+
+Specification encourage third party extension to do the same for custom context.
+
+=== Events Metadata (CDI 1.1+)
+
+Version 1.1 of the spec introduced EventMetadata interface. It allows an observer to get all the metadata about an event.
+You get the EventMetadata by adding it to the observer parameters :
+
+[source]
+----
+public void processPayload(@Observes Payload event, EventMetadata meta) {}
+----
+
+The EventMetadata contains the following methods:
+
+* getQualifiers() returns the set of qualifiers with which the event was fired.
+* getInjectionPoint() returns the InjectionPoint from which this event payload was fired, or null if it was fired from BeanManager.fireEvent(…).
+* getType() returns the type representing runtime class of the event object with type variables resolved.
+
+This bring a solution to add more fine-grained filtering on observer execution depending on actual metadata of the triggered event
+
+== Events limitation
+
+Right now, CDI events have two big limitation out of the box
+
+=== Events are only synchronous
+
+Out of the box events are synchronous: method firing an event has to wait the end of all observers invocation before executing instruction after event firing. So no fire and forget option and off course no callback approach.
+The obvious solution if you need asynchronous event approach is to use an EJB method as an observer and annotate it @Asynchronous. Other options exists but you need to create a CDI portable extension and play with threads. I’ll try to explore that in a future post.
+
+=== Observers have no orders
+
+Yes, there’s no out of the box solution to guarantee order of observers execution. The only tiny exception is using transaction phase to do so but it’s very limited. Perhaps a CDI extension could help us here again. I’ll try to explore this approach in a future post.
+
+== Pattern and tips with events
+
+Putting all the knowledge we have now on event and other CDI stuff we can figure out some interesting pattern for our developement.
+
+=== The plugin Pattern
+
+We saw that CDI event data is totally free. You can choose any object (again avoid no dependent bean) to fire an event and this object will be received as a playlod by each observer matching the event type and qualifier.
+An other interesting fact is that this payload is mutable and can be modified by its observers. Following this idea, observers can become a way to enrich a given object with new data. We can use this approach to seamlessly enhance content by adding a CDI archive to an existing application.
+
+=== The catch them all pattern
+
+Need to observe all fired event and have their info (for logging purpose for instance), you only have to observe Object.
+
+[source]
+----
+public void processPayload(@Observes Object event, EventMetadata meta) {}
+----
+
+EventMetadata will even help you to know in which bean the event was fired. A nice way to build a bridge with a messaging service (did I say JMS? ;) )
+
+=== Don’t forget Interceptors and Decorators
+
+While it’s forbidden to declare observer in decorators or interceptors, you can still fire event from them. So they can be used to enhance existing bean and add event triggering to them without touching their code.
+A nice way to add event notification only when needed.
+
+== Future for CDI events
+
+We have a lot of idea in CDI 2.0 regarding event enhancement. Off course adding observer priority and asynchronous treatment are on the top of the list. On asynchronous event we could even think of adding callback method support based on java.lang.invoke package.
+More ambitious ideas are floating around like giving a range to events making them cross the War or Ear barrer and spread across the server or the cluster. That could lead us to provide an event bus at the server level and help java EE to adopt new application architectures in the future  EE versions.
