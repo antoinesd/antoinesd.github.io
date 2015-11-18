@@ -31,7 +31,8 @@ profiles:
     base_url: http://www.next-presso.com/
     minify: true
     disqus: nextpresso
-    google_analytics: UA-5919317-1
+    google_analytics:
+      account: UA-5919317-1
     deploy:
       host: github_pages
       branch: master
