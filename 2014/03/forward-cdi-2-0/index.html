@@ -1,0 +1,307 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Forward CDI 2.0 | Next Presso</title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/asciidoctor.css"><link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css"><link rel="stylesheet" href="/stylesheets/styles.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><!--[if lt IE 9]><script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><script>hljs.initHighlightingOnLoad(); </script></head><body><div class="container"><div class="row"><div class="col-md-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-md-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://www.next-presso.com"><i class="fa fa-home fa-fw"></i> Home </a></div></div></nav><script type="text/javascript">var indexOfSharp = window.location.pathname.indexOf('#');
+var pathname = indexOfSharp > 0 ? window.location.pathname.substring(0, indexOfSharp) : window.location.pathname;
+var selector = "body > .container > .row > .col-md-12 > .navbar > .container-fluid > .navbar-collapse a[href='http://www.next-presso.com" + pathname + "']";
+$(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-md-12"><div class="row"><div class="col-md-9"><article class="post"><div class="panel panel-primary"><div class="panel-body"><ul class="pager visible-md-block visible-lg-block"><li class="next"><a href="/2014/06/you-think-you-know-everything-about-cdi-events-think-again/">Next: You think you know everything about CDI events… Think again!</a></li></ul><ul class="pager visible-sm-block visible-xs-block"><li class="next"><a href="/2014/06/you-think-you-know-everything-about-cdi-events-think-again/"> Next</a></li></ul><h1><a href="/2014/03/forward-cdi-2-0/">Forward CDI 2.0</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Mar 15, 2014</span> |  <a href="http://www.next-presso.com/2014/03/forward-cdi-2-0/#disqus_thread">Comments</a> </strong></div><div class="content"><div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image" style="float: left"><img src="/images/posts/2014/back-to-the-future.jpg" alt="back to the future" width="200"></span>
+CDI is probably one of most overlooked specification in Java EE, yet when version 1.0 was released 4 years ago it was presented as “Java EE extension point”. Technically it’s the case, but for all kind of reason some JSR didn&#8217;t adopt CDI totally to provide a more consistent experience in Java EE. Today the IT world is moving fast and after long years of heavy memory and process solution we’re going back to resource optimization with mobile or embedded platform. As CDI can leave outside Java EE, it could play an interesting role in this new approach. But before that it should evolve to be ready for this new challenge (and continue to pursue its growing role in Java EE as well) In this post I’ll try to share my ideas on how  CDI should evolve to meet it future rendez-vous. So I’ll start by exposing the new feature I’d like to see in CDI before exploring a more modular architecture for the spec to make it scalable from Raspberry  Pi to Huge cluster solutions.</p>
+</div>
+<div class="paragraph">
+<p><em>Disclaimer : Since I’ll be leading CDI 2.0 specification (with Pete Muir) it’s important to stress that this post is not an official announcement about the content of the CDI 2.0 specification. It’s only my thought and doesn’t engage CDI Expert Group or Red Hat.</em></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="new-features-i-d-like-to-have"><a class="anchor" href="#new-features-i-d-like-to-have"></a>New features I’d like to have</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some of these features are already in the Expert Group pipeline, some were deferred during CDI 1.1 for CDI 2.0, some are standardisation of third party development (mainly <a href="http://deltaspike.apache.org" target="_blank">Apache Deltaspike</a>) and some are totally new. Anyway, most of these point are important to help third party project or JSR to get the best of CDI.</p>
+</div>
+<div class="sect2">
+<h3 id="java-se-bootstrapping"><a class="anchor" href="#java-se-bootstrapping"></a>Java SE Bootstrapping</h3>
+<div class="paragraph">
+<p>I don’t need to insist on this point. Today each implementation provide a way to bootstrap CDI in Java SE or in a poor server (Servlet only) environnement. Apache Deltaspike has a generic solution to do it. So it’s time that the CDI spec integrates this to be officially available in Java SE.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="container-hot-swap"><a class="anchor" href="#container-hot-swap"></a>Container hot swap</h3>
+<div class="paragraph">
+<p>Strong typed injection is great, but CDI is too strict on this in my opinion. To support dynamic JVM language, we should be able to trigger a BeanManager restart with runtime added bean. this could be done for instance by providing API for bootstrapping a new CDI container with augmented content. If the boot went well have more step to duplicate status and existing instance in the new container and garbage the old one. In case of error we could keep the existing BeanManager. A costly but very useful feature for advanced tools or app that could provide specific enhancement system (CMS, e-commerce platform, etc…).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cdi-lite"><a class="anchor" href="#cdi-lite"></a>CDI lite</h3>
+<div class="paragraph">
+<p>As said in my introduction, there’s a shared wish to bring CDI to embedded devices like Raspberry pi, Arduino, Lego Mindstorms or Android. Today the massive uses of proxies in implementations prevent us to go in that direction.</p>
+</div>
+<div class="paragraph">
+<p>Java Proxies were very useful in the 2000’s, but now they begin to be old fashioned and brings a lot of problem (huge stack trace, JVM optimization, High resource consumption, etc…). Right now CDI spec take for granted that proxies will be used in implementations.</p>
+</div>
+<div class="paragraph">
+<p>For this reason, it could be a good solution to provide a subset of CDI specification with less magic and less weight. Let’s call it “CDI Lite” (like EJB Lite that were introduced in Java EE 6). This CDI subset would keep all the DI stuff but would probably get rid of all the Context part as well as Interceptor and Decorator.</p>
+</div>
+<div class="paragraph">
+<p>But there are others tracks that could be explored to make CDI lighter without removing some of its features.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bye-bye-proxy-hello-annotation-processing-and-invokedynamic"><a class="anchor" href="#bye-bye-proxy-hello-annotation-processing-and-invokedynamic"></a>Bye bye Proxy, hello Annotation Processing and InvokeDynamic</h3>
+<div class="paragraph">
+<p>This other way is to find solution to replace proxies by something else in CDI implementations. Right now we have two candidates :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Annotation Processing : process Annotation at compile time to produce the “magic” injection/injected/decorated code in a static way like it’s done in <a href="http://google.github.io/dagger/">Dagger</a>.</p>
+</li>
+<li>
+<p>InvokeDynamic : Runtime linking could provide a proxy-like behavior with less drawbacks and probably more performances. Regarding this second approach I started to do some researches and hope provide a proof of concept soon.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="xml-config-file"><a class="anchor" href="#xml-config-file"></a>XML config file</h3>
+<div class="paragraph">
+<p>It’s time to provide this feature in the spec. There use to be extensions out there that provide this feature, but this is a core feature allowing bean registering and annotation overloading at deploy time and it should be in the spec. If CDI could become more and more present in the other spec, it could also be the beginning of a universal Java EE config file format !</p>
+</div>
+<div class="paragraph">
+<p>Today, some framework like Apache Camel cannot use CDI because there is no config solution. Providing a solution on that point would ease CDI adoption.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="asynchronous-event-action"><a class="anchor" href="#asynchronous-event-action"></a>Asynchronous event / action</h3>
+<div class="paragraph">
+<p>At the vert.x and node.js era we definitely should support asynchronous treatment (and let’s dream : call back). This could be done By using concurrency spec. We would provide a way to support asynchronous call without using EJB and asynchronous event by adding a boolean asynchronous field in @Observes and, optionally, a handle on a callback</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="support-of-startup"><a class="anchor" href="#support-of-startup"></a>Support of @Startup</h3>
+<div class="paragraph">
+<p>An easy feature to add : provide a way to have a CDI bean automatically instantiated after the initialization phase like we already have in EJB.</p>
+</div>
+<div class="paragraph">
+<p>It’s a very common request by developers and it’s not very hard to provide.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="portable-extension-spi-promotion-usage-simplification"><a class="anchor" href="#portable-extension-spi-promotion-usage-simplification"></a>Portable Extension SPI promotion / usage simplification</h3>
+<div class="imageblock" style="float: right">
+<div class="content">
+<img src="/images/posts/2014/CDI-Lifecycle.png" alt="CDI Lifecycle" width="450">
+</div>
+<div class="title">CDI 1.1 container initialization and Lifecycle</div>
+</div>
+<div class="paragraph">
+<p>Portable Extension is, in my opinion, the best feature in CDI. Off course IoC, events or context management are great but they weren’t new when introduced in CDI 1.0.</p>
+</div>
+<div class="paragraph">
+<p>Portable extension is a complete CDI innovation, that added to Java EE DNA the possibility to be naturally extended without using proprietary tricks.</p>
+</div>
+<div class="paragraph">
+<p>In my opinion it’s a pity that Portable Extension were not more promoted (CDI acronym doesn’t include any idea of their existence for instance) and were placed at the end of our specification document since a lot of projects or other specification could benefit from it.</p>
+</div>
+<div class="paragraph">
+<p>My analyze is that this lack of communication is linked to the bunch of more or less complexe concepts (like the container initialization events shown in the right side schema) to understand before being able to deep dive into extension development. We should probably provide a higher simplified layer to get started with basic task on extension. Don’t misunderstand me, the existing mechanism is great and should be kept (with probably some enhancement) but we should provide helpers to ease extension creation. These helper could be :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Standardization of Deltaspike <code>AnnotatedTypeBuilder</code> and <code>BeanBuilder</code> to ease new Beans creation</p>
+</li>
+<li>
+<p>Helpers on introspection tools regarding types or annotation manipulation</p>
+</li>
+<li>
+<p>Easier way to create new scopes or extend existing ones. We encourage other spec to extend lifecycle of existing scopes (like @RequestScoped for Websocket) but it’s nearly impossible to do it without going at the implementation level.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We should also bring a special attention to the first events (until AfterTypeDiscovery) in this initialization process, since they are CDI agnostic dealing only with type and annotation metadata modification. These could become part of a future Java EE configuration system.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ordering-event-execution"><a class="anchor" href="#ordering-event-execution"></a>Ordering event execution</h3>
+<div class="paragraph">
+<p>So in CDI 1.1 decorator and interceptor are ordered thanks to @Priority. What about ordering events ? Using @Priority on @Observes doesn&#8217;t seem a good idea since this annotation comes from the interceptor package, but we could add an int priority field in @Observes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="no-more-segregation-for-producers-and-custom-beans"><a class="anchor" href="#no-more-segregation-for-producers-and-custom-beans"></a>No more segregation for Producers and Custom beans</h3>
+<div class="paragraph">
+<p>Why produced bean or custom bean should be CDI second class citizen? I want to be able to decorate or use interceptor on my produced beans or at least have APIs that allow me to add this features to my produced beans.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="event-scoping-from-package-to-server-wide"><a class="anchor" href="#event-scoping-from-package-to-server-wide"></a>Event scoping from package to server wide</h3>
+<div class="paragraph">
+<p>Having the CDI event bus at a higher level in Java EE would allow scoping our event. Soone could decide if the event should stay in the current application, be restricted to the current module (in an EAR) even the current package or on the other side be broadcasted to all app listening to it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="transient-injection"><a class="anchor" href="#transient-injection"></a>Transient injection</h3>
+<div class="paragraph">
+<p>When injecting dependent bean in a longer living bean, this injection is done once when the longer bean is instantiated. There are use cases (I’ve got one in Agorava) where I want my dependent bean to be re-injected each times it’s accessed. Today I have to write :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>@Inject Instance&lt;MyBean&gt; myBeanInstances;
+public Mybean getMyBean() { return myBeanInstances.get(); }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Tomorrow I’d like to write this :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>@Inject @Transient MyBean myBean;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It’s mainly syntaxic sugar but make the code more easy to write and readable. We probably could find other example here of code simplification.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="have-a-more-fluent-programmatic-lookup"><a class="anchor" href="#have-a-more-fluent-programmatic-lookup"></a>Have a more fluent programmatic lookup</h3>
+<div class="paragraph">
+<p>The <code>Instance&lt;T&gt;</code> interface and the programmatic lookup are incredibly useful, but it could be very cumbersome to use especially when we have to deal with Qualifiers.</p>
+</div>
+<div class="paragraph">
+<p>This could be eased by providing tools to generate qualifier literals  with Java 8 Type Annotations for instance.  And why not a query DSL ?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code>myBeanInstance.restrictedTo(BeanImp.class).withQualifier(new @MyQualifier("Binding") AnnotationLiteral&lt;&gt;(), new @MyOtherQualifier AnnotationLiteral&lt;&gt;()).select();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wouldn&#8217;t it be more user friendly ?</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="monitoring-facility"><a class="anchor" href="#monitoring-facility"></a>Monitoring facility</h3>
+<div class="paragraph">
+<p>Remember the great debug page in Seam 2 ? I’d like to have the same things or tools to easily build the same feature to monitor my beans and my scope. CDI does a lot of Magic and it could be nice to have tools to see all its trick and the cost of beans, context and other interceptor we deployed</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="give-me-more-modularity-a-new-architecture-for-cdi-and-java-ee"><a class="anchor" href="#give-me-more-modularity-a-new-architecture-for-cdi-and-java-ee"></a>Give me more modularity : a new architecture for CDI (and Java EE ?)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image" style="float: left"><img src="/images/posts/2014/CDI-Next-Architecture.png" alt="CDI Next Architecture" width="400"></span></p>
+</div>
+<div class="paragraph">
+<p>A lot of JSR complained that CDI spec is too monolithic and that implementations are too heavy comparing to theirs (they don’t want to depend on something bigger). This and the lack of standard Java SE bootstrapping, are probably the 2 mains objection to go for a deep CDI integration in some spec. So we should provide a more modular approach while keeping the possibility to gather all the modules and have a consistent stack that we could use outside Java EE. In my ideal world the different JSR / Modules would be :</p>
+</div>
+<div class="sect2">
+<h3 id="container"><a class="anchor" href="#container"></a>Container</h3>
+<div class="paragraph">
+<p>This module store all the beans defined in the application. Providing as a standalone module brings the following features :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Provides a minimum api/impl for a client app that rely on JNDI to get Beans</p>
+</li>
+<li>
+<p>Provides the possibility to add plugins to the container to support new kind of components (Servlet, JPA Entity, Guice or Spring beans for instance)</p>
+</li>
+<li>
+<p>Prepare the CDI container to be the future universal Java EE container that we’re waiting for</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="event-bus"><a class="anchor" href="#event-bus"></a>Event bus</h3>
+<div class="paragraph">
+<p>Events and observer pattern are great features of CDI spec. But they would be more useful if spec could use them without having to depend on all CDI.</p>
+</div>
+<div class="paragraph">
+<p>We could imagine a new Java EE specification or a CDI module based on CDI event API to provide Java EE wide eventing model. We could imagine an API only relying on half a dozen classes (more if we add asynchronous treatment, ordering and event scoping) hat would do the Job.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="component-scanning-extension-engine"><a class="anchor" href="#component-scanning-extension-engine"></a>Component Scanning &amp; Extension engine</h3>
+<div class="paragraph">
+<p>Today each specification does class scanning at boot time. In general the app server provides a way to group this scanning process in a proprietary way. By standardizing the scanning phase events and the meta-data manipulated during this scanning phase we could provide a consistent experience and a standard way to extend Java EE. CDI already provides most of this feature with its initialization mechanism which allow to “observe” all wished existing classes in deployment and modify meta-data of these classes (i.e. annotations) .</p>
+</div>
+<div class="paragraph">
+<p>Imagine what you could do if the ProcessAnnotatedType event could be catch at the server level and allow you to put a “veto” on a given servlet or on a group of JPA entities? This feature lead us on the single container and the single configuration file path. A feature dreamt by a lot of developers.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="basic-di"><a class="anchor" href="#basic-di"></a>Basic DI</h3>
+<div class="paragraph">
+<p>This module would include all API related to simple injection (only pseudo-scope). So all <code>@Inject</code>, <code>@Qualifier</code>, <code>Instance&lt;T&gt;</code>, <code>@Producer</code>, <code>InjectionPoint</code> and other Reflection stuff will be gathered in a light API. Probably what I called “CDI lite” in my previous part.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="context-management"><a class="anchor" href="#context-management"></a>Context Management</h3>
+<div class="paragraph">
+<p>Context is a nice feature of CDI but as everybody don’t need it, it should be put in a optional API package. This part will deal with all the normal scope context and complex life cycles.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="interceptor-decorator"><a class="anchor" href="#interceptor-decorator"></a>Interceptor &amp; Decorator</h3>
+<div class="paragraph">
+<p>Today interceptors already have their own JSR. Adding decorator to the JSR would complete the interceptor JSR.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="conclusion-cdi-needs-you"><a class="anchor" href="#conclusion-cdi-needs-you"></a>Conclusion : CDI needs you!</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>So, here’s my personal CDI wish list. You probably have yours (we collected your 3 CDI 2 wishes in december / january, and we intend to use them. If you didn’t send them, feel free to add them in comment of this article). I don’t know if all these point are good ideas (just read the comment to make your opinion). I don’t know if they are all doable (probably not). What I know is that we’ll need all help we can have to work on the future CDI 2.0. So if you want to be part of this adventure, stay tuned on <a href="http://cdi-spec.org" target="_blank">CDI official website</a>, <a href="http://twitter.com/cdispec" target="_blank">@cdispec</a> twitter account (or <a href="http://twitter.com/antoine_sd" target="_blank">mine</a>) and this blog and give us your feedback on <a href="https://lists.jboss.org/mailman/listinfo/cdi-dev" target="_blank">CDI ML</a> or CDI IRC channel (#jsr346 on freenode). The coming months will be decisive regarding CDI (and Java EE) future.</p>
+</div>
+</div>
+</div></div><div class="footer"><a href="/2014/03/forward-cdi-2-0/"> Permalink</a> <a href="http://www.next-presso.com/2014/03/forward-cdi-2-0/#disqus_thread">Comments</a> </div><ul class="pager visible-md-block visible-lg-block"><li class="next"><a href="/2014/06/you-think-you-know-everything-about-cdi-events-think-again/">Next: You think you know everything about CDI events… Think again!</a></li></ul><ul class="pager visible-sm-block visible-xs-block"><li class="next"><a href="/2014/06/you-think-you-know-everything-about-cdi-events-think-again/"> Next</a></li></ul>
+            <script type="text/javascript">
+            var disqus_shortname = 'nextpresso';
+            (function () {
+              var s = document.createElement('script'); s.async = true;
+              s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+              (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+            }());
+            </script>
+          <div class="comments">
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+            var disqus_shortname = 'nextpresso';
+            var disqus_url = "http://www.next-presso.com/2014/03/forward-cdi-2-0/";
+            var disqus_developer = null;
+            var disqus_identifier = null;
+            (function() {
+              var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+            })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=nextpresso">comments powered by Disqus.</a></noscript>
+          </div></div></div></article></div><div class="col-md-3"><aside class="hidden-xs"><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">Tag Cloud</h3></div><div class="panel-footer" style="text-align:justify;"><div class="tag-cloud">
+  <span class="tag tag-0">
+    <a href="http://www.next-presso.com/tags/CDI/">CDI</a>
+  </span>
+</div>
+</div></div></aside><a class="twitter-timeline" data-widget-id="666631820319019009" href="https://twitter.com/antoine_sd"> Tweets by @antoine_sd</a><script type="text/javascript">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script><aside class="visible-xs"><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">Tag Cloud</h3></div><div class="panel-footer" style="text-align:justify;"><div class="tag-cloud">
+  <span class="tag tag-0">
+    <a href="http://www.next-presso.com/tags/CDI/">CDI</a>
+  </span>
+</div>
+</div></div></aside><a class="twitter-timeline" data-widget-id="666631820319019009" href="https://twitter.com/antoine_sd"> Tweets by @antoine_sd</a><script type="text/javascript">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div></div></div></div></div><hr><footer></footer><script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount','UA-5919317-1']);
+_gaq.push(['_trackPageview']);
+(function() {
+ var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+</body></html>
