@@ -9,7 +9,7 @@ tags: [CDI]
 = You think you know everything about CDI events… Think again!
 
 .Event Bus may surprise you
-image::Event-bus.jpg[width="310",float="left"]
+image::posts/2014/Event-bus.jpg[width="310",float="left"]
 CDI events are one of the shiniest feature in the CDI specification. They are a easy to understand and use and are a straight forward implementation of the Observer Design Pattern. To sum up they add more decoupling to the Dependency Injection by allowing notification of unknown target at development time (great to develop framework). Yet, documentation about event is often misleading and contains inaccurate information, probably due to the fact that the specification was wrong before we corrected it for CDI 1.2 release ;). This post is the opportunity to update or clarify your knowledge  about how events work in CDI 1.0  and 1.1+ and what could come in CDI 2.0.
 If you want to “play” with event you can checkout my Github project EventsTest to use it as a sandbox.
 

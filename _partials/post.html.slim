@@ -1,7 +1,7 @@
 article.post
   .panel.panel-primary
     .panel-body
-      - if !page.alone
+      - if page.alone
         ul.pager.visible-md-block.visible-lg-block
           - if page.post.previous_post
             li.previous

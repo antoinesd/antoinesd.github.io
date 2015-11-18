@@ -6,7 +6,7 @@ layout: base
   .col-md-9
     .posts
       - page.posts.each do |post|
-        = partial('post.html.slim', {'parent'=>page, 'post'=>post, 'alone' => site.pages.size>1})
+        = partial('post.html.slim', {'parent'=>page, 'post'=>post, 'alone' => false})
 
     = page.disqus_comments_count
 
