@@ -3,7 +3,7 @@ layout: base
 ---
 
 .row
-  .col-md-9
+  .col-lg-9
     .posts
       - page.posts.each do |post|
         = partial('post.html.slim', {'parent'=>page, 'post'=>post, 'alone' => false})
@@ -77,7 +77,7 @@ layout: base
           li.disabled
             a href='#'  Last
 
-  .col-md-3
+  .col-lg-3
     .follow-scroll.hidden-xs
       div style='margin-bottom:20px;text-align:center;' 
         = partial( 'subscribe.html.slim' )

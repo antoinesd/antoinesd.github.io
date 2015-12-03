@@ -6,8 +6,6 @@ html lang='en'
     title=(page.title && page.title != site.title ? [page.title, site.title] : [site.title, site.description]) * ' | '
     link rel='shortcut icon' href='/favicon.ico'
     link rel='stylesheet' href='/stylesheets/asciidoctor.css'
-    link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css'
-    link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css'
     link rel='stylesheet' href='/stylesheets/styles.css'
     link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css'
     script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js'
@@ -20,11 +18,11 @@ html lang='en'
   body
     .container
       .row
-        .col-md-12
+        .col-lg-12
           .bannerhome
             .container
               .row
-                .col-md-12.maintitle
+                .col-lg-12.maintitle
                   h1 Next Presso (CDI, Java EE and friends)
           nav.navbar.navbar-default.navbar-static-top role='navigation'
             .container-fluid
@@ -43,7 +41,7 @@ html lang='en'
             var selector = "body > .container > .row > .col-md-12 > .navbar > .container-fluid > .navbar-collapse a[href='#{site.base_url}" + pathname + "']";
             $(selector).closest("li").addClass("active");
       .row
-        .col-md-12
+        .col-lg-12
           =content
     hr
     footer

@@ -1,5 +1,7 @@
 // Building our own custom compilation of bootstrap
 // Core variables and mixins
+$screen-lg-min: 1330px;
+$container-lg: 1300px;
 @import "bootstrap";
 @import "compass/css3";
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic|Noto+Serif:400,400italic,700,700italic|Droid+Sans+Mono:400");
@@ -319,3 +321,5 @@ ul.twitter-list li.nav-header {
 .imageblock {
   margin-bottom: 0.25em;
 }
+
+@import "asciidoctor-coderay";
