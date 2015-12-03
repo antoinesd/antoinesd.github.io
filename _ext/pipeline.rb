@@ -2,10 +2,11 @@ require 'bootstrap-sass'
 
 require_relative 'NewPosts'
 require 'awestruct/extensions/minify'
+require 'asciidoctor-diagram'
 
 Awestruct::Extensions::Pipeline.new do
   extension Awestruct::Extensions::DataDir.new
-  extension Awestruct::Extensions::NewPosts.new('')
+  extension Awestruct::Extensions::NewPosts.new('', :posts, nil, nil, :wp_compat=>true )
   extension Awestruct::Extensions::Paginator.new( :posts, '/index', :per_page=>5 )
   extension Awestruct::Extensions::Tagger.new( :posts, '/index', '/tags', :per_page=>5)
   extension Awestruct::Extensions::TagCloud.new( :posts, '/tags/index.html', :layout=>'base' )
@@ -15,7 +16,7 @@ Awestruct::Extensions::Pipeline.new do
   # extension Awestruct::Extensions::Atomizer.new( :news, '/news/feed.atom' )
 
   # It would be really cool to combine these, will need to look into it.
-  extension Awestruct::Extensions::Tagger.new( :faq, '/faq', '/faq/tags', :per_page=>10)
+  # extension Awestruct::Extensions::Tagger.new( :faq, '/faq', '/faq/tags', :per_page=>10)
   # TODO: TagCloud
 
   # Awestruct::Extensions::Jira::Project.new(self, 'CDI:12311062')
