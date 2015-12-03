@@ -8,6 +8,7 @@ asciidoctor:
   :safe: unsafe
   :base_dir: null
   :attributes:
+    imagesoutdir: _site/images
     source-highlighter: highlight.js
     compat-mode: '@'
     attribute-missing: warn
@@ -18,7 +19,8 @@ asciidoctor:
     icons: font
     sectanchors: ''
     linkattrs: ''
-    source-highlighter: highlightjs
+    source-highlighter: coderay
+    source-language: java
     prewrap: null
     figure-caption: null
 profiles:
