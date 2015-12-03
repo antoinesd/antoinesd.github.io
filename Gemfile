@@ -25,8 +25,8 @@
 source 'https://rubygems.org'                             # This tells Bundler where to look for gems
 
 gem 'awestruct', '~> 0.5.5'
-#gem 'listen', '~> 1.2.2'
-gem 'asciidoctor', '~> 1.5.0'
+gem 'asciidoctor'
+gem 'asciidoctor-diagram'
 gem 'slim', '~> 2.0.0'
 gem 'redcarpet', '~> 3.1.1'
 gem 'htmlcompressor', '~> 0.2'

@@ -1,0 +1,168 @@
+---
+title: "Forward CDI 2.0"
+summary: CDI is probably one of most overlooked specification in Java EE, yet when version 1.0 was released 4 years ago it was presented as “Java EE extension point”. Technically it’s the case, but for all kind of reason some JSR didn’t adopt CDI totally to provide a more consistent experience in Java EE. Today the IT world is moving fast and after long years of heavy memory and process solution we’re going back to resource optimization with mobile or embedded platform. As CDI can leave outside Java EE, it could play an interesting role in this new approach. But before that it should evolve to be ready for this new challenge (and continue to pursue its growing role in Java EE as well) In this post I’ll try to share my ideas on how  CDI should evolve to meet it future rendez-vous.
+layout: post
+authors: [asd]
+tags: [CDI]
+---
+
+= Forward CDI 2.0
+
+image:posts/2014/back-to-the-future.jpg[width=200, float="left"]
+CDI is probably one of most overlooked specification in Java EE, yet when version 1.0 was released 4 years ago it was presented as “Java EE extension point”. Technically it’s the case, but for all kind of reason some JSR didn't adopt CDI totally to provide a more consistent experience in Java EE. Today the IT world is moving fast and after long years of heavy memory and process solution we’re going back to resource optimization with mobile or embedded platform. As CDI can leave outside Java EE, it could play an interesting role in this new approach. But before that it should evolve to be ready for this new challenge (and continue to pursue its growing role in Java EE as well) In this post I’ll try to share my ideas on how  CDI should evolve to meet it future rendez-vous. So I’ll start by exposing the new feature I’d like to see in CDI before exploring a more modular architecture for the spec to make it scalable from Raspberry  Pi to Huge cluster solutions.
+
+_Disclaimer : Since I’ll be leading CDI 2.0 specification (with Pete Muir) it’s important to stress that this post is not an official announcement about the content of the CDI 2.0 specification. It’s only my thought and doesn’t engage CDI Expert Group or Red Hat._
+
+== New features I’d like to have
+
+Some of these features are already in the Expert Group pipeline, some were deferred during CDI 1.1 for CDI 2.0, some are standardisation of third party development (mainly http://deltaspike.apache.org[Apache Deltaspike^]) and some are totally new. Anyway, most of these point are important to help third party project or JSR to get the best of CDI.
+
+=== Java SE Bootstrapping
+
+I don’t need to insist on this point. Today each implementation provide a way to bootstrap CDI in Java SE or in a poor server (Servlet only) environnement. Apache Deltaspike has a generic solution to do it. So it’s time that the CDI spec integrates this to be officially available in Java SE.
+
+=== Container hot swap
+
+Strong typed injection is great, but CDI is too strict on this in my opinion. To support dynamic JVM language, we should be able to trigger a BeanManager restart with runtime added bean. this could be done for instance by providing API for bootstrapping a new CDI container with augmented content. If the boot went well have more step to duplicate status and existing instance in the new container and garbage the old one. In case of error we could keep the existing BeanManager. A costly but very useful feature for advanced tools or app that could provide specific enhancement system (CMS, e-commerce platform, etc…).
+
+=== CDI lite
+
+As said in my introduction, there’s a shared wish to bring CDI to embedded devices like Raspberry pi, Arduino, Lego Mindstorms or Android. Today the massive uses of proxies in implementations prevent us to go in that direction.
+
+Java Proxies were very useful in the 2000’s, but now they begin to be old fashioned and brings a lot of problem (huge stack trace, JVM optimization, High resource consumption, etc…). Right now CDI spec take for granted that proxies will be used in implementations.
+
+For this reason, it could be a good solution to provide a subset of CDI specification with less magic and less weight. Let’s call it “CDI Lite” (like EJB Lite that were introduced in Java EE 6). This CDI subset would keep all the DI stuff but would probably get rid of all the Context part as well as Interceptor and Decorator.
+
+But there are others tracks that could be explored to make CDI lighter without removing some of its features.
+
+=== Bye bye Proxy, hello Annotation Processing and InvokeDynamic
+
+This other way is to find solution to replace proxies by something else in CDI implementations. Right now we have two candidates :
+
+* Annotation Processing : process Annotation at compile time to produce the “magic” injection/injected/decorated code in a static way like it’s done in http://google.github.io/dagger/[Dagger].
+* InvokeDynamic : Runtime linking could provide a proxy-like behavior with less drawbacks and probably more performances. Regarding this second approach I started to do some researches and hope provide a proof of concept soon.
+
+=== XML config file
+
+It’s time to provide this feature in the spec. There use to be extensions out there that provide this feature, but this is a core feature allowing bean registering and annotation overloading at deploy time and it should be in the spec. If CDI could become more and more present in the other spec, it could also be the beginning of a universal Java EE config file format !
+
+Today, some framework like Apache Camel cannot use CDI because there is no config solution. Providing a solution on that point would ease CDI adoption.
+
+=== Asynchronous event / action
+
+At the vert.x and node.js era we definitely should support asynchronous treatment (and let’s dream : call back). This could be done By using concurrency spec. We would provide a way to support asynchronous call without using EJB and asynchronous event by adding a boolean asynchronous field in @Observes and, optionally, a handle on a callback
+
+=== Support of @Startup
+
+An easy feature to add : provide a way to have a CDI bean automatically instantiated after the initialization phase like we already have in EJB.
+
+It’s a very common request by developers and it’s not very hard to provide.
+
+=== Portable Extension SPI promotion / usage simplification
+
+.CDI 1.1 container initialization and Lifecycle
+image::posts/2014/CDI-Lifecycle.png[alt="CDI Lifecycle", width="450" float="right"]
+
+Portable Extension is, in my opinion, the best feature in CDI. Off course IoC, events or context management are great but they weren’t new when introduced in CDI 1.0.
+
+Portable extension is a complete CDI innovation, that added to Java EE DNA the possibility to be naturally extended without using proprietary tricks.
+
+In my opinion it’s a pity that Portable Extension were not more promoted (CDI acronym doesn’t include any idea of their existence for instance) and were placed at the end of our specification document since a lot of projects or other specification could benefit from it.
+
+My analyze is that this lack of communication is linked to the bunch of more or less complexe concepts (like the container initialization events shown in the right side schema) to understand before being able to deep dive into extension development. We should probably provide a higher simplified layer to get started with basic task on extension. Don’t misunderstand me, the existing mechanism is great and should be kept (with probably some enhancement) but we should provide helpers to ease extension creation. These helper could be :
+
+* Standardization of Deltaspike `AnnotatedTypeBuilder` and `BeanBuilder` to ease new Beans creation
+* Helpers on introspection tools regarding types or annotation manipulation
+* Easier way to create new scopes or extend existing ones. We encourage other spec to extend lifecycle of existing scopes (like @RequestScoped for Websocket) but it’s nearly impossible to do it without going at the implementation level.
+
+We should also bring a special attention to the first events (until AfterTypeDiscovery) in this initialization process, since they are CDI agnostic dealing only with type and annotation metadata modification. These could become part of a future Java EE configuration system.
+
+=== Ordering event execution
+
+So in CDI 1.1 decorator and interceptor are ordered thanks to @Priority. What about ordering events ? Using @Priority on @Observes doesn't seem a good idea since this annotation comes from the interceptor package, but we could add an int priority field in @Observes.
+
+=== No more segregation for Producers and Custom beans
+
+Why produced bean or custom bean should be CDI second class citizen? I want to be able to decorate or use interceptor on my produced beans or at least have APIs that allow me to add this features to my produced beans.
+
+=== Event scoping from package to server wide
+
+Having the CDI event bus at a higher level in Java EE would allow scoping our event. Soone could decide if the event should stay in the current application, be restricted to the current module (in an EAR) even the current package or on the other side be broadcasted to all app listening to it.
+
+=== Transient injection
+
+When injecting dependent bean in a longer living bean, this injection is done once when the longer bean is instantiated. There are use cases (I’ve got one in Agorava) where I want my dependent bean to be re-injected each times it’s accessed. Today I have to write :
+
+[source]
+----
+@Inject Instance<MyBean> myBeanInstances;
+public Mybean getMyBean() { return myBeanInstances.get(); }
+----
+
+Tomorrow I’d like to write this :
+
+[source]
+----
+@Inject @Transient MyBean myBean;
+----
+
+It’s mainly syntaxic sugar but make the code more easy to write and readable. We probably could find other example here of code simplification.
+
+=== Have a more fluent programmatic lookup
+
+The `Instance<T>` interface and the programmatic lookup are incredibly useful, but it could be very cumbersome to use especially when we have to deal with Qualifiers.
+
+This could be eased by providing tools to generate qualifier literals  with Java 8 Type Annotations for instance.  And why not a query DSL ?
+
+[source]
+----
+myBeanInstance.restrictedTo(BeanImp.class).withQualifier(new @MyQualifier("Binding") AnnotationLiteral<>(), new @MyOtherQualifier AnnotationLiteral<>()).select();
+----
+
+Wouldn't it be more user friendly ?
+
+=== Monitoring facility
+
+Remember the great debug page in Seam 2 ? I’d like to have the same things or tools to easily build the same feature to monitor my beans and my scope. CDI does a lot of Magic and it could be nice to have tools to see all its trick and the cost of beans, context and other interceptor we deployed
+
+== Give me more modularity : a new architecture for CDI (and Java EE ?)
+
+image:posts/2014/CDI-Next-Architecture.png[alt="CDI Next Architecture", width="400" float="left"]
+
+A lot of JSR complained that CDI spec is too monolithic and that implementations are too heavy comparing to theirs (they don’t want to depend on something bigger). This and the lack of standard Java SE bootstrapping, are probably the 2 mains objection to go for a deep CDI integration in some spec. So we should provide a more modular approach while keeping the possibility to gather all the modules and have a consistent stack that we could use outside Java EE. In my ideal world the different JSR / Modules would be :
+
+=== Container
+
+This module store all the beans defined in the application. Providing as a standalone module brings the following features :
+
+* Provides a minimum api/impl for a client app that rely on JNDI to get Beans
+* Provides the possibility to add plugins to the container to support new kind of components (Servlet, JPA Entity, Guice or Spring beans for instance)
+* Prepare the CDI container to be the future universal Java EE container that we’re waiting for
+
+=== Event bus
+
+Events and observer pattern are great features of CDI spec. But they would be more useful if spec could use them without having to depend on all CDI.
+
+We could imagine a new Java EE specification or a CDI module based on CDI event API to provide Java EE wide eventing model. We could imagine an API only relying on half a dozen classes (more if we add asynchronous treatment, ordering and event scoping) hat would do the Job.
+
+=== Component Scanning & Extension engine
+
+Today each specification does class scanning at boot time. In general the app server provides a way to group this scanning process in a proprietary way. By standardizing the scanning phase events and the meta-data manipulated during this scanning phase we could provide a consistent experience and a standard way to extend Java EE. CDI already provides most of this feature with its initialization mechanism which allow to “observe” all wished existing classes in deployment and modify meta-data of these classes (i.e. annotations) .
+
+Imagine what you could do if the ProcessAnnotatedType event could be catch at the server level and allow you to put a “veto” on a given servlet or on a group of JPA entities? This feature lead us on the single container and the single configuration file path. A feature dreamt by a lot of developers.
+
+=== Basic DI
+
+This module would include all API related to simple injection (only pseudo-scope). So all `@Inject`, `@Qualifier`, `Instance<T>`, `@Producer`, `InjectionPoint` and other Reflection stuff will be gathered in a light API. Probably what I called “CDI lite” in my previous part.
+
+=== Context Management
+
+Context is a nice feature of CDI but as everybody don’t need it, it should be put in a optional API package. This part will deal with all the normal scope context and complex life cycles.
+
+=== Interceptor & Decorator
+
+Today interceptors already have their own JSR. Adding decorator to the JSR would complete the interceptor JSR.
+
+== Conclusion : CDI needs you!
+
+So, here’s my personal CDI wish list. You probably have yours (we collected your 3 CDI 2 wishes in december / january, and we intend to use them. If you didn’t send them, feel free to add them in comment of this article). I don’t know if all these point are good ideas (just read the comment to make your opinion). I don’t know if they are all doable (probably not). What I know is that we’ll need all help we can have to work on the future CDI 2.0. So if you want to be part of this adventure, stay tuned on http://cdi-spec.org[CDI official website^], http://twitter.com/cdispec[@cdispec^] twitter account (or http://twitter.com/antoine_sd[mine^]) and this blog and give us your feedback on https://lists.jboss.org/mailman/listinfo/cdi-dev[CDI ML^] or CDI IRC channel (#jsr346 on freenode). The coming months will be decisive regarding CDI (and Java EE) future.
