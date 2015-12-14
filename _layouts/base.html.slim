@@ -35,6 +35,9 @@ html lang='en'
                 a.navbar-brand href='#{site.base_url}'
                   i.fa.fa-home.fa-fw
                   '  Home
+                a.navbar-brand href='/about'
+                  i.fa.fa-user.fa-fw
+                  '  About me
           javascript:
             var indexOfSharp = window.location.pathname.indexOf('#');
             var pathname = indexOfSharp > 0 ? window.location.pathname.substring(0, indexOfSharp) : window.location.pathname;
