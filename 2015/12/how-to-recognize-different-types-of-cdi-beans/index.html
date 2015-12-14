@@ -586,18 +586,18 @@ PaymentService paymentService;
 PaymentService paymentService;
 
 <span class="annotation">@Produces</span>
-<span class="annotation">@PersistenceContext</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
 <span class="annotation">@CustomerDatabase</span>
+<span class="annotation">@PersistenceContext</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
 EntityManager customerDatabasePersistenceContext;
 
 <span class="annotation">@Produces</span>
-<span class="annotation">@PersistenceUnit</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="4"></i><b>(4)</b>
 <span class="annotation">@CustomerDatabase</span>
+<span class="annotation">@PersistenceUnit</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="4"></i><b>(4)</b>
 EntityManagerFactory customerDatabasePersistenceUnit;
 
 <span class="annotation">@Produces</span>
-<span class="annotation">@Resource</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:global/env/jdbc/CustomerDatasource</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="5"></i><b>(5)</b>
 <span class="annotation">@CustomerDatabase</span>
+<span class="annotation">@Resource</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:global/env/jdbc/CustomerDatasource</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="5"></i><b>(5)</b>
 Datasource customerDatabase;</code></pre>
 </div>
 </div>
