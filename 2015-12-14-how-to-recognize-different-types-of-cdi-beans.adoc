@@ -425,18 +425,18 @@ PaymentService paymentService;
 PaymentService paymentService;
 
 @Produces
-@PersistenceContext(unitName="CustomerDatabase") //<3>
 @CustomerDatabase
+@PersistenceContext(unitName="CustomerDatabase") //<3>
 EntityManager customerDatabasePersistenceContext;
 
 @Produces
-@PersistenceUnit(unitName="CustomerDatabase") //<4>
 @CustomerDatabase
+@PersistenceUnit(unitName="CustomerDatabase") //<4>
 EntityManagerFactory customerDatabasePersistenceUnit;
 
 @Produces
-@Resource(lookup="java:global/env/jdbc/CustomerDatasource") //<5>
 @CustomerDatabase
+@Resource(lookup="java:global/env/jdbc/CustomerDatasource") //<5>
 Datasource customerDatabase;
 ----
 <1> producing a webservice from its JNDI name
