@@ -416,21 +416,35 @@ To declare a resource bean you only have to declare a producer field in a existi
 .Declaring resources beans
 [source]
 ----
-@Produces @WebServiceRef(lookup="java:app/service/PaymentService")
+@Produces
+@WebServiceRef(lookup="java:app/service/PaymentService") //<1>
 PaymentService paymentService;
 
-@Produces @EJB(ejbLink="../their.jar#PaymentService")
+@Produces
+@EJB(beanname="../their.jar#PaymentService") //<2>
 PaymentService paymentService;
 
-@Produces @Resource(lookup="java:global/env/jdbc/CustomerDatasource")
-@CustomerDatabase Datasource customerDatabase;
+@Produces
+@PersistenceContext(unitName="CustomerDatabase") //<3>
+@CustomerDatabase
+EntityManager customerDatabasePersistenceContext;
 
-@Produces @PersistenceContext(unitName="CustomerDatabase")
-@CustomerDatabase EntityManager customerDatabasePersistenceContext;
+@Produces
+@PersistenceUnit(unitName="CustomerDatabase") //<4>
+@CustomerDatabase
+EntityManagerFactory customerDatabasePersistenceUnit;
 
-@Produces @PersistenceUnit(unitName="CustomerDatabase")
-@CustomerDatabase EntityManagerFactory customerDatabasePersistenceUnit;
+@Produces
+@Resource(lookup="java:global/env/jdbc/CustomerDatasource") //<5>
+@CustomerDatabase
+Datasource customerDatabase;
 ----
+<1> producing a webservice from its JNDI name
+<2> producing a remote EJB from its bean name
+<3> producing a persistence context from a specific persistence unit with `@CustomerDatabase` qualifier
+<4> producing a a specific persistence unit with `@CustomerDatabase` qualifier
+<5> producing a Java EE resource from its JNDI name
+
 
 Of course you can expose the resource in more complex way:
 
