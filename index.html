@@ -1,7 +1,755 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Next Presso | </title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/asciidoctor.css"><link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css"><link rel="stylesheet" href="/stylesheets/styles.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><!--[if lt IE 9]><script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><script>hljs.initHighlightingOnLoad(); </script></head><body><div class="container"><div class="row"><div class="col-md-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-md-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://www.next-presso.com"><i class="fa fa-home fa-fw"></i> Home </a></div></div></nav><script type="text/javascript">var indexOfSharp = window.location.pathname.indexOf('#');
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Next Presso | </title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/asciidoctor.css"><link rel="stylesheet" href="/stylesheets/styles.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><!--[if lt IE 9]><script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><script>hljs.initHighlightingOnLoad(); </script></head><body><div class="container"><div class="row"><div class="col-lg-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-lg-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://www.next-presso.com"><i class="fa fa-home fa-fw"></i> Home </a></div></div></nav><script type="text/javascript">var indexOfSharp = window.location.pathname.indexOf('#');
 var pathname = indexOfSharp > 0 ? window.location.pathname.substring(0, indexOfSharp) : window.location.pathname;
 var selector = "body > .container > .row > .col-md-12 > .navbar > .container-fluid > .navbar-collapse a[href='http://www.next-presso.com" + pathname + "']";
-$(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-md-12"><div class="row"><div class="col-md-9"><div class="posts"><article class="post"><div class="panel panel-primary"><div class="panel-body"><h1><a href="/2014/06/you-think-you-know-everything-about-cdi-events-think-again/">You think you know everything about CDI events… Think again!</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Jun 10, 2014</span> |  <a href="http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again/#disqus_thread">Comments</a> </strong></div><div class="content"><div id="preamble">
+$(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-lg-12"><div class="row"><div class="col-lg-9"><div class="posts"><article class="post"><div class="panel panel-primary"><div class="panel-body"><h1><a href="/2015/12/how-to-recognize-different-types-of-cdi-beans/">How to recognize different types of beans from quite a long way away </a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Dec 14, 2015</span> |  <a href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans/#disqus_thread">Comments</a> </strong></div><div class="content"><div id="preamble">
+<div class="sectionbody">
+<div class="imageblock" style="float: right">
+<div class="content">
+<img src="/images/posts/2015/the_larch.jpg" alt="the larch" width="200">
+</div>
+</div>
+<div class="paragraph">
+<p>In CDI, Beans are a very centric concept.
+Yet, for a lot of user, this concept stays fuzzy and requires experiment to achieve an expected result.
+In this article I&#8217;ll try to clarify most of bean related concepts and detail the hidden mechanism behind bean definition and injection.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="bean-bean-instance-and-typesafe-resolution"><a class="anchor" href="#bean-bean-instance-and-typesafe-resolution"></a>Bean, Bean instance and typesafe resolution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When most CDI users write</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span>
+<span class="annotation">@MyQualifier</span>
+MyBean bean;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>they think: "I have injected the <code>MyBean</code> bean having <code>@MyQualifier</code> qualifier".</p>
+</div>
+<div class="paragraph">
+<p>That&#8217;s not correct and it&#8217;s important to understand the exact mechanism behind this injection point definition.</p>
+</div>
+<div class="sect2">
+<h3 id="bean-vs-bean-instances"><a class="anchor" href="#bean-vs-bean-instances"></a>Bean vs Bean instances</h3>
+<div class="paragraph">
+<p>One of the specific feature in CDI is the fact that all components (qualifiers, beans, producers, etc..) are discovered at deployment time.</p>
+</div>
+<div class="paragraph">
+<p>It allows the container to raise errors very early (before runtime) and for you to be sure that all injection points you defined will be satisfied and not ambiguous.</p>
+</div>
+<div class="paragraph">
+<p>While this discovery process is not the topic of this article you should know that all classes packaged with your application will be analyzed at deployment to discover beans (and other components).</p>
+</div>
+<div class="paragraph">
+<p>At the end of this discovery task, the container had created collections of meta-data for most elements included in CDI SPI.
+The more centric meta-data created by CDI container is the collection of <code>Bean&lt;T&gt;</code> discovered during deployment.
+These metadata are the real applications <em>beans</em> and in basic CDI usage you&#8217;ll never use them.</p>
+</div>
+<div class="paragraph">
+<p>So don&#8217;t mix <em>beans</em> and the <em>beans instances</em> you request to the container when adding an injection point in your code.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the-content-of-code-bean-t-code-interface"><a class="anchor" href="#the-content-of-code-bean-t-code-interface"></a>The content of <code>Bean&lt;T&gt;</code> interface</h3>
+<div class="paragraph">
+<p>The <code>Bean</code> interface has two main functions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Providing a "recipe" to create and destroy bean instances (methods from <code>Contextual&lt;T&gt;</code>)</p>
+</li>
+<li>
+<p>Storing bean metadata obtained from bean definition (methods from <code>BeanAttributes&lt;T&gt;</code>)</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/bean-hierarchy.svg" alt="Bean Interface hierarchy, yes Interceptor and Decorator are also Beans" width="645" height="436">
+</div>
+<div class="title">Bean Interface hierarchy, yes Interceptor and Decorator are also Beans</div>
+</div>
+<div class="paragraph">
+<p>The metadata stored in <code>Bean&lt;T&gt;</code> come from the user code defining the bean (type and annotations).
+If you take a look at <code>BeanAttributes</code> in the above schema, you&#8217;ll see that these metadata include a set of types (yes a bean as multiple types) and a set of qualifiers (each bean has at least 2 qualifiers: <code>@Default</code> and <code>@Any</code>).
+These 2 sets are used in the CDI typesafe resolution mechanism.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="typesafe-resolution-for-dummies"><a class="anchor" href="#typesafe-resolution-for-dummies"></a>Typesafe resolution for Dummies</h3>
+<div class="paragraph">
+<p>When you use <code>@Inject</code> in your code, you&#8217;re asking the container to look for a certain <code>Bean</code>.
+The search is done by using info in <code>Bean</code> metadata.</p>
+</div>
+<div class="paragraph">
+<p>For most injection point this search is done at deployment time to check if each injection point is satisfied and not ambiguous, the only exception is the programmatic lookup (use of <code>Instance&lt;T&gt;</code>).
+This approach allows the implementation to cache the matching bean for a given injection point.</p>
+</div>
+<div class="paragraph">
+<p>When the matching <code>Bean</code> is found, the container use its <code>create</code> method to provide you an instance.</p>
+</div>
+<div class="paragraph">
+<p>This process, called the <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#typesafe_resolution" target="_blank"><em>Typesafe resolution</em></a> can be simplified like this:</p>
+</div>
+<div class="paragraph">
+<p>When resolving bean for a given injection point the container considers the set of types and qualifiers of all enabled beans to find the right candidate.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/typesafe-resolution.svg" alt="A simplified version of typesafe resolution" width="841" height="513">
+</div>
+<div class="title">A simplified version of typesafe resolution</div>
+</div>
+<div class="paragraph">
+<p>The actual process is a bit more complex with integration of Alternatives, but the general idea is here.</p>
+</div>
+<div class="paragraph">
+<p>If the container succeeds in resolving the injection point by finding one and only one eligible bean, the <code>create()</code> method of this bean will be used to provide an instance for it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="so-when-do-we-refer-to-the-code-bean-t-code"><a class="anchor" href="#so-when-do-we-refer-to-the-code-bean-t-code"></a>So when do we refer to the <code>Bean&lt;T&gt;</code>?</h3>
+<div class="paragraph">
+<p>In basic CDI, the answer is "never" (or almost).</p>
+</div>
+<div class="paragraph">
+<p><code>Bean&lt;T&gt;</code> will be used 90% of the time in portable extension to create a custom bean or analyse bean metadata.</p>
+</div>
+<div class="paragraph">
+<p>Since CDI 1.1 you can also use <code>Bean&lt;T&gt;</code> outside extensions.</p>
+</div>
+<div class="paragraph">
+<p>For the sake of reflection it is now allowed to inject the bean meta-data in a bean class, an interceptor or a decorator, allowing them to have info on metadata of the current bean.</p>
+</div>
+<div class="paragraph">
+<p>For instance this interceptor use the meta-data of the intercepted bean to avoid issue with proxy creation in the implementation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Loggable</span>
+<span class="annotation">@Interceptor</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">LoggingInterceptor</span> {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> <span class="predefined-type">Logger</span> logger;
+
+    <span class="annotation">@Inject</span> <span class="annotation">@Intercepted</span> <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> Bean&lt;?&gt; intercepted;
+
+    <span class="annotation">@AroundInvoke</span>
+    <span class="directive">private</span> <span class="predefined-type">Object</span> intercept(InvocationContext ic) <span class="directive">throws</span> <span class="exception">Exception</span> {
+        logger.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">&gt;&gt; </span><span class="delimiter">&quot;</span></span> + intercepted.getBeanClass().getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content"> - </span><span class="delimiter">&quot;</span></span> + ic.getMethod().getName()); <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="keyword">try</span> {
+            <span class="keyword">return</span> ic.proceed();
+        } <span class="keyword">finally</span> {
+            logger.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;&lt; </span><span class="delimiter">&quot;</span></span> + intercepted.getBeanClass().getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content"> - </span><span class="delimiter">&quot;</span></span> + ic.getMethod().getName());
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>@Intercepted</code> is a reserved qualifier to inject the intercepted bean in an interceptor</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>here it is used to retrieve the actual class of the bean instance not the proxy&#8217;s class implementation may have created</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="different-kinds-of-cdi-beans"><a class="anchor" href="#different-kinds-of-cdi-beans"></a>Different kinds of CDI beans</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that we stated the difference between Bean and Bean in stances, it&#8217;s time to list all the bean kind we&#8217;ve got in CDI and their specific behaviour.</p>
+</div>
+<div class="sect2">
+<h3 id="managed-beans"><a class="anchor" href="#managed-beans"></a>Managed beans</h3>
+<div class="paragraph">
+<p>Managed bean are the most obvious kind of bean available in CDI.
+They are defined by a class declaration.</p>
+</div>
+<div class="paragraph">
+<p>According to the specification (section <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#what_classes_are_beans" target="_blank">3.1.1 Which Java classes are managed beans?</a>):</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>A top-level Java class is a managed bean if it meets all of the following conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It is not a non-static inner class.</p>
+</li>
+<li>
+<p>It is a concrete class, or is annotated <code>@Decorator</code>.</p>
+</li>
+<li>
+<p>It does not implement <code>javax.enterprise.inject.spi.Extension</code>.</p>
+</li>
+<li>
+<p>It is not annotated <code>@Vetoed</code> or in a package annotated <code>@Vetoed</code>.</p>
+</li>
+<li>
+<p>It has an appropriate constructor - either:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>the class has a constructor with no parameters, or</p>
+</li>
+<li>
+<p>the class declares a constructor annotated <code>@Inject</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All Java classes that meet these conditions are managed beans and thus no special declaration is required to define a managed bean.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; CDI 1.2 specification
+</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s for the general rules, a valid class can also be ignored if the bean discovery mode is set to <em>none</em> or <em>annotated</em> and the class doesn&#8217;t have a <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#bean_defining_annotations" target="_blank"><em>bean defining annotation</em></a>.</p>
+</div>
+<div class="paragraph">
+<p>To sum up, if you&#8217;re in the default bean discovery mode (<code>Annotated</code>) your class should follow the condition above and have at least one of the following annotation to become a CDI managed bean:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>@ApplicationScoped</code>, <code>@SessionScoped</code>, <code>@ConversationScoped</code> and <code>@RequestScoped</code> annotations,</p>
+</li>
+<li>
+<p>all other normal scope types,</p>
+</li>
+<li>
+<p><code>@Interceptor</code> and <code>@Decorator</code> annotations,</p>
+</li>
+<li>
+<p>all stereotype annotations (i.e. annotations annotated with <code>@Stereotype</code>),</p>
+</li>
+<li>
+<p>and the <code>@Dependent</code> scope annotation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Another limitation is linked to <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#client_proxies" target="_blank"><em>client proxies</em></a>.
+In a lot of occasion (interceptor or decorator, passivation, usage of normal scope, possible circularity), the container may need to provide a bean instance wrapped in a proxy.
+For this reason, managed bean classes should be proxyable or the container will raise an exception.</p>
+</div>
+<div class="paragraph">
+<p>Thus in addition to the above rules the spec also restrictions on managed bean class to support certain services or be in normal scopes.</p>
+</div>
+<div class="paragraph">
+<p>So, if possible you should avoid the following limitation on your bean class to be sure that they can be proxyable:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>it should have a non private constructor with parameters,</p>
+</li>
+<li>
+<p>it shouldn&#8217;t be final,</p>
+</li>
+<li>
+<p>it shouldn&#8217;t have non static final methods.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="bean-types-of-a-managed-bean"><a class="anchor" href="#bean-types-of-a-managed-bean"></a>Bean types of a managed bean</h4>
+<div class="paragraph">
+<p>The set of bean types (used during typesafe resolution) for a given managed bean contains:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the bean class,</p>
+</li>
+<li>
+<p>evey superclass (including <code>Object</code>),</p>
+</li>
+<li>
+<p>all interface the class implements directly or indirectly.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Keep in mind that <code>@Typed</code> annotation can restrict this set.
+When it&#8217;s used, only the types whose classes are explicitly listed using the value member, together with <code>Object</code>, are bean types of the bean.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="session-beans"><a class="anchor" href="#session-beans"></a>Session beans</h3>
+<div class="paragraph">
+<p>CDI Session beans are EJB in CDI flavor.
+If you define a session bean with EJB 3.x client view in a bean archive without <code>@Vetoed</code> annotation on it (or on its package) you&#8217;ll have a Session Bean at runtime.</p>
+</div>
+<div class="paragraph">
+<p>Local stateless, singleton or stateful EJB are automatically treated as CDI session bean: they support injection, CDI scope, interception, decoration and all other CDI services.
+Remote EJB and MDB cannot be used as CDI beans.</p>
+</div>
+<div class="paragraph">
+<p>Note the following restriction regarding EJB and CDI scopes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Stateless session beans must belong to the <code>@Dependent</code> scope,</p>
+</li>
+<li>
+<p>Singleton session beans can belong to the <code>@Dependent</code> or <code>@ApplicationScoped</code> scopes,</p>
+</li>
+<li>
+<p>Stateful session beans can belong to any scope</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When using EJB in CDI you have the features of both specifications.
+You can for instance have asynchronous behavior and observer features in one bean.</p>
+</div>
+<div class="paragraph">
+<p>But keep in mind that CDI implementation doesn&#8217;t <em>hack</em> EJB container, it only use it as any EJB client would do.</p>
+</div>
+<div class="paragraph">
+<p>Thus, if you don&#8217;t use <code>@Inject</code> but <code>@EJB</code> to inject a session bean, you&#8217;ll obtain a plain EJB in your injection point and not a CDI session bean.</p>
+</div>
+<div class="sect3">
+<h4 id="bean-types-of-a-session-bean"><a class="anchor" href="#bean-types-of-a-session-bean"></a>Bean types of a session bean</h4>
+<div class="paragraph">
+<p>The set of bean types (used during typesafe resolution) for a given CDI session bean depend on its definition:</p>
+</div>
+<div class="paragraph">
+<p>If the session has local interfaces, it contains:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>all local interfaces of the bean,</p>
+</li>
+<li>
+<p>all super interfaces of these local interfaces, and</p>
+</li>
+<li>
+<p><code>Object</code> class.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If the session bean has a no-interface view, it contains:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the bean class, and</p>
+</li>
+<li>
+<p>evey superclass (including <code>Object</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The set can also be restricted with <code>@Typed</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="examples"><a class="anchor" href="#examples"></a>Examples</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@ConversationScoped</span>
+<span class="annotation">@Stateful</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ShoppingCart</span> { ... } <i class="conum" data-value="1"></i><b>(1)</b>
+
+<span class="annotation">@Stateless</span>
+<span class="annotation">@Named</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">loginAction</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">LoginActionImpl</span> <span class="directive">implements</span> LoginAction { ... } <i class="conum" data-value="2"></i><b>(2)</b>
+
+
+<span class="annotation">@ApplicationScoped</span>
+<span class="annotation">@Singleton</span> <i class="conum" data-value="3"></i><b>(3)</b>
+<span class="annotation">@Startup</span> <i class="conum" data-value="4"></i><b>(4)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">bootBean</span> {
+ <span class="annotation">@Inject</span>
+ MyBean bean;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A stateful bean (with no-interface view) defined in <code>@ConversationScoped</code> scope. It has <code>ShoppingCart</code> and <code>Object</code> in its bean types.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A stateless bean in <code>@Dependent</code> scope with a view. Usable in EL with name <code>loginAction</code>. It has <code>LoginAction</code> in its bean types.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>It&#8217;s <code>javax.ejb.Singleton</code> defining a singleton session bean.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The EJB will be instantiated at startup triggering instantiation of MyBean CDI bean.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="producers"><a class="anchor" href="#producers"></a>Producers</h3>
+<div class="paragraph">
+<p>Producers are the way to transform standard pojo into CDI bean.</p>
+</div>
+<div class="paragraph">
+<p>A producer can only be declared in an existing bean through field or method definition.</p>
+</div>
+<div class="paragraph">
+<p>By adding the <code>@Produces</code> annotation to a field or a non void method you declare a new producer and so a new Bean.</p>
+</div>
+<div class="paragraph">
+<p>Field or method defining a producer may have any modifier or even be static.</p>
+</div>
+<div class="paragraph">
+<p>Producers behave like standard managed bean:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>they have qualifiers,</p>
+</li>
+<li>
+<p>they have scope,</p>
+</li>
+<li>
+<p>they can inject other beans: parameters in producer method are injection points that the container will satisfied when it will call the method to produce a bean instance
+This injection points are still checked at deployment time.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Yet, producers have limitation compared to managed or session bean as <strong>they don&#8217;t support interceptors or decorators</strong>.
+You should keep this in mind when creating them as this limitation is not obvious when reading the spec.</p>
+</div>
+<div class="paragraph">
+<p>If your producer (field or method) can take the null value you must put in in <code>@Dependent</code> scope.</p>
+</div>
+<div class="paragraph">
+<p>Remember the <code>Bean&lt;T&gt;</code> interface we talked above ?
+You can see a producer method as a convenient way to define the <code>Bean.create()</code> method, even if it&#8217;s a bit more complicated.</p>
+</div>
+<div class="paragraph">
+<p>So if we can define <code>create()</code> what about <code>destroy()</code>?
+It&#8217;s also available with disposers methods.</p>
+</div>
+<div class="sect3">
+<h4 id="disposers"><a class="anchor" href="#disposers"></a>Disposers</h4>
+<div class="paragraph">
+<p>A less known feature of producer is the possibility to define a matching disposer method.</p>
+</div>
+<div class="paragraph">
+<p>A disposer method allows the application to perform customized cleanup of an object returned by a producer method or producer field.</p>
+</div>
+<div class="paragraph">
+<p>Like producers, disposers methods must be define in a CDI bean, can have any modifier and even be static.</p>
+</div>
+<div class="paragraph">
+<p>Unlike producer they should have one and only one parameter, called the disposer parameter and annotated with <code>@Disposes</code>.
+When the container container finds producer method or field, it looks for matching disposer method.</p>
+</div>
+<div class="paragraph">
+<p>More than one producer can match to one disposer method.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="bean-types-of-a-producer"><a class="anchor" href="#bean-types-of-a-producer"></a>Bean types of a producer</h4>
+<div class="paragraph">
+<p>It depends of the type of the producer (field type or method returned type):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If it&#8217;s an interface, the bean type set will contain the interface all interface it extends (directly or indirectly) and <code>Object</code>.</p>
+</li>
+<li>
+<p>If it&#8217;s a primitive or array type, the set will contain the type and <code>Object</code>.</p>
+</li>
+<li>
+<p>If it&#8217;s a class, the set will contains the class, every superclass and all interface it implements (directly or indirectly).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Again, <code>@Typed</code> can restrict the bean types of the producer.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="examples-2"><a class="anchor" href="#examples-2"></a>Examples</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ProducerBean</span> {
+
+  <span class="annotation">@Produces</span>
+  <span class="annotation">@ApplicationScoped</span>
+  <span class="directive">private</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Integer</span>&gt; mapInt = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;(); <i class="conum" data-value="1"></i><b>(1)</b>
+
+  <span class="annotation">@Produces</span> <span class="annotation">@RequestScoped</span> <span class="annotation">@UserDatabase</span>
+  <span class="directive">public</span> EntityManager create(EntityManagerFactory emf) { <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="keyword">return</span> emf.createEntityManager();
+  }
+
+  <span class="directive">public</span> <span class="type">void</span> close(<span class="annotation">@Disposes</span> <span class="annotation">@Any</span> EntityManager em) {  <i class="conum" data-value="3"></i><b>(3)</b>
+    em.close();
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This producer field defines a bean with Bean types <code>List&lt;Integer&gt;</code>, <code>Collection&lt;Integer&gt;</code>, <code>Iterable&lt;Integer&gt;</code> and `Object</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This producer method defines a <code>EntityManager</code> with <code>@UserDatabase</code> qualifier in <code>@RequestScoped</code> from an <code>EntityManagerFactory</code> bean produced elsewhere.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This disposer disposes all produced <code>EntityManager</code> (thanks to <code>@Any</code> qualifier)</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resources"><a class="anchor" href="#resources"></a>Resources</h3>
+<div class="paragraph">
+<p>Thanks to producer mechanism CDI allows to expose Java EE resources as CDI Bean.</p>
+</div>
+<div class="paragraph">
+<p>These resources are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>persistence context (<code>@PersistenceContext</code>),</p>
+</li>
+<li>
+<p>persistence unit (<code>@PersistenceUnit</code>),</p>
+</li>
+<li>
+<p>remote EJB (<code>@EJB</code>),</p>
+</li>
+<li>
+<p>web service (<code>@WebServiceRef</code>), and</p>
+</li>
+<li>
+<p>generic Java EE resource (<code>@Resource</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To declare a resource bean you only have to declare a producer field in a existing CDI bean</p>
+</div>
+<div class="listingblock">
+<div class="title">Declaring resources beans</div>
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Produces</span> <span class="annotation">@WebServiceRef</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:app/service/PaymentService</span><span class="delimiter">&quot;</span></span>)
+PaymentService paymentService;
+
+<span class="annotation">@Produces</span> <span class="annotation">@EJB</span>(ejbLink=<span class="string"><span class="delimiter">&quot;</span><span class="content">../their.jar#PaymentService</span><span class="delimiter">&quot;</span></span>)
+PaymentService paymentService;
+
+<span class="annotation">@Produces</span> <span class="annotation">@Resource</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:global/env/jdbc/CustomerDatasource</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@CustomerDatabase</span> Datasource customerDatabase;
+
+<span class="annotation">@Produces</span> <span class="annotation">@PersistenceContext</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@CustomerDatabase</span> EntityManager customerDatabasePersistenceContext;
+
+<span class="annotation">@Produces</span> <span class="annotation">@PersistenceUnit</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@CustomerDatabase</span> EntityManagerFactory customerDatabasePersistenceUnit;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Of course you can expose the resource in more complex way:</p>
+</div>
+<div class="listingblock">
+<div class="title">producing an <code>EntityManager</code> with <code>COMMIT</code> flush mode</div>
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">EntityManagerBeanProducer</span> {
+
+  <span class="annotation">@PersistenceContext</span>
+  <span class="directive">private</span> EntityManager em;
+
+  <span class="annotation">@Produces</span>
+  EntityManager produceCommitEm() {
+    em.setFlushMode(COMMIT);
+    <span class="keyword">return</span> em;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After declaration resources bean can be injected as any other bean.</p>
+</div>
+<div class="sect3">
+<h4 id="bean-type-of-a-resource"><a class="anchor" href="#bean-type-of-a-resource"></a>Bean type of a resource</h4>
+<div class="paragraph">
+<p>Resources exposed as bean with producer follow the same rules than producers regarding their type set.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="built-in-beans"><a class="anchor" href="#built-in-beans"></a>Built-in beans</h3>
+<div class="paragraph">
+<p>Beyond beans you can create or expose, CDI provides a lot of built-in beans helping you in your development</p>
+</div>
+<div class="paragraph">
+<p>First the container should always provide built-in beans with <code>@Default</code> qualifier for the following interfaces:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>BeanManager</code> in <code>@Dependent</code> scope,to allow injection of BeanManager in an bean,</p>
+</li>
+<li>
+<p><code>Conversation</code> in <code>@RequestScoped</code> to allow management of the conversation scope.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To allow the use of events and programmatic lookup, the container must also provide built-in beans for with:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Event&lt;X&gt;</code> in its set of bean types, for every Java type <code>X</code> that does not contain a type variable,</p>
+</li>
+<li>
+<p>every event qualifier type in its set of qualifier types,</p>
+</li>
+<li>
+<p>scope <code>@Dependent</code>,</p>
+</li>
+<li>
+<p>no bean name.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For programmatic lookup the container must provide a built-in bean with:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Instance&lt;X&gt;</code> and <code>Provider&lt;X&gt;</code> for every legal bean type <code>X</code> in its set of bean types,</p>
+</li>
+<li>
+<p>every qualifier type in its set of qualifier types,</p>
+</li>
+<li>
+<p>scope <code>@Dependent</code>,</p>
+</li>
+<li>
+<p>no bean name.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A Java EE or embeddable EJB container must provide the following built-in beans, all of which have qualifier <code>@Default</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a bean with bean type <code>javax.transaction.UserTransaction</code>, allowing injection of a reference to the JTA <code>UserTransaction</code>, and</p>
+</li>
+<li>
+<p>a bean with bean type <code>java.security.Principal</code>, allowing injection of a <code>Principal</code> representing the current caller identity.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A servlet container must provide the following built-in beans, all of which have qualifier <code>@Default</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a bean with bean type <code>javax.servlet.http.HttpServletRequest</code>, allowing injection of a reference to the <code>HttpServletRequest</code></p>
+</li>
+<li>
+<p>a bean with bean type <code>javax.servlet.http.HttpSession</code>, allowing injection of a reference to the <code>HttpSession</code>,</p>
+</li>
+<li>
+<p>a bean with bean type <code>javax.servlet.ServletContext</code>, allowing injection of a reference to the `ServletContext</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Finally to allow introspection of dependency injection and AOP, the container must also provide the built-in bean in <code>@Dependent</code> scope for the following interfaces when a an existing bean inject them:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>InjectionPoint</code> with <code>@Default</code> qualifier to get information about the injection point of a <code>@Dependent</code> bean,</p>
+</li>
+<li>
+<p><code>Bean&lt;T&gt;</code> with <code>@Default</code> qualifier to inject in a Bean having <code>T</code> in its typeset,</p>
+</li>
+<li>
+<p><code>Bean&lt;T&gt;</code> with <code>@Intercepted</code> or <code>@Decorated</code> qualifier to inject in an interceptor or decorator applied on
+Interceptor and Decorator for a bean having T in its typeset.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Check the spec on <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#bean_metadata">bean metadata</a> to get all the restriction regarding <code>Bean</code> injection.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="custom-beans"><a class="anchor" href="#custom-beans"></a>Custom beans</h3>
+<div class="paragraph">
+<p>CDI gives you even more with Custom beans.
+Thanks to portable extension you can add your own kind bean allowing you to hook on the instantiation, injection and destruction of the instances.</p>
+</div>
+<div class="paragraph">
+<p>You could for instance look in a registry to check for a given instance instead of instantiating the object.</p>
+</div>
+<div class="paragraph">
+<p>I&#8217;ll show you on a coming post how to create such a bean in a portable extension.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="conclusion"><a class="anchor" href="#conclusion"></a>Conclusion</h3>
+<div class="paragraph">
+<p>As you see there are a lot of things happening behind the <code>@Inject</code> scene.
+Understanding them will help you to make a better use of CDI and give you a clearer entry point to Portable extension</p>
+</div>
+</div>
+</div>
+</div></div><div class="footer"><a href="/2015/12/how-to-recognize-different-types-of-cdi-beans/"> Permalink</a> <a href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans/#disqus_thread">Comments</a> </div></div></div></article><article class="post"><div class="panel panel-primary"><div class="panel-body"><h1><a href="/2014/06/you-think-you-know-everything-about-cdi-events-think-again/">You think you know everything about CDI events… Think again!</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Jun 10, 2014</span> |  <a href="http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again/#disqus_thread">Comments</a> </strong></div><div class="content"><div id="preamble">
 <div class="sectionbody">
 <div class="imageblock" style="float: left">
 <div class="content">
@@ -48,11 +796,11 @@ The event Object could be of any Java type and don’t have to be CDI related (t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>@Inject
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span>
 BeanManager beanManager;
 
-public void doSomething() {
-  beanManager.fireEvent(new Payload());
+<span class="directive">public</span> <span class="type">void</span> doSomething() {
+  beanManager.fireEvent(<span class="keyword">new</span> Payload());
 }</code></pre>
 </div>
 </div>
@@ -61,10 +809,10 @@ public void doSomething() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>BeanManager beanManager = CDI.current().getBeanManager();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">BeanManager beanManager = CDI.current().getBeanManager();
 
-public void doSomething() {
-  beanManager.fireEvent(new Payload());
+<span class="directive">public</span> <span class="type">void</span> doSomething() {
+  beanManager.fireEvent(<span class="keyword">new</span> Payload());
 }</code></pre>
 </div>
 </div>
@@ -73,11 +821,11 @@ public void doSomething() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>@Inject
-Event&lt;Payload&gt; payloadEvent;
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span>
+<span class="predefined-type">Event</span>&lt;Payload&gt; payloadEvent;
 
-public void doSomething() {
-  payloadEvent.fire(new Payload());
+<span class="directive">public</span> <span class="type">void</span> doSomething() {
+  payloadEvent.fire(<span class="keyword">new</span> Payload());
 }</code></pre>
 </div>
 </div>
@@ -92,7 +840,7 @@ public void doSomething() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>public void listenToPayload(@Observes Payload event) {
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> listenToPayload(<span class="annotation">@Observes</span> Payload event) {
   ...
 }</code></pre>
 </div>
@@ -102,7 +850,7 @@ public void doSomething() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>public void listenToPayload(@Observes @Qualified Payload event) {
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> listenToPayload(<span class="annotation">@Observes</span> <span class="annotation">@Qualified</span> Payload event) {
   ...
 }</code></pre>
 </div>
@@ -112,7 +860,7 @@ public void doSomething() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>public void listenToPayload(@Observes Payload event, PayloadService service) {
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> listenToPayload(<span class="annotation">@Observes</span> Payload event, PayloadService service) {
   ...
 }</code></pre>
 </div>
@@ -136,11 +884,11 @@ public void doSomething() {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>public void processNumberList(@Observes List&lt;Number&gt; event) {
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> processNumberList(<span class="annotation">@Observes</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Number</span>&gt; event) {
   ...
 }
 
-public void processIntegerList(@Observes List&lt;Integer&gt; event) {
+<span class="directive">public</span> <span class="type">void</span> processIntegerList(<span class="annotation">@Observes</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Integer</span>&gt; event) {
   ...
 }</code></pre>
 </div>
@@ -150,11 +898,11 @@ public void processIntegerList(@Observes List&lt;Integer&gt; event) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>public void processIntegerList(@Observes List&lt;? super Integer&gt; event) {
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> processIntegerList(<span class="annotation">@Observes</span> <span class="predefined-type">List</span>&lt;? <span class="local-variable">super</span> <span class="predefined-type">Integer</span>&gt; event) {
 ...
 }
 
-public void processNumberList(@Observes List&lt;? extends Number&gt; event) {
+<span class="directive">public</span> <span class="type">void</span> processNumberList(<span class="annotation">@Observes</span> <span class="predefined-type">List</span>&lt;? <span class="directive">extends</span> <span class="predefined-type">Number</span>&gt; event) {
 ...
 }</code></pre>
 </div>
@@ -179,34 +927,34 @@ public void processNumberList(@Observes List&lt;? extends Number&gt; event) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>/**
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="comment">/**
  * Qualifier with binding member
- */
-@Qualifier
-@Target({TYPE, METHOD, PARAMETER, FIELD})
-@Retention(RUNTIME)
-@Documented
-public @interface Qualified {
-    String value() default "";
+ */</span>
+<span class="annotation">@Qualifier</span>
+<span class="annotation">@Target</span>({TYPE, METHOD, PARAMETER, FIELD})
+<span class="annotation">@Retention</span>(RUNTIME)
+<span class="annotation">@Documented</span>
+<span class="directive">public</span> <span class="annotation">@interface</span> Qualified {
+    <span class="predefined-type">String</span> value() <span class="keyword">default</span> <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>;
 }
 
-public class EventTestService {
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EventTestService</span> {
 
-    @Inject
-    @Qualified("strong")
-    Event&lt;Payload&gt; payLoadEvent;
+    <span class="annotation">@Inject</span>
+    <span class="annotation">@Qualified</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">strong</span><span class="delimiter">&quot;</span></span>)
+    <span class="predefined-type">Event</span>&lt;Payload&gt; payLoadEvent;
 
-    public void fireEvent() {
-      payloadEvent.fire(new Payload());
+    <span class="directive">public</span> <span class="type">void</span> fireEvent() {
+      payloadEvent.fire(<span class="keyword">new</span> Payload());
     }
 
-    public void processUnqualifiedPayload(@Observes Payload event) {}
+    <span class="directive">public</span> <span class="type">void</span> processUnqualifiedPayload(<span class="annotation">@Observes</span> Payload event) {}
 
-    public void processQualifiedPayload(@Observes @Qualified("strong") Payload event) {}
+    <span class="directive">public</span> <span class="type">void</span> processQualifiedPayload(<span class="annotation">@Observes</span> <span class="annotation">@Qualified</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">strong</span><span class="delimiter">&quot;</span></span>) Payload event) {}
 
-    public void processUnqualifiedObject(@Observes Object event) {}
+    <span class="directive">public</span> <span class="type">void</span> processUnqualifiedObject(<span class="annotation">@Observes</span> <span class="predefined-type">Object</span> event) {}
 
-    public void processQualifiedObject(@Observes @Qualified("strong") Object event) {}
+    <span class="directive">public</span> <span class="type">void</span> processQualifiedObject(<span class="annotation">@Observes</span> <span class="annotation">@Qualified</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">strong</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">Object</span> event) {}
 
 }</code></pre>
 </div>
@@ -230,31 +978,31 @@ For instance :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>public class EventTestService {
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">EventTestService</span> {
 
-    @Inject
-    @MyQualifier
-    Event&lt;Payload&gt; payLoadEvent;
+    <span class="annotation">@Inject</span>
+    <span class="annotation">@MyQualifier</span>
+    <span class="predefined-type">Event</span>&lt;Payload&gt; payLoadEvent;
 
-    public void fireEvent() {
-      payloadEvent.select(new QualifiedLiteral()).fire(new Payload());
+    <span class="directive">public</span> <span class="type">void</span> fireEvent() {
+      payloadEvent.select(<span class="keyword">new</span> QualifiedLiteral()).fire(<span class="keyword">new</span> Payload());
     }
 }
 
-public class QualifiedLiteral extends AnnotationLiteral&lt;Qualified&gt; implements Qualified {
+<span class="directive">public</span> <span class="type">class</span> <span class="class">QualifiedLiteral</span> <span class="directive">extends</span> AnnotationLiteral&lt;Qualified&gt; <span class="directive">implements</span> Qualified {
 
-    private String value="";
+    <span class="directive">private</span> <span class="predefined-type">String</span> value=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>;
 
-    public QualifiedLiteral(String value) {
-        this.value = value;
+    <span class="directive">public</span> QualifiedLiteral(<span class="predefined-type">String</span> value) {
+        <span class="local-variable">this</span>.value = value;
     }
 
-    public QualifiedLiteral() {
-        this("");
+    <span class="directive">public</span> QualifiedLiteral() {
+        <span class="local-variable">this</span>(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>);
     }
 
-    public String value() {
-        return value;
+    <span class="directive">public</span> <span class="predefined-type">String</span> value() {
+        <span class="keyword">return</span> value;
     }
 }</code></pre>
 </div>
@@ -276,14 +1024,14 @@ You can do that with the receive member of @Observes annotation which can take t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>@RequestScoped
-public class EventTestService {
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@RequestScoped</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EventTestService</span> {
 
-    // will always be called (bean my be instantiated for this call)
-    public void processQualifiedPayload(@Observes(receive=ALWAYS) Type1 event) {}
+    <span class="comment">// will always be called (bean my be instantiated for this call)</span>
+    <span class="directive">public</span> <span class="type">void</span> processQualifiedPayload(<span class="annotation">@Observes</span>(receive=ALWAYS) Type1 event) {}
 
-    // will be called only if the bean already exists in Request scope
-    public void processUnqualifiedPayload(@Observes(receive=IF_EXISTS) Type2 event) {}
+    <span class="comment">// will be called only if the bean already exists in Request scope</span>
+    <span class="directive">public</span> <span class="type">void</span> processUnqualifiedPayload(<span class="annotation">@Observes</span>(receive=IF_EXISTS) Type2 event) {}
 
 }</code></pre>
 </div>
@@ -327,14 +1075,14 @@ For instance:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>@RequestScoped
-public class EventTestService {
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@RequestScoped</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">EventTestService</span> {
 
-    // is called when the event is fired
-    public void processCustomerUpdateRequest(@Observes(during=IN_PROGRESS) @Updated customer cust) {}
+    <span class="comment">// is called when the event is fired</span>
+    <span class="directive">public</span> <span class="type">void</span> processCustomerUpdateRequest(<span class="annotation">@Observes</span>(during=IN_PROGRESS) <span class="annotation">@Updated</span> customer cust) {}
 
-    // is called by the same event fired than previous observer but only after the trnsaction complete successufully
-    public void processCustomerUpdated(@Observes(during=AFTER_SUCCESS) @Updated customer cust) {}
+    <span class="comment">// is called by the same event fired than previous observer but only after the trnsaction complete successufully</span>
+    <span class="directive">public</span> <span class="type">void</span> processCustomerUpdated(<span class="annotation">@Observes</span>(during=AFTER_SUCCESS) <span class="annotation">@Updated</span> customer cust) {}
 
 }</code></pre>
 </div>
@@ -352,21 +1100,21 @@ You can observe these event in your application like this (if it’s deployed in
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>public void processApplicationScopedInit(@Observes @Initialized(ApplicationScoped.class) ServletContext payload) {}
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> processApplicationScopedInit(<span class="annotation">@Observes</span> <span class="annotation">@Initialized</span>(ApplicationScoped.class) ServletContext payload) {}
 
-public void processApplicationScopedDestroyed(@Observes @Destroyed(ApplicationScoped.class) ServletContext payload) {}
+<span class="directive">public</span> <span class="type">void</span> processApplicationScopedDestroyed(<span class="annotation">@Observes</span> <span class="annotation">@Destroyed</span>(ApplicationScoped.class) ServletContext payload) {}
 
-public void processSessionScopedInit(@Observes @Initialized(SessionScoped.class) HttpSession payload) {}
+<span class="directive">public</span> <span class="type">void</span> processSessionScopedInit(<span class="annotation">@Observes</span> <span class="annotation">@Initialized</span>(SessionScoped.class) HttpSession payload) {}
 
-public void processSessionScopedDestroyed(@Observes @Destroyed(SessionScoped.class) HttpSession payload) {}
+<span class="directive">public</span> <span class="type">void</span> processSessionScopedDestroyed(<span class="annotation">@Observes</span> <span class="annotation">@Destroyed</span>(SessionScoped.class) HttpSession payload) {}
 
-public void processRequestScopedInit(@Observes @Initialized(RequestScoped.class) ServletRequest payload) {}
+<span class="directive">public</span> <span class="type">void</span> processRequestScopedInit(<span class="annotation">@Observes</span> <span class="annotation">@Initialized</span>(RequestScoped.class) ServletRequest payload) {}
 
-public void processRequestScopedDestroyed(@Observes @Destroyed(RequestScoped.class) ServletRequest payload) {}
+<span class="directive">public</span> <span class="type">void</span> processRequestScopedDestroyed(<span class="annotation">@Observes</span> <span class="annotation">@Destroyed</span>(RequestScoped.class) ServletRequest payload) {}
 
-public void processConversationScopedInit(@Observes @Initialized(ConversationScoped.class) ServletRequest payload) {}
+<span class="directive">public</span> <span class="type">void</span> processConversationScopedInit(<span class="annotation">@Observes</span> <span class="annotation">@Initialized</span>(ConversationScoped.class) ServletRequest payload) {}
 
-public void processConversationScopedDestroyed(@Observes @Destroyed(ConversationScoped.class) ServletRequest payload) {}</code></pre>
+<span class="directive">public</span> <span class="type">void</span> processConversationScopedDestroyed(<span class="annotation">@Observes</span> <span class="annotation">@Destroyed</span>(ConversationScoped.class) ServletRequest payload) {}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -381,7 +1129,7 @@ You get the EventMetadata by adding it to the observer parameters :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>public void processPayload(@Observes Payload event, EventMetadata meta) {}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> processPayload(<span class="annotation">@Observes</span> Payload event, EventMetadata meta) {}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -447,7 +1195,7 @@ An other interesting fact is that this payload is mutable and can be modified by
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>public void processPayload(@Observes Object event, EventMetadata meta) {}</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> processPayload(<span class="annotation">@Observes</span> <span class="predefined-type">Object</span> event, EventMetadata meta) {}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -617,8 +1365,8 @@ CDI is probably one of most overlooked specification in Java EE, yet when versio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>@Inject Instance&lt;MyBean&gt; myBeanInstances;
-public Mybean getMyBean() { return myBeanInstances.get(); }</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span> Instance&lt;MyBean&gt; myBeanInstances;
+<span class="directive">public</span> Mybean getMyBean() { <span class="keyword">return</span> myBeanInstances.get(); }</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -626,7 +1374,7 @@ public Mybean getMyBean() { return myBeanInstances.get(); }</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>@Inject @Transient MyBean myBean;</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span> <span class="annotation">@Transient</span> MyBean myBean;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -643,7 +1391,7 @@ public Mybean getMyBean() { return myBeanInstances.get(); }</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>myBeanInstance.restrictedTo(BeanImp.class).withQualifier(new @MyQualifier("Binding") AnnotationLiteral&lt;&gt;(), new @MyOtherQualifier AnnotationLiteral&lt;&gt;()).select();</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="java">myBeanInstance.restrictedTo(BeanImp.class).withQualifier(<span class="keyword">new</span> <span class="annotation">@MyQualifier</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Binding</span><span class="delimiter">&quot;</span></span>) AnnotationLiteral&lt;&gt;(), <span class="keyword">new</span> <span class="annotation">@MyOtherQualifier</span> AnnotationLiteral&lt;&gt;()).select();</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -740,17 +1488,7 @@ public Mybean getMyBean() { return myBeanInstances.get(); }</code></pre>
               (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
             }());
             </script>
-          <div class="visible-xs"><ul class="pager"><li class="previous disabled"><a href="#"> Previous</a></li><li class="disabled"><a href="#">1 of 1</a></li><li class="next disabled"><a href="#"> Next</a></li></ul></div><div class="hidden-xs"><ul class="pager"><li class="disabled"><a href="#"> First</a></li><li class="disabled"><a href="#"> Previous</a></li><li class="active"><a href="#">1 of 1</a></li><li class="disabled"><a href="#"> Next</a></li><li class="disabled"><a href="#"> Last</a></li></ul></div></div><div class="col-md-3"><div class="follow-scroll hidden-xs"><div style="margin-bottom:20px;text-align:center;"><a class="btn btn-default" href="http://www.next-presso.com/news.atom">Subscribe RSS</a></div><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">Tag Cloud</h3></div><div class="panel-footer" style="text-align:justify;"><div class="tag-cloud">
-  <span class="tag tag-0">
-    <a href="http://www.next-presso.com/tags/CDI/">CDI</a>
-  </span>
-</div>
-</div></div><a class="twitter-timeline" data-widget-id="666631820319019009" href="https://twitter.com/antoine_sd"> Tweets by @antoine_sd</a><script type="text/javascript">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div><div class="visible-xs"><div style="margin-bottom:20px;text-align:center;"><a class="btn btn-default" href="http://www.next-presso.com/news.atom">Subscribe RSS</a></div><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">Tag Cloud</h3></div><div class="panel-footer" style="text-align:justify;"><div class="tag-cloud">
-  <span class="tag tag-0">
-    <a href="http://www.next-presso.com/tags/CDI/">CDI</a>
-  </span>
-</div>
-</div></div></div></div></div></div></div></div><hr><footer></footer><script>
+          <div class="visible-xs"><ul class="pager"><li class="previous disabled"><a href="#"> Previous</a></li><li class="disabled"><a href="#">1 of 1</a></li><li class="next disabled"><a href="#"> Next</a></li></ul></div><div class="hidden-xs"><ul class="pager"><li class="disabled"><a href="#"> First</a></li><li class="disabled"><a href="#"> Previous</a></li><li class="active"><a href="#">1 of 1</a></li><li class="disabled"><a href="#"> Next</a></li><li class="disabled"><a href="#"> Last</a></li></ul></div></div><div class="col-lg-3"><div class="follow-scroll hidden-xs"><div style="margin-bottom:20px;text-align:center;"><a class="btn btn-default" href="http://www.next-presso.com/news.atom">Subscribe RSS</a></div><a class="twitter-timeline" data-widget-id="666631820319019009" href="https://twitter.com/antoine_sd"> Tweets by @antoine_sd</a><script type="text/javascript">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div><div class="visible-xs"><div style="margin-bottom:20px;text-align:center;"><a class="btn btn-default" href="http://www.next-presso.com/news.atom">Subscribe RSS</a></div><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">Tag Cloud</h3></div><div class="panel-footer" style="text-align:justify;"></div></div></div></div></div></div></div></div><hr><footer></footer><script>
  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 
                     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

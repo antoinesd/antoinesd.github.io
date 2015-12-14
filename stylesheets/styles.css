@@ -1823,10 +1823,10 @@ pre code {
   /* line 10, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/_grid.scss */
   .container {
     width: 970px; } }
-@media (min-width: 1200px) {
+@media (min-width: 1330px) {
   /* line 10, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/_grid.scss */
   .container {
-    width: 1170px; } }
+    width: 1300px; } }
 
 /* line 30, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/_grid.scss */
 .container-fluid {
@@ -2485,7 +2485,7 @@ pre code {
   /* line 60, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/mixins/_grid-framework.scss */
   .col-md-offset-12 {
     margin-left: 100%; } }
-@media (min-width: 1200px) {
+@media (min-width: 1330px) {
   /* line 27, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/mixins/_grid-framework.scss */
   .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
     float: left; }
@@ -6505,7 +6505,7 @@ button.close {
   .visible-sm-inline-block {
     display: inline-block !important; } }
 
-@media (min-width: 992px) and (max-width: 1199px) {
+@media (min-width: 992px) and (max-width: 1329px) {
   /* line 7, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/mixins/_responsive-visibility.scss */
   .visible-md {
     display: block !important; }
@@ -6521,22 +6521,22 @@ button.close {
   /* line 12, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/mixins/_responsive-visibility.scss */
   th.visible-md, td.visible-md {
     display: table-cell !important; } }
-@media (min-width: 992px) and (max-width: 1199px) {
+@media (min-width: 992px) and (max-width: 1329px) {
   /* line 92, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/_responsive-utilities.scss */
   .visible-md-block {
     display: block !important; } }
 
-@media (min-width: 992px) and (max-width: 1199px) {
+@media (min-width: 992px) and (max-width: 1329px) {
   /* line 97, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/_responsive-utilities.scss */
   .visible-md-inline {
     display: inline !important; } }
 
-@media (min-width: 992px) and (max-width: 1199px) {
+@media (min-width: 992px) and (max-width: 1329px) {
   /* line 102, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/_responsive-utilities.scss */
   .visible-md-inline-block {
     display: inline-block !important; } }
 
-@media (min-width: 1200px) {
+@media (min-width: 1330px) {
   /* line 7, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/mixins/_responsive-visibility.scss */
   .visible-lg {
     display: block !important; }
@@ -6552,17 +6552,17 @@ button.close {
   /* line 12, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/mixins/_responsive-visibility.scss */
   th.visible-lg, td.visible-lg {
     display: table-cell !important; } }
-@media (min-width: 1200px) {
+@media (min-width: 1330px) {
   /* line 111, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/_responsive-utilities.scss */
   .visible-lg-block {
     display: block !important; } }
 
-@media (min-width: 1200px) {
+@media (min-width: 1330px) {
   /* line 116, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/_responsive-utilities.scss */
   .visible-lg-inline {
     display: inline !important; } }
 
-@media (min-width: 1200px) {
+@media (min-width: 1330px) {
   /* line 121, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/_responsive-utilities.scss */
   .visible-lg-inline-block {
     display: inline-block !important; } }
@@ -6575,11 +6575,11 @@ button.close {
   /* line 18, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/mixins/_responsive-visibility.scss */
   .hidden-sm {
     display: none !important; } }
-@media (min-width: 992px) and (max-width: 1199px) {
+@media (min-width: 992px) and (max-width: 1329px) {
   /* line 18, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/mixins/_responsive-visibility.scss */
   .hidden-md {
     display: none !important; } }
-@media (min-width: 1200px) {
+@media (min-width: 1330px) {
   /* line 18, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/mixins/_responsive-visibility.scss */
   .hidden-lg {
     display: none !important; } }
@@ -6631,16 +6631,16 @@ button.close {
   /* line 18, /Users/antoine/.rvm/gems/ruby-2.2.3/gems/bootstrap-sass-3.3.5.1/assets/stylesheets/bootstrap/mixins/_responsive-visibility.scss */
   .hidden-print {
     display: none !important; } }
-/* line 11, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 13, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 p {
   font-size: 1.15em;
   line-height: 1.6; }
 
-/* line 16, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 18, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .centered {
   text-align: center; }
 
-/* line 20, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 22, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .content-box {
   background: url(../images/noise_lines.png);
   -moz-border-radius: 2px;
@@ -6652,15 +6652,15 @@ p {
   border: inset gray 2px;
   padding: .5em; }
 
-/* line 28, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 30, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 #servers {
   padding-top: 20px; }
 
-/* line 32, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 34, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .thumbnail {
   height: 200px; }
 
-/* line 37, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 39, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .nav-tabs-center > li, .nav-pills-center > li {
   float: none;
   display: inline-block;
@@ -6670,19 +6670,19 @@ p {
   zoom: 1;
   /* hasLayout ie7 trigger */ }
 
-/* line 45, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 47, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .nav-tabs-center, .nav-pills-center {
   text-align: center;
   border-bottom: 1px solid #ddd; }
 
-/* line 50, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 52, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .nav-tabs-center > li > a, .nav-pills-center > li > a {
   padding-right: 12px;
   padding-left: 12px;
   margin-right: 2px;
   line-height: 14px; }
 
-/* line 58, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 60, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .nav-tabs-center > li > a {
   padding-top: 8px;
   padding-bottom: 8px;
@@ -6692,21 +6692,21 @@ p {
   -moz-border-radius: 4px 4px 0 0;
   border-radius: 4px 4px 0 0; }
 
-/* line 68, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 70, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .nav-tabs-center:before, .nav-tabs-center:after, .nav-pills-center:before, .nav-pills-center:after {
   display: table;
   content: "";
   line-height: 0; }
 
-/* line 76, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 78, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .nav-tabs-center:after, .nav-pills-center:after {
   clear: both; }
 
-/* line 81, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 83, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .nav-tabs-center > li > a:hover {
   border-color: #eeeeee #eeeeee #dddddd; }
 
-/* line 85, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 87, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .nav-tabs-center > .active > a, .nav-tabs-center > .active > a:hover {
   color: #777777;
   background-color: white;
@@ -6714,28 +6714,28 @@ p {
   border-bottom-color: transparent;
   cursor: default; }
 
-/* line 94, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 96, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .nav-pills-center > .active > a, .nav-pills-center > .active > a:hover {
   color: white;
   background-color: #558bc4; }
 
-/* line 100, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 102, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .nav-tabs-center .dropdown-menu {
   -webkit-border-radius: 0 0 6px 6px;
   -moz-border-radius: 0 0 6px 6px;
   border-radius: 0 0 6px 6px; }
 
-/* line 106, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 108, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .nav-tabs-center .dropdown-toggle .caret {
   margin-top: 8px; }
 
-/* line 112, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 114, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .navbar {
   margin-bottom: 30px;
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px; }
 
-/* line 118, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 120, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .bannerhome {
   text-align: center;
   background: #4a5d75;
@@ -6747,11 +6747,11 @@ p {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px; }
 
-/* line 130, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 132, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .maintitle {
   margin: 15px; }
 
-/* line 134, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 136, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .scrollTop {
   font-size: 40px;
   opacity: 0.3;
@@ -6762,37 +6762,37 @@ p {
   width: 40px;
   height: 40px; }
 
-/* line 145, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 147, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 #main_nav {
   position: fixed;
   top: 40px;
   width: 190px; }
 
-/* line 151, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 153, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 a.list-group-item {
   color: #428bca; }
 
-/* line 155, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 157, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 code {
   background-color: inherit; }
 
-/* line 159, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 161, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .first-in-row {
   margin-left: 0 !important; }
 
-/* line 165, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 167, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .alert-danger {
   background-color: #d47500;
   border-color: #c54c00;
   color: #fff; }
 
-/* line 171, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 173, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .alert-success {
   background-color: #819e37;
   border-color: #818b30;
   color: #fff; }
 
-/* line 178, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 180, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .calendar {
   display: block;
   width: 52px;
@@ -6813,7 +6813,7 @@ code {
   vertical-align: top;
   float: left;
   margin-right: 1em; }
-/* line 193, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 195, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .calendar .month {
   display: block;
   margin-left: 0px;
@@ -6838,7 +6838,7 @@ code {
   background-image: -moz-linear-gradient(#ff8080, #ff0000);
   background-image: -webkit-linear-gradient(#ff8080, #ff0000);
   background-image: linear-gradient(#ff8080, #ff0000); }
-/* line 211, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 213, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .calendar .year {
   display: block;
   color: black;
@@ -6847,11 +6847,11 @@ code {
   position: relative;
   top: -2px; }
 
-/* line 221, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 223, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 p {
   text-align: justify; }
 
-/* line 225, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 227, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .ribbon {
   position: absolute;
   top: 0px;
@@ -6859,54 +6859,54 @@ p {
   border: 0px;
   z-index: 1031; }
 
-/* line 233, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 235, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 img.left {
   float: left;
   margin: 0px 15px 10px 0px; }
 
-/* line 238, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 240, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 img.right {
   float: right;
   margin: 0px 0px 10px 15px; }
 
-/* line 243, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 245, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 ul.twitter-list li {
   padding-bottom: 6px;
   margin-bottom: 6px;
   border-bottom: 1px solid #E5E5E5; }
 
-/* line 249, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 251, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 ul.twitter-list li:last-child {
   padding-bottom: 0px;
   margin-bottom: 0px;
   border-bottom: 0px; }
 
-/* line 255, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 257, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 ul.twitter-list li.nav-header {
   margin-top: 0px;
   border-bottom: 0px; }
 
-/* line 260, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 262, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .posts .post {
   margin-bottom: 40px; }
 
-/* line 265, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 267, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .post h1 > a {
   margin-right: 15px; }
-/* line 269, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 271, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .post h1, .post .content, .post .footer {
   border-bottom: 1px solid #DDDDDD;
   margin-bottom: 10px; }
-/* line 274, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 276, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .post .footer {
   padding-bottom: 10px; }
-/* line 278, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 280, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .post h1 a:hover {
   text-decoration: none; }
-/* line 282, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 284, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .post .meta {
   margin-bottom: 10px; }
-/* line 286, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 288, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .post a.tag {
   background-color: #999999;
   border-radius: 3px;
@@ -6915,26 +6915,393 @@ ul.twitter-list li.nav-header {
   padding: 2px 4px;
   font-weight: bold;
   text-decoration: none; }
-/* line 296, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 298, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .post a.tag:hover {
   background-color: #B94A48; }
 
-/* line 302, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 304, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .sponsors [class*="span"] {
   text-align: center;
   margin-top: 50px; }
 
-/* line 308, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 310, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .social-button-container {
   margin-top: 20px;
   overflow: hidden; }
 
-/* line 313, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 315, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .social-button {
   float: left;
   margin-right: 5px;
   height: 32px; }
 
-/* line 319, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
+/* line 321, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/styles.scss */
 .imageblock {
   margin-bottom: 0.25em; }
+
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+/* line 3, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .line-numbers {
+  border-right: 1px solid #d8d8d8;
+  padding: 0 0.5em 0 .25em; }
+
+/* line 4, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay span.line-numbers {
+  display: inline-block;
+  margin-right: .5em;
+  color: rgba(0, 0, 0, 0.3); }
+
+/* line 5, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .line-numbers strong {
+  font-weight: normal; }
+
+/* line 6, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+table.CodeRay {
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 0;
+  border: 0;
+  background: none; }
+
+/* line 7, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+table.CodeRay td {
+  vertical-align: top; }
+
+/* line 8, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+table.CodeRay td.line-numbers {
+  text-align: right; }
+
+/* line 9, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+table.CodeRay td.line-numbers > pre {
+  padding: 0;
+  color: rgba(0, 0, 0, 0.3); }
+
+/* line 10, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+table.CodeRay td.code {
+  padding: 0 0 0 .5em; }
+
+/* line 11, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+table.CodeRay td.code > pre {
+  padding: 0; }
+
+/* line 12, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .debug {
+  color: #fff !important;
+  background: #000080 !important; }
+
+/* line 13, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .annotation {
+  color: #007; }
+
+/* line 14, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .attribute-name {
+  color: #000080; }
+
+/* line 15, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .attribute-value {
+  color: #700; }
+
+/* line 16, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .binary {
+  color: #509; }
+
+/* line 17, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .comment {
+  color: #998;
+  font-style: italic; }
+
+/* line 18, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .char {
+  color: #04d; }
+
+/* line 19, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .char .content {
+  color: #04d; }
+
+/* line 20, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .char .delimiter {
+  color: #039; }
+
+/* line 21, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .class {
+  color: #458;
+  font-weight: bold; }
+
+/* line 22, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .complex {
+  color: #a08; }
+
+/* line 23, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .constant, .CodeRay .predefined-constant {
+  color: #008080; }
+
+/* line 24, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .color {
+  color: #099; }
+
+/* line 25, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .class-variable {
+  color: #369; }
+
+/* line 26, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .decorator {
+  color: #b0b; }
+
+/* line 27, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .definition {
+  color: #099; }
+
+/* line 28, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .delimiter {
+  color: #000; }
+
+/* line 29, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .doc {
+  color: #970; }
+
+/* line 30, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .doctype {
+  color: #34b; }
+
+/* line 31, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .doc-string {
+  color: #d42; }
+
+/* line 32, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .escape {
+  color: #666; }
+
+/* line 33, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .entity {
+  color: #800; }
+
+/* line 34, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .error {
+  color: #808; }
+
+/* line 35, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .exception {
+  color: inherit; }
+
+/* line 36, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .filename {
+  color: #099; }
+
+/* line 37, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .function {
+  color: #900;
+  font-weight: bold; }
+
+/* line 38, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .global-variable {
+  color: #008080; }
+
+/* line 39, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .hex {
+  color: #058; }
+
+/* line 40, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .integer, .CodeRay .float {
+  color: #099; }
+
+/* line 41, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .include {
+  color: #555; }
+
+/* line 42, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .inline {
+  color: #00; }
+
+/* line 43, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .inline .inline {
+  background: #ccc; }
+
+/* line 44, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .inline .inline .inline {
+  background: #bbb; }
+
+/* line 45, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .inline .inline-delimiter {
+  color: #d14; }
+
+/* line 46, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .inline-delimiter {
+  color: #d14; }
+
+/* line 47, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .important {
+  color: #555;
+  font-weight: bold; }
+
+/* line 48, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .interpreted {
+  color: #b2b; }
+
+/* line 49, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .instance-variable {
+  color: #008080; }
+
+/* line 50, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .label {
+  color: #970; }
+
+/* line 51, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .local-variable {
+  color: #963; }
+
+/* line 52, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .octal {
+  color: #40e; }
+
+/* line 53, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .predefined {
+  color: #369; }
+
+/* line 54, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .preprocessor {
+  color: #579; }
+
+/* line 55, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .pseudo-class {
+  color: #555; }
+
+/* line 56, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .directive {
+  font-weight: bold; }
+
+/* line 57, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .type {
+  font-weight: bold; }
+
+/* line 58, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .predefined-type {
+  color: inherit; }
+
+/* line 59, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .reserved, .CodeRay .keyword {
+  color: #000;
+  font-weight: bold; }
+
+/* line 60, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .key {
+  color: #808; }
+
+/* line 61, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .key .delimiter {
+  color: #606; }
+
+/* line 62, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .key .char {
+  color: #80f; }
+
+/* line 63, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .value {
+  color: #088; }
+
+/* line 64, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .regexp .delimiter {
+  color: #808; }
+
+/* line 65, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .regexp .content {
+  color: #808; }
+
+/* line 66, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .regexp .modifier {
+  color: #808; }
+
+/* line 67, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .regexp .char {
+  color: #d14; }
+
+/* line 68, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .regexp .function {
+  color: #404;
+  font-weight: bold; }
+
+/* line 69, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .string {
+  color: #d20; }
+
+/* line 70, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .string .string .string {
+  background: #ffd0d0; }
+
+/* line 71, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .string .content {
+  color: #d14; }
+
+/* line 72, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .string .char {
+  color: #d14; }
+
+/* line 73, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .string .delimiter {
+  color: #d14; }
+
+/* line 74, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .shell {
+  color: #d14; }
+
+/* line 75, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .shell .delimiter {
+  color: #d14; }
+
+/* line 76, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .symbol {
+  color: #990073; }
+
+/* line 77, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .symbol .content {
+  color: #a60; }
+
+/* line 78, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .symbol .delimiter {
+  color: #630; }
+
+/* line 79, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .tag {
+  color: #008080; }
+
+/* line 80, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .tag-special {
+  color: #d70; }
+
+/* line 81, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .variable {
+  color: #036; }
+
+/* line 82, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .insert {
+  background: #afa; }
+
+/* line 83, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .delete {
+  background: #faa; }
+
+/* line 84, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .change {
+  color: #aaf;
+  background: #007; }
+
+/* line 85, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .head {
+  color: #f8f;
+  background: #505; }
+
+/* line 86, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .insert .insert {
+  color: #080; }
+
+/* line 87, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .delete .delete {
+  color: #800; }
+
+/* line 88, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .change .change {
+  color: #66f; }
+
+/* line 89, /Users/antoine/dev/awestruct-sites/antoinesd.github.io/stylesheets/_asciidoctor-coderay.scss */
+.CodeRay .head .head {
+  color: #f4f; }
