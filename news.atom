@@ -2,13 +2,13 @@
 <feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">
   <id>http://www.next-presso.com/</id>
   <title>Next Presso</title>
-  <updated>2015-12-14T12:33:37+01:00</updated>
+  <updated>2015-12-14T14:46:49+01:00</updated>
   <link href="http://www.next-presso.com/news.atom" rel="self" type="application/atom+xml" />
   <link href="http://www.next-presso.com/" rel="alternate" type="text/html" />
   <entry>
     <id>http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html</id>
     <title>How to recognize different types of beans from quite a long way away</title>
-    <updated>2015-12-14T12:33:37+01:00</updated>
+    <updated>2015-12-14T14:46:49+01:00</updated>
     <published>2015-12-14T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -622,21 +622,53 @@
       &lt;div class=&quot;listingblock&quot;&gt;
       &lt;div class=&quot;title&quot;&gt;Declaring resources beans&lt;/div&gt;
       &lt;div class=&quot;content&quot;&gt;
-      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@WebServiceRef&lt;/span&gt;(lookup=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;java:app/service/PaymentService&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;)
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@WebServiceRef&lt;/span&gt;(lookup=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;java:app/service/PaymentService&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
       PaymentService paymentService;
       
-      &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@EJB&lt;/span&gt;(ejbLink=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;../their.jar#PaymentService&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;)
+      &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@EJB&lt;/span&gt;(beanname=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;../their.jar#PaymentService&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
       PaymentService paymentService;
       
-      &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@Resource&lt;/span&gt;(lookup=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;java:global/env/jdbc/CustomerDatasource&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;)
-      &lt;span class=&quot;annotation&quot;&gt;@CustomerDatabase&lt;/span&gt; Datasource customerDatabase;
+      &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@PersistenceContext&lt;/span&gt;(unitName=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;CustomerDatabase&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;(3)&lt;/b&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@CustomerDatabase&lt;/span&gt;
+      EntityManager customerDatabasePersistenceContext;
       
-      &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@PersistenceContext&lt;/span&gt;(unitName=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;CustomerDatabase&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;)
-      &lt;span class=&quot;annotation&quot;&gt;@CustomerDatabase&lt;/span&gt; EntityManager customerDatabasePersistenceContext;
+      &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@PersistenceUnit&lt;/span&gt;(unitName=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;CustomerDatabase&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;4&quot;&gt;&lt;/i&gt;&lt;b&gt;(4)&lt;/b&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@CustomerDatabase&lt;/span&gt;
+      EntityManagerFactory customerDatabasePersistenceUnit;
       
-      &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@PersistenceUnit&lt;/span&gt;(unitName=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;CustomerDatabase&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;)
-      &lt;span class=&quot;annotation&quot;&gt;@CustomerDatabase&lt;/span&gt; EntityManagerFactory customerDatabasePersistenceUnit;&lt;/code&gt;&lt;/pre&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@Resource&lt;/span&gt;(lookup=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;java:global/env/jdbc/CustomerDatasource&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;5&quot;&gt;&lt;/i&gt;&lt;b&gt;(5)&lt;/b&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@CustomerDatabase&lt;/span&gt;
+      Datasource customerDatabase;&lt;/code&gt;&lt;/pre&gt;
       &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;colist arabic&quot;&gt;
+      &lt;table&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;producing a webservice from its JNDI name&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;producing a remote EJB from its bean name&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;3&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;producing a persistence context from a specific persistence unit with &lt;code&gt;@CustomerDatabase&lt;/code&gt; qualifier&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;4&quot;&gt;&lt;/i&gt;&lt;b&gt;4&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;producing a a specific persistence unit with &lt;code&gt;@CustomerDatabase&lt;/code&gt; qualifier&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;5&quot;&gt;&lt;/i&gt;&lt;b&gt;5&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;producing a Java EE resource from its JNDI name&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/table&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Of course you can expose the resource in more complex way:&lt;/p&gt;
@@ -800,7 +832,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html</id>
     <title>You think you know everything about CDI events… Think again!</title>
-    <updated>2015-12-14T12:33:37+01:00</updated>
+    <updated>2015-12-14T12:35:33+01:00</updated>
     <published>2014-06-10T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1287,7 +1319,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/03/forward-cdi-2-0.html</id>
     <title>Forward CDI 2.0</title>
-    <updated>2015-12-14T12:33:37+01:00</updated>
+    <updated>2015-12-14T12:35:33+01:00</updated>
     <published>2014-03-15T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/03/forward-cdi-2-0.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>

@@ -577,21 +577,53 @@ When the container container finds producer method or field, it looks for matchi
 <div class="listingblock">
 <div class="title">Declaring resources beans</div>
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Produces</span> <span class="annotation">@WebServiceRef</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:app/service/PaymentService</span><span class="delimiter">&quot;</span></span>)
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Produces</span>
+<span class="annotation">@WebServiceRef</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:app/service/PaymentService</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
 PaymentService paymentService;
 
-<span class="annotation">@Produces</span> <span class="annotation">@EJB</span>(ejbLink=<span class="string"><span class="delimiter">&quot;</span><span class="content">../their.jar#PaymentService</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@Produces</span>
+<span class="annotation">@EJB</span>(beanname=<span class="string"><span class="delimiter">&quot;</span><span class="content">../their.jar#PaymentService</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="2"></i><b>(2)</b>
 PaymentService paymentService;
 
-<span class="annotation">@Produces</span> <span class="annotation">@Resource</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:global/env/jdbc/CustomerDatasource</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@CustomerDatabase</span> Datasource customerDatabase;
+<span class="annotation">@Produces</span>
+<span class="annotation">@PersistenceContext</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
+<span class="annotation">@CustomerDatabase</span>
+EntityManager customerDatabasePersistenceContext;
 
-<span class="annotation">@Produces</span> <span class="annotation">@PersistenceContext</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@CustomerDatabase</span> EntityManager customerDatabasePersistenceContext;
+<span class="annotation">@Produces</span>
+<span class="annotation">@PersistenceUnit</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="4"></i><b>(4)</b>
+<span class="annotation">@CustomerDatabase</span>
+EntityManagerFactory customerDatabasePersistenceUnit;
 
-<span class="annotation">@Produces</span> <span class="annotation">@PersistenceUnit</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>)
-<span class="annotation">@CustomerDatabase</span> EntityManagerFactory customerDatabasePersistenceUnit;</code></pre>
+<span class="annotation">@Produces</span>
+<span class="annotation">@Resource</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:global/env/jdbc/CustomerDatasource</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="5"></i><b>(5)</b>
+<span class="annotation">@CustomerDatabase</span>
+Datasource customerDatabase;</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>producing a webservice from its JNDI name</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>producing a remote EJB from its bean name</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>producing a persistence context from a specific persistence unit with <code>@CustomerDatabase</code> qualifier</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>producing a a specific persistence unit with <code>@CustomerDatabase</code> qualifier</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>producing a Java EE resource from its JNDI name</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Of course you can expose the resource in more complex way:</p>
