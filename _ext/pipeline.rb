@@ -1,12 +1,11 @@
 require 'bootstrap-sass'
-
-require_relative 'NewPosts'
-require 'awestruct/extensions/minify'
+require 'compass'
+require 'slim'
 require 'asciidoctor-diagram'
 
 Awestruct::Extensions::Pipeline.new do
   extension Awestruct::Extensions::DataDir.new
-  extension Awestruct::Extensions::NewPosts.new('', :posts, nil, nil, :wp_compat=>true )
+  extension Awestruct::Extensions::Posts.new('', :posts, nil, nil, :wp_compat=>true )
   extension Awestruct::Extensions::Paginator.new( :posts, '/index', :per_page=>5 )
   extension Awestruct::Extensions::Atomizer.new( :posts, '/news.atom', :num_entries=>20 )
 

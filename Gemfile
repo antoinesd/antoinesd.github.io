@@ -24,12 +24,10 @@
 
 source 'https://rubygems.org'                             # This tells Bundler where to look for gems
 
-gem 'awestruct', '~> 0.5.5'
-gem 'asciidoctor'
+gem 'awestruct', '~> 0.5.7'
 gem 'asciidoctor-diagram'
-gem 'slim', '~> 2.0.0'
-gem 'redcarpet', '~> 3.1.1'
-gem 'htmlcompressor', '~> 0.2'
-gem 'uglifier', '~> 2.5.0'
-gem 'bootstrap-sass', '~> 3.3.5'
-gem 'guard-livereload', '~> 2.1.2'
+gem 'slim'
+gem 'htmlcompressor'
+gem 'uglifier'
+gem 'bootstrap-sass'
+gem 'compass'
