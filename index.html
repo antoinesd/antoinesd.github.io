@@ -7,7 +7,7 @@ $(selector).closest("li").addClass("active");</script></div></div><div class="ro
 </div>
 </div>
 <div class="paragraph">
-<p>CDI users ask me very often why they should adopt CDI and stop using their old framework of way of doing their developments.
+<p>CDI users ask me very often why they should adopt CDI and stop using their old framework or way of doing their developments.
 The answer to this question can be found in advanced CDI stuff: extension mechanism and CDI SPI.</p>
 </div>
 <div class="paragraph">
@@ -15,7 +15,7 @@ The answer to this question can be found in advanced CDI stuff: extension mechan
 Unfortunately, the way it&#8217;s introduced and explained in the specification document doesn&#8217;t make it particularly shine.</p>
 </div>
 <div class="paragraph">
-<p>With this article and a coming one on portable extensions, I&#8217;ll try to fix that and help beginner users get an overview of the power they&#8217;ll have if they invest time in learning CDI SPI.</p>
+<p>With this article and a coming one on portable extensions, I&#8217;ll try to fix that and help beginner users to get an overview of the power they&#8217;ll have if they invest time in learning CDI SPI.</p>
 </div>
 <div class="paragraph">
 <p>I&#8217;ll try to show you all the aspects of the CDI SPI and how you can use part of it in your day to day work.
@@ -521,7 +521,7 @@ In this article I&#8217;ll try to clarify most of bean related concepts and deta
 </div>
 </div>
 <div class="sect1">
-<h2 id="bean-bean-instance-and-typesafe-resolution"><a class="anchor" href="#bean-bean-instance-and-typesafe-resolution"></a>Bean, Bean instance and typesafe resolution</h2>
+<h2 id="bean-contextual-instance-and-typesafe-resolution"><a class="anchor" href="#bean-contextual-instance-and-typesafe-resolution"></a>Bean, contextual instance and typesafe resolution</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>When most CDI users write</p>
@@ -540,7 +540,7 @@ MyBean bean;</code></pre>
 <p>That&#8217;s not correct and it&#8217;s important to understand the exact mechanism behind this injection point definition.</p>
 </div>
 <div class="sect2">
-<h3 id="bean-vs-bean-instances"><a class="anchor" href="#bean-vs-bean-instances"></a>Bean vs Bean instances</h3>
+<h3 id="bean-vs-contextual-instances"><a class="anchor" href="#bean-vs-contextual-instances"></a>Bean vs contextual instances</h3>
 <div class="paragraph">
 <p>One of the specific feature in CDI is the fact that all components (qualifiers, beans, producers, etc..) are discovered at deployment time.</p>
 </div>
@@ -556,7 +556,7 @@ The more centric meta-data created by CDI container is the collection of <code>B
 These metadata are the real applications <em>beans</em> and in basic CDI usage you&#8217;ll never use them.</p>
 </div>
 <div class="paragraph">
-<p>So don&#8217;t mix <em>beans</em> and the <em>beans instances</em> you request to the container when adding an injection point in your code.</p>
+<p>So don&#8217;t mix <em>beans</em> and the <em>contextual instances</em> (instances of the bean for a given context) you request to the container when adding an injection point in your code.</p>
 </div>
 </div>
 <div class="sect2">
@@ -567,7 +567,7 @@ These metadata are the real applications <em>beans</em> and in basic CDI usage y
 <div class="ulist">
 <ul>
 <li>
-<p>Providing a "recipe" to create and destroy bean instances (methods from <code>Contextual&lt;T&gt;</code>)</p>
+<p>Providing a "recipe" to create and destroy contextual instances (methods from <code>Contextual&lt;T&gt;</code>)</p>
 </li>
 <li>
 <p>Storing bean metadata obtained from bean definition (methods from <code>BeanAttributes&lt;T&gt;</code>)</p>
@@ -667,7 +667,7 @@ This approach allows the implementation to cache the matching bean for a given i
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>here it is used to retrieve the actual class of the bean instance not the proxy&#8217;s class implementation may have created</td>
+<td>here it is used to retrieve the actual class of the contextual instance not the proxy&#8217;s class implementation may have created</td>
 </tr>
 </table>
 </div>
@@ -758,7 +758,7 @@ They are defined by a class declaration.</p>
 </div>
 <div class="paragraph">
 <p>Another limitation is linked to <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#client_proxies" target="_blank"><em>client proxies</em></a>.
-In a lot of occasion (interceptor or decorator, passivation, usage of normal scope, possible circularity), the container may need to provide a bean instance wrapped in a proxy.
+In a lot of occasion (interceptor or decorator, passivation, usage of normal scope, possible circularity), the container may need to provide a contextual instance wrapped in a proxy.
 For this reason, managed bean classes should be proxyable or the container will raise an exception.</p>
 </div>
 <div class="paragraph">
@@ -948,7 +948,7 @@ You can for instance have asynchronous behavior and observer features in one bea
 <p>they have scope,</p>
 </li>
 <li>
-<p>they can inject other beans: parameters in producer method are injection points that the container will satisfied when it will call the method to produce a bean instance
+<p>they can inject other beans: parameters in producer method are injection points that the container will satisfied when it will call the method to produce a contextual instance
 This injection points are still checked at deployment time.</p>
 </li>
 </ul>

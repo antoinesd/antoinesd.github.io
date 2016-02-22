@@ -2,20 +2,20 @@
 <feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">
   <id>http://www.next-presso.com/</id>
   <title>Next Presso</title>
-  <updated>2016-02-22T11:59:10+01:00</updated>
+  <updated>2016-02-22T18:56:34+01:00</updated>
   <link href="http://www.next-presso.com/news.atom" rel="self" type="application/atom+xml" />
   <link href="http://www.next-presso.com/" rel="alternate" type="text/html" />
   <entry>
     <id>http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html</id>
     <title>CDI, the SPI who loved me</title>
-    <updated>2016-02-22T11:59:10+01:00</updated>
+    <updated>2016-02-22T18:56:34+01:00</updated>
     <published>2016-02-20T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
     <category term="SPI"></category>
     <category term="Extension"></category>
     <summary>
-      CDI users ask me very often why they should adopt CDI and stop using their old framework of way of doing their developments.
+      CDI users ask me very often why they should adopt CDI and stop using their old framework or way of doing their developments.
       The answer to this question can be found in advanced CDI stuff: extension mechanism and CDI SPI.
       
       
@@ -23,7 +23,7 @@
       Unfortunately, the way it&#8217;s introduced and explained in the specification document doesn&#8217;t make it particularly shine.
       
       
-      With this article and a coming one on portable extensions, I&#8217;ll try to fix that and help beginner users get an overview of the...
+      With this article and a coming one on portable extensions, I&#8217;ll try to fix that and help beginner users to get an overview of...
     </summary>
     <content type="html">
       &lt;div class=&quot;imageblock&quot; style=&quot;float: left&quot;&gt;
@@ -32,7 +32,7 @@
       &lt;/div&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;CDI users ask me very often why they should adopt CDI and stop using their old framework of way of doing their developments.
+      &lt;p&gt;CDI users ask me very often why they should adopt CDI and stop using their old framework or way of doing their developments.
       The answer to this question can be found in advanced CDI stuff: extension mechanism and CDI SPI.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
@@ -40,7 +40,7 @@
       Unfortunately, the way it’s introduced and explained in the specification document doesn’t make it particularly shine.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;With this article and a coming one on portable extensions, I’ll try to fix that and help beginner users get an overview of the power they’ll have if they invest time in learning CDI SPI.&lt;/p&gt;
+      &lt;p&gt;With this article and a coming one on portable extensions, I’ll try to fix that and help beginner users to get an overview of the power they’ll have if they invest time in learning CDI SPI.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;I’ll try to show you all the aspects of the CDI SPI and how you can use part of it in your day to day work.
@@ -537,7 +537,7 @@
   <entry>
     <id>http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html</id>
     <title>How to recognize different types of beans from quite a long way away</title>
-    <updated>2016-02-22T12:43:26+01:00</updated>
+    <updated>2016-02-22T18:55:26+01:00</updated>
     <published>2015-12-14T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -551,7 +551,7 @@
       
       
       
-      Bean, Bean instance and typesafe resolution
+      Bean, contextual instance and typesafe resolution
       
       
       When most CDI users write
@@ -570,7 +570,7 @@
       That&#8217;s not correct and it&#8217;s important to understand the exact mechanism behind this injection point definition.
       
       
-      Bean vs Bean instances
+      Bean vs contextual instances
       
       One of the specific feature in CDI is the fact that all components (qualifiers, beans, producers, etc..)...
     </summary>
@@ -590,7 +590,7 @@
       &lt;/div&gt;
       &lt;/div&gt;
       &lt;div class=&quot;sect1&quot;&gt;
-      &lt;h2 id=&quot;bean-bean-instance-and-typesafe-resolution&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#bean-bean-instance-and-typesafe-resolution&quot;&gt;&lt;/a&gt;Bean, Bean instance and typesafe resolution&lt;/h2&gt;
+      &lt;h2 id=&quot;bean-contextual-instance-and-typesafe-resolution&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#bean-contextual-instance-and-typesafe-resolution&quot;&gt;&lt;/a&gt;Bean, contextual instance and typesafe resolution&lt;/h2&gt;
       &lt;div class=&quot;sectionbody&quot;&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;When most CDI users write&lt;/p&gt;
@@ -609,7 +609,7 @@
       &lt;p&gt;That’s not correct and it’s important to understand the exact mechanism behind this injection point definition.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;sect2&quot;&gt;
-      &lt;h3 id=&quot;bean-vs-bean-instances&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#bean-vs-bean-instances&quot;&gt;&lt;/a&gt;Bean vs Bean instances&lt;/h3&gt;
+      &lt;h3 id=&quot;bean-vs-contextual-instances&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#bean-vs-contextual-instances&quot;&gt;&lt;/a&gt;Bean vs contextual instances&lt;/h3&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;One of the specific feature in CDI is the fact that all components (qualifiers, beans, producers, etc..) are discovered at deployment time.&lt;/p&gt;
       &lt;/div&gt;
@@ -625,7 +625,7 @@
       These metadata are the real applications &lt;em&gt;beans&lt;/em&gt; and in basic CDI usage you’ll never use them.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;So don’t mix &lt;em&gt;beans&lt;/em&gt; and the &lt;em&gt;beans instances&lt;/em&gt; you request to the container when adding an injection point in your code.&lt;/p&gt;
+      &lt;p&gt;So don’t mix &lt;em&gt;beans&lt;/em&gt; and the &lt;em&gt;contextual instances&lt;/em&gt; (instances of the bean for a given context) you request to the container when adding an injection point in your code.&lt;/p&gt;
       &lt;/div&gt;
       &lt;/div&gt;
       &lt;div class=&quot;sect2&quot;&gt;
@@ -636,7 +636,7 @@
       &lt;div class=&quot;ulist&quot;&gt;
       &lt;ul&gt;
       &lt;li&gt;
-      &lt;p&gt;Providing a &quot;recipe&quot; to create and destroy bean instances (methods from &lt;code&gt;Contextual&amp;lt;T&amp;gt;&lt;/code&gt;)&lt;/p&gt;
+      &lt;p&gt;Providing a &quot;recipe&quot; to create and destroy contextual instances (methods from &lt;code&gt;Contextual&amp;lt;T&amp;gt;&lt;/code&gt;)&lt;/p&gt;
       &lt;/li&gt;
       &lt;li&gt;
       &lt;p&gt;Storing bean metadata obtained from bean definition (methods from &lt;code&gt;BeanAttributes&amp;lt;T&amp;gt;&lt;/code&gt;)&lt;/p&gt;
@@ -736,7 +736,7 @@
       &lt;/tr&gt;
       &lt;tr&gt;
       &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;
-      &lt;td&gt;here it is used to retrieve the actual class of the bean instance not the proxy’s class implementation may have created&lt;/td&gt;
+      &lt;td&gt;here it is used to retrieve the actual class of the contextual instance not the proxy’s class implementation may have created&lt;/td&gt;
       &lt;/tr&gt;
       &lt;/table&gt;
       &lt;/div&gt;
@@ -827,7 +827,7 @@
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Another limitation is linked to &lt;a href=&quot;http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#client_proxies&quot; target=&quot;_blank&quot;&gt;&lt;em&gt;client proxies&lt;/em&gt;&lt;/a&gt;.
-      In a lot of occasion (interceptor or decorator, passivation, usage of normal scope, possible circularity), the container may need to provide a bean instance wrapped in a proxy.
+      In a lot of occasion (interceptor or decorator, passivation, usage of normal scope, possible circularity), the container may need to provide a contextual instance wrapped in a proxy.
       For this reason, managed bean classes should be proxyable or the container will raise an exception.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
@@ -1017,7 +1017,7 @@
       &lt;p&gt;they have scope,&lt;/p&gt;
       &lt;/li&gt;
       &lt;li&gt;
-      &lt;p&gt;they can inject other beans: parameters in producer method are injection points that the container will satisfied when it will call the method to produce a bean instance
+      &lt;p&gt;they can inject other beans: parameters in producer method are injection points that the container will satisfied when it will call the method to produce a contextual instance
       This injection points are still checked at deployment time.&lt;/p&gt;
       &lt;/li&gt;
       &lt;/ul&gt;
@@ -1361,7 +1361,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html</id>
     <title>You think you know everything about CDI events… Think again!</title>
-    <updated>2016-02-22T11:36:27+01:00</updated>
+    <updated>2016-02-22T12:43:48+01:00</updated>
     <published>2014-06-10T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1848,7 +1848,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/03/forward-cdi-2-0.html</id>
     <title>Forward CDI 2.0</title>
-    <updated>2016-02-22T11:36:27+01:00</updated>
+    <updated>2016-02-22T12:43:48+01:00</updated>
     <published>2014-03-15T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/03/forward-cdi-2-0.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
