@@ -2,13 +2,13 @@
 <feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">
   <id>http://www.next-presso.com/</id>
   <title>Next Presso</title>
-  <updated>2016-02-22T11:34:12+01:00</updated>
+  <updated>2016-02-22T11:59:10+01:00</updated>
   <link href="http://www.next-presso.com/news.atom" rel="self" type="application/atom+xml" />
   <link href="http://www.next-presso.com/" rel="alternate" type="text/html" />
   <entry>
     <id>http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html</id>
     <title>CDI, the SPI who loved me</title>
-    <updated>2016-02-22T11:34:12+01:00</updated>
+    <updated>2016-02-22T11:59:10+01:00</updated>
     <published>2016-02-20T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -223,7 +223,7 @@
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;With it you can call lifecycle callbacks (&lt;code&gt;@Postconstruct&lt;/code&gt; and &lt;code&gt;@Predestroy&lt;/code&gt;) and perform injection on such class instance.
-      Third party framework developers can then provide their non CDI class including injection point (remember @Inject is not part of CDI spec but AtInject spec) and Unmanaged can be used to get instances of this class.&lt;/p&gt;
+      Third party framework developers can then provide their non CDI class including injection point (remember &lt;code&gt;@Inject&lt;/code&gt; is not part of CDI spec but AtInject spec) and Unmanaged can be used to get instances of this class.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;For instance, imagine this class included in a non CDI archive.&lt;/p&gt;
@@ -537,7 +537,7 @@
   <entry>
     <id>http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html</id>
     <title>How to recognize different types of beans from quite a long way away</title>
-    <updated>2016-02-22T11:35:19+01:00</updated>
+    <updated>2016-02-22T12:43:26+01:00</updated>
     <published>2015-12-14T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1361,7 +1361,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html</id>
     <title>You think you know everything about CDI events… Think again!</title>
-    <updated>2015-12-14T15:41:08+01:00</updated>
+    <updated>2016-02-22T11:36:27+01:00</updated>
     <published>2014-06-10T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1848,7 +1848,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/03/forward-cdi-2-0.html</id>
     <title>Forward CDI 2.0</title>
-    <updated>2015-12-14T15:41:08+01:00</updated>
+    <updated>2016-02-22T11:36:27+01:00</updated>
     <published>2014-03-15T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/03/forward-cdi-2-0.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
