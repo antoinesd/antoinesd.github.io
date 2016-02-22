@@ -13,7 +13,7 @@ In CDI, Beans are a very centric concept.
 Yet, for a lot of user, this concept stays fuzzy and requires experiment to achieve an expected result.
 In this article I'll try to clarify most of bean related concepts and detail the hidden mechanism behind bean definition and injection.
 
-== Bean, Bean instance and typesafe resolution
+== Bean, contextual instance and typesafe resolution
 
 When most CDI users write
 
@@ -28,7 +28,7 @@ they think: "I have injected the `MyBean` bean having `@MyQualifier` qualifier".
 
 That's not correct and it's important to understand the exact mechanism behind this injection point definition.
 
-=== Bean vs Bean instances
+=== Bean vs contextual instances
 
 One of the specific feature in CDI is the fact that all components (qualifiers, beans, producers, etc..) are discovered at deployment time.
 
@@ -40,13 +40,13 @@ At the end of this discovery task, the container had created collections of meta
 The more centric meta-data created by CDI container is the collection of `Bean<T>` discovered during deployment.
 These metadata are the real applications _beans_ and in basic CDI usage you'll never use them.
 
-So don't mix _beans_ and the _beans instances_ you request to the container when adding an injection point in your code.
+So don't mix _beans_ and the _contextual instances_ (instances of the bean for a given context) you request to the container when adding an injection point in your code.
 
 === The content of `Bean<T>` interface
 
 The `Bean` interface has two main functions:
 
-* Providing a "recipe" to create and destroy bean instances (methods from `Contextual<T>`)
+* Providing a "recipe" to create and destroy contextual instances (methods from `Contextual<T>`)
 * Storing bean metadata obtained from bean definition (methods from `BeanAttributes<T>`)
 
 
@@ -186,7 +186,7 @@ public class LoggingInterceptor {
 }
 ----
 <1> `@Intercepted` is a reserved qualifier to inject the intercepted bean in an interceptor
-<2> here it is used to retrieve the actual class of the bean instance not the proxy's class implementation may have created
+<2> here it is used to retrieve the actual class of the contextual instance not the proxy's class implementation may have created
 
 
 
@@ -228,7 +228,7 @@ To sum up, if you're in the default bean discovery mode (`Annotated`) your class
 
 
 Another limitation is linked to http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#client_proxies[_client proxies_^].
-In a lot of occasion (interceptor or decorator, passivation, usage of normal scope, possible circularity), the container may need to provide a bean instance wrapped in a proxy.
+In a lot of occasion (interceptor or decorator, passivation, usage of normal scope, possible circularity), the container may need to provide a contextual instance wrapped in a proxy.
 For this reason, managed bean classes should be proxyable or the container will raise an exception.
 
 Thus in addition to the above rules the spec also restrictions on managed bean class to support certain services or be in normal scopes.
@@ -335,7 +335,7 @@ Producers behave like standard managed bean:
 
 * they have qualifiers,
 * they have scope,
-* they can inject other beans: parameters in producer method are injection points that the container will satisfied when it will call the method to produce a bean instance
+* they can inject other beans: parameters in producer method are injection points that the container will satisfied when it will call the method to produce a contextual instance
 This injection points are still checked at deployment time.
 
 Yet, producers have limitation compared to managed or session bean as *they don't support interceptors or decorators*.
