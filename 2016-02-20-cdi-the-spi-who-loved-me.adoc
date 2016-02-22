@@ -7,13 +7,13 @@ tags: [CDI,SPI,Extension]
 ---
 
 image::posts/2016/legobricks.jpg[width="285",float="left"]
-CDI users ask me very often why they should adopt CDI and stop using their old framework of way of doing their developments.
+CDI users ask me very often why they should adopt CDI and stop using their old framework or way of doing their developments.
 The answer to this question can be found in advanced CDI stuff: extension mechanism and CDI SPI.
 
 Yes, CDI true killing feature is not accessible out of the box and you have to dig into the spec to grab its power.
 Unfortunately, the way it's introduced and explained in the specification document doesn't make it particularly shine.
 
-With this article and a coming one on portable extensions, I'll try to fix that and help beginner users get an overview of the power they'll have if they invest time in learning CDI SPI.
+With this article and a coming one on portable extensions, I'll try to fix that and help beginner users to get an overview of the power they'll have if they invest time in learning CDI SPI.
 
 I'll try to show you all the aspects of the CDI SPI and how you can use part of it in your day to day work.
 In this article I'll use the term "usual code" in opposition to portable extension code to differentiate standard development from development to extend CDI.
