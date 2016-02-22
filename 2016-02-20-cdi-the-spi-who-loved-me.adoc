@@ -160,7 +160,7 @@ MyService myService = (MyService) bm.getReference(bean, MyService.class, ctx); <
 <1> Retrieving BeanManager thru JNDI
 <2> retrieving all the beans having MyService in their type and the @Default qualifier
 <3> apply the ambiguous dependency resolution for the set of beans
-<4> create a `CreationalContext` to help bean instance creation for complex use cases like circularities
+<4> create a `CreationalContext` to help contextual instance creation for complex use cases like circularities
 <5> get the instance
 
 
@@ -174,9 +174,9 @@ That's why, in CDI 1.1  we introduced the abstract `CDI` class which use Java Se
 CDI<Object> cdi = CDI.current();
 ----
 
-`CDI` gives a faster access to the BeanManager with `CDI.getBeanManager()` method, but more interestingly, it provides a convenient way to request a bean instance without using the cumbersome code with `BeanManager`.
+`CDI` gives a faster access to the BeanManager with `CDI.getBeanManager()` method, but more interestingly, it provides a convenient way to request a contextual instance without using the cumbersome code with `BeanManager`.
 
-As `CDI` extends `Instance<Object>` it naturally provides bean instance resolution with http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#programmatic_lookup[programmatic lookup^].
+As `CDI` extends `Instance<Object>` it naturally provides contextual instance resolution with http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#programmatic_lookup[programmatic lookup^].
 
 To make short accessing `CDI` in your non CDI code provides the same service than having the following injection in CDI code.
 
