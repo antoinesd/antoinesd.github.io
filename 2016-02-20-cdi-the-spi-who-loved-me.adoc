@@ -1,6 +1,6 @@
 ---
 title: "CDI, the SPI who loved me"
-summary: Let's discover one of the killing feature of CDI, its powefull SPI
+summary: Let's discover one of the killing feature of CDI, its powerful SPI
 layout: post
 authors: [asd]
 tags: [CDI,SPI,Extension]
@@ -199,7 +199,7 @@ CDI 1.1 introduced an other nice feature to help you integrating CDI in non CDI 
 The `Unmanaged` class allows you to apply some CDI operation to a non CDI class.
 
 With it you can call lifecycle callbacks (`@Postconstruct` and `@Predestroy`) and perform injection on such class instance.
-Third party framework developers can then provide their non CDI class including injection point (remember @Inject is not part of CDI spec but AtInject spec) and Unmanaged can be used to get instances of this class.
+Third party framework developers can then provide their non CDI class including injection point (remember `@Inject` is not part of CDI spec but AtInject spec) and Unmanaged can be used to get instances of this class.
 
 For instance, imagine this class included in a non CDI archive.
 
