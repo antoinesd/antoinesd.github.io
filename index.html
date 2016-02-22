@@ -146,7 +146,7 @@ MyService myService = (MyService) bm.getReference(bean, MyService.class, ctx); <
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>create a <code>CreationalContext</code> to help bean instance creation for complex use cases like circularities</td>
+<td>create a <code>CreationalContext</code> to help contextual instance creation for complex use cases like circularities</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -167,10 +167,10 @@ It&#8217;s obviously not the best solution if you just want to access an instanc
 </div>
 </div>
 <div class="paragraph">
-<p><code>CDI</code> gives a faster access to the BeanManager with <code>CDI.getBeanManager()</code> method, but more interestingly, it provides a convenient way to request a bean instance without using the cumbersome code with <code>BeanManager</code>.</p>
+<p><code>CDI</code> gives a faster access to the BeanManager with <code>CDI.getBeanManager()</code> method, but more interestingly, it provides a convenient way to request a contextual instance without using the cumbersome code with <code>BeanManager</code>.</p>
 </div>
 <div class="paragraph">
-<p>As <code>CDI</code> extends <code>Instance&lt;Object&gt;</code> it naturally provides bean instance resolution with <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#programmatic_lookup" target="_blank">programmatic lookup</a>.</p>
+<p>As <code>CDI</code> extends <code>Instance&lt;Object&gt;</code> it naturally provides contextual instance resolution with <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#programmatic_lookup" target="_blank">programmatic lookup</a>.</p>
 </div>
 <div class="paragraph">
 <p>To make short accessing <code>CDI</code> in your non CDI code provides the same service than having the following injection in CDI code.</p>

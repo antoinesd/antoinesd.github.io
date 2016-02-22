@@ -2,13 +2,13 @@
 <feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">
   <id>http://www.next-presso.com/</id>
   <title>Next Presso</title>
-  <updated>2016-02-22T18:56:34+01:00</updated>
+  <updated>2016-02-22T18:59:44+01:00</updated>
   <link href="http://www.next-presso.com/news.atom" rel="self" type="application/atom+xml" />
   <link href="http://www.next-presso.com/" rel="alternate" type="text/html" />
   <entry>
     <id>http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html</id>
     <title>CDI, the SPI who loved me</title>
-    <updated>2016-02-22T18:56:34+01:00</updated>
+    <updated>2016-02-22T18:59:44+01:00</updated>
     <published>2016-02-20T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -171,7 +171,7 @@
       &lt;/tr&gt;
       &lt;tr&gt;
       &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;4&quot;&gt;&lt;/i&gt;&lt;b&gt;4&lt;/b&gt;&lt;/td&gt;
-      &lt;td&gt;create a &lt;code&gt;CreationalContext&lt;/code&gt; to help bean instance creation for complex use cases like circularities&lt;/td&gt;
+      &lt;td&gt;create a &lt;code&gt;CreationalContext&lt;/code&gt; to help contextual instance creation for complex use cases like circularities&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
       &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;5&quot;&gt;&lt;/i&gt;&lt;b&gt;5&lt;/b&gt;&lt;/td&gt;
@@ -192,10 +192,10 @@
       &lt;/div&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;&lt;code&gt;CDI&lt;/code&gt; gives a faster access to the BeanManager with &lt;code&gt;CDI.getBeanManager()&lt;/code&gt; method, but more interestingly, it provides a convenient way to request a bean instance without using the cumbersome code with &lt;code&gt;BeanManager&lt;/code&gt;.&lt;/p&gt;
+      &lt;p&gt;&lt;code&gt;CDI&lt;/code&gt; gives a faster access to the BeanManager with &lt;code&gt;CDI.getBeanManager()&lt;/code&gt; method, but more interestingly, it provides a convenient way to request a contextual instance without using the cumbersome code with &lt;code&gt;BeanManager&lt;/code&gt;.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;As &lt;code&gt;CDI&lt;/code&gt; extends &lt;code&gt;Instance&amp;lt;Object&amp;gt;&lt;/code&gt; it naturally provides bean instance resolution with &lt;a href=&quot;http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#programmatic_lookup&quot; target=&quot;_blank&quot;&gt;programmatic lookup&lt;/a&gt;.&lt;/p&gt;
+      &lt;p&gt;As &lt;code&gt;CDI&lt;/code&gt; extends &lt;code&gt;Instance&amp;lt;Object&amp;gt;&lt;/code&gt; it naturally provides contextual instance resolution with &lt;a href=&quot;http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#programmatic_lookup&quot; target=&quot;_blank&quot;&gt;programmatic lookup&lt;/a&gt;.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;To make short accessing &lt;code&gt;CDI&lt;/code&gt; in your non CDI code provides the same service than having the following injection in CDI code.&lt;/p&gt;
@@ -537,7 +537,7 @@
   <entry>
     <id>http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html</id>
     <title>How to recognize different types of beans from quite a long way away</title>
-    <updated>2016-02-22T18:55:26+01:00</updated>
+    <updated>2016-02-22T18:57:05+01:00</updated>
     <published>2015-12-14T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1361,7 +1361,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html</id>
     <title>You think you know everything about CDI events… Think again!</title>
-    <updated>2016-02-22T12:43:48+01:00</updated>
+    <updated>2016-02-22T18:57:05+01:00</updated>
     <published>2014-06-10T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1848,7 +1848,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/03/forward-cdi-2-0.html</id>
     <title>Forward CDI 2.0</title>
-    <updated>2016-02-22T12:43:48+01:00</updated>
+    <updated>2016-02-22T18:57:05+01:00</updated>
     <published>2014-03-15T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/03/forward-cdi-2-0.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
