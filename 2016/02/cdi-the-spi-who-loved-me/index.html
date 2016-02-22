@@ -1,0 +1,542 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>CDI, the SPI who loved me | Next Presso</title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/asciidoctor.css"><link rel="stylesheet" href="/stylesheets/styles.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><!--[if lt IE 9]><script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><script>hljs.initHighlightingOnLoad(); </script></head><body><div class="container"><div class="row"><div class="col-lg-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-lg-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://www.next-presso.com"><i class="fa fa-home fa-fw"></i> Home </a><a class="navbar-brand" href="/about"><i class="fa fa-user fa-fw"></i> About me </a></div></div></nav><script>var indexOfSharp = window.location.pathname.indexOf('#');
+var pathname = indexOfSharp > 0 ? window.location.pathname.substring(0, indexOfSharp) : window.location.pathname;
+var selector = "body > .container > .row > .col-md-12 > .navbar > .container-fluid > .navbar-collapse a[href='http://www.next-presso.com" + pathname + "']";
+$(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-lg-12"><div class="row"><div class="col-lg-9"><article class="post"><div class="panel panel-primary"><div class="panel-body"><ul class="pager visible-md-block visible-lg-block"><li class="previous"><a href="/2015/12/how-to-recognize-different-types-of-cdi-beans/">Previous: How to recognize different types of beans from quite a long way away </a></li></ul><ul class="pager visible-sm-block visible-xs-block"><li class="previous"><a href="/2015/12/how-to-recognize-different-types-of-cdi-beans/"> Previous</a></li></ul><h1><a href="/2016/02/cdi-the-spi-who-loved-me/">CDI, the SPI who loved me</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Feb 20, 2016</span> |  <a href="http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me/#disqus_thread">Comments</a> </strong></div><div class="content"><div class="imageblock" style="float: left">
+<div class="content">
+<img src="/images/posts/2016/legobricks.jpg" alt="legobricks" width="285">
+</div>
+</div>
+<div class="paragraph">
+<p>CDI users ask me very often why they should adopt CDI and stop using their old framework of way of doing their developments.
+The answer to this question can be found in advanced CDI stuff: extension mechanism and CDI SPI.</p>
+</div>
+<div class="paragraph">
+<p>Yes, CDI true killing feature is not accessible out of the box and you have to dig into the spec to grab its power.
+Unfortunately, the way it&#8217;s introduced and explained in the specification document doesn&#8217;t make it particularly shine.</p>
+</div>
+<div class="paragraph">
+<p>With this article and a coming one on portable extensions, I&#8217;ll try to fix that and help beginner users get an overview of the power they&#8217;ll have if they invest time in learning CDI SPI.</p>
+</div>
+<div class="paragraph">
+<p>I&#8217;ll try to show you all the aspects of the CDI SPI and how you can use part of it in your day to day work.
+In this article I&#8217;ll use the term "usual code" in opposition to portable extension code to differentiate standard development from development to extend CDI.
+At the end of the day you&#8217;ll see how much the CDI SPI loves developers ;).</p>
+</div>
+<div class="sect1">
+<h2 id="what-is-this-spi"><a class="anchor" href="#what-is-this-spi"></a>What is this SPI?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CDI SPI is the introspection part of the spec allowing developers to access meta-information about CDI concepts (Beans, events, injection point, interceptors, etc&#8230;&#8203;)</p>
+</div>
+<div class="paragraph">
+<p>While some of you may be more familiar with the term API (Application Programming Interface), the CDI specification is mainly built on a SPI concept (Service Provider Interface).
+So what&#8217;s the difference?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An API is the description of classes/interfaces/methods/&#8230;&#8203; that you call and use to achieve a goal</p>
+</li>
+<li>
+<p>An SPI is the description of classes/interfaces/methods/&#8230;&#8203; that you extend and implement to achieve a goal</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To make short, CDI provides interfaces that you implement (or that spec implementation implement for you) to perform a specific task.
+Access to these implementation are usually done through injection or event observation but you&#8217;ll have on the rare occasion to create your own implementation.</p>
+</div>
+<div class="paragraph">
+<p>To ease the understand of the SPI, I&#8217;d like to split in 4 parts:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>CDI entry points</p>
+</li>
+<li>
+<p>Type meta-model</p>
+</li>
+<li>
+<p>CDI meta-model</p>
+</li>
+<li>
+<p>SPI dedicated to extensions</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This division is a subjective approach I use to introduce elements of the SPI, it doesn&#8217;t reflect organisation of CDI packages or documentation.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s explore these different parts</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spi-providing-cdi-entry-points"><a class="anchor" href="#spi-providing-cdi-entry-points"></a>SPI providing CDI entry points</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Usually, when you develop a Java EE application you don&#8217;t have to bother "entering" in CDI bean graph.
+It&#8217;s automatically done from the UI (via expression language), CDI event triggered automatically at boot time or EJB call.</p>
+</div>
+<div class="paragraph">
+<p>But sometimes, you may need to access CDI from non CDI code or plug non CDI code to CDI beans at run time.
+This part of the SPI gives you the tools to do it.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/entry-points.svg" alt="entry points" width="100%" height="726">
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-beanmanager-code-and-code-cdi-code"><a class="anchor" href="#code-beanmanager-code-and-code-cdi-code"></a><code>BeanManager</code> and <code>CDI</code></h3>
+<div class="paragraph">
+<p>In CDI 1.0 the only solution you had to access CDI bean graph was to retrieve the <code>BeanManager</code> from JNDI</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java">BeanManager bm = <span class="predefined-constant">null</span>;
+<span class="keyword">try</span> {
+    <span class="predefined-type">InitialContext</span> context = <span class="keyword">new</span> <span class="predefined-type">InitialContext</span>();
+    bm = (BeanManager) context.lookup(<span class="string"><span class="delimiter">&quot;</span><span class="content">java:comp/BeanManager</span><span class="delimiter">&quot;</span></span>);
+} <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+    e.printStackTrace();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>BeanManager</code> is a central interface in CDI SPI, giving access to all meta-data and instantiated components in your application.</p>
+</div>
+<div class="paragraph">
+<p>Checking its <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#beanmanager" target="_blank">section in spec</a> or its <a href="http://docs.jboss.org/cdi/api/1.2/javax/enterprise/inject/spi/BeanManager.html">javadoc</a> gives a complete overview of all the features it contains.</p>
+</div>
+<div class="paragraph">
+<p>The main reason for developers to access CDI from non CDI code is to request a <code>Bean</code> instance to enter the CDI bean graph.
+Doing so with the BeanManager is a bit verbose.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java">BeanManager bm = <span class="predefined-constant">null</span>;
+<span class="keyword">try</span> {
+    <span class="predefined-type">InitialContext</span> context = <span class="keyword">new</span> <span class="predefined-type">InitialContext</span>();
+    bm = (BeanManager) context.lookup(<span class="string"><span class="delimiter">&quot;</span><span class="content">java:comp/BeanManager</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="1"></i><b>(1)</b>
+} <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+    e.printStackTrace();
+}
+<span class="predefined-type">Set</span>&lt;Bean&lt;?&gt;&gt; beans = bm.getBeans(MyService.class); <i class="conum" data-value="2"></i><b>(2)</b>
+Bean&lt;?&gt; bean =  bm.resolve(beans); <i class="conum" data-value="3"></i><b>(3)</b>
+CreationalContext&lt;MyService&gt; ctx = bm.createCreationalContext(bean); <i class="conum" data-value="4"></i><b>(4)</b>
+MyService myService = (MyService) bm.getReference(bean, MyService.class, ctx); <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Retrieving BeanManager thru JNDI</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>retrieving all the beans having MyService in their type and the @Default qualifier</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>apply the ambiguous dependency resolution for the set of beans</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>create a <code>CreationalContext</code> to help bean instance creation for complex use cases like circularities</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>get the instance</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This verbosity is the proof that the <code>BeanManager</code> is and advanced CDI tool allowing very basic operation on CDI echos system.
+It&#8217;s obviously not the best solution if you just want to access an instance.</p>
+</div>
+<div class="paragraph">
+<p>That&#8217;s why, in CDI 1.1  we introduced the abstract <code>CDI</code> class which use Java Service Loader to retrieve a concrete <code>CDI</code> class from the implementation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java">CDI&lt;<span class="predefined-type">Object</span>&gt; cdi = CDI.current();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>CDI</code> gives a faster access to the BeanManager with <code>CDI.getBeanManager()</code> method, but more interestingly, it provides a convenient way to request a bean instance without using the cumbersome code with <code>BeanManager</code>.</p>
+</div>
+<div class="paragraph">
+<p>As <code>CDI</code> extends <code>Instance&lt;Object&gt;</code> it naturally provides bean instance resolution with <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#programmatic_lookup" target="_blank">programmatic lookup</a>.</p>
+</div>
+<div class="paragraph">
+<p>To make short accessing <code>CDI</code> in your non CDI code provides the same service than having the following injection in CDI code.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span> <span class="annotation">@Any</span> Instance&lt;<span class="predefined-type">Object</span>&gt; cdi;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Retrieving an instance becomes as simple as</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java">CDI&lt;<span class="predefined-type">Object</span>&gt; cdi = CDI.current();
+MyService service = cdi.select(MyService.class).get();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-unmanaged-code"><a class="anchor" href="#code-unmanaged-code"></a><code>Unmanaged</code></h3>
+<div class="paragraph">
+<p>CDI 1.1 introduced an other nice feature to help you integrating CDI in non CDI code.
+The <code>Unmanaged</code> class allows you to apply some CDI operation to a non CDI class.</p>
+</div>
+<div class="paragraph">
+<p>With it you can call lifecycle callbacks (<code>@Postconstruct</code> and <code>@Predestroy</code>) and perform injection on such class instance.
+Third party framework developers can then provide their non CDI class including injection point (remember @Inject is not part of CDI spec but AtInject spec) and Unmanaged can be used to get instances of this class.</p>
+</div>
+<div class="paragraph">
+<p>For instance, imagine this class included in a non CDI archive.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">NonCDI</span> {
+
+  <span class="annotation">@Inject</span>
+  SomeClass someInstance;
+
+  <span class="annotation">@PostConstruct</span>
+  <span class="directive">public</span> <span class="type">void</span> init()  {
+  ...
+  }
+
+  <span class="annotation">@Predestroy</span>
+  <span class="directive">public</span> <span class="type">void</span> cleanUp() {
+  ...
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can obtain an instance of this class with injection point satisfied with this code</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Unmanaged&lt;NonCDI&gt; unmanaged = <span class="keyword">new</span> Unmanaged(NonCDI.class);
+UnmanagedInstance&lt;NonCDI&gt; inst = unmanaged.newInstance();
+NonCDI nonCdi = inst.produce().inject().postConstruct().get();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By checking the <a href="https://github.com/cdi-spec/cdi/blob/1.2/api/src/main/java/javax/enterprise/inject/spi/Unmanaged.java">code in Unmanaged and UnManagedInstance</a> classes you can see how other CDI SPI interfaces are used to provide this feature^</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spi-for-type-meta-model"><a class="anchor" href="#spi-for-type-meta-model"></a>SPI for type meta-model</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As all configuration in CDI is based on annotations, we need a mutable meta-model to create or modify existing configuration.</p>
+</div>
+<div class="paragraph">
+<p>In an other world we could have rely on JDK for type representation and reflection, but as it is read only we had to create our own model in CDI.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/type-meta.svg" alt="type meta" width="100%" height="518">
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>AnnotatedType</code> interface is main element of this annotation centric type meta-model.
+other interfaces are abstraction or contained by it.</p>
+</div>
+<div class="paragraph">
+<p>Defining an <code>AnnotatedType</code> let&#8217;s you put all annotations you need on the type, fields, methods or method parameters.</p>
+</div>
+<div class="paragraph">
+<p><code>AnnotatedType</code> are mainly used in portable extension
+They are constructed by the container from existing types.</p>
+</div>
+<div class="paragraph">
+<p>As you can see, this model has no CDI specific feature, so if a third party developer decide to couple his framework to CDI he can allow his users to play with <code>AnnotatedType</code> to configure his framework</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spi-dedicated-to-cdi-meta-model"><a class="anchor" href="#spi-dedicated-to-cdi-meta-model"></a>SPI dedicated to CDI meta-model</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>I already gave a good overview of the interfaces related to Bean meta model in my <a href="/2015/12/how-to-recognize-different-types-of-cdi-beans/" target="_blank">previous article</a>, so I wont go back into detail on it.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/bean-meta.svg" alt="bean meta" width="645" height="436">
+</div>
+</div>
+<div class="paragraph">
+<p>Just remember that while this meta-model is mainly used in portable extensions to declare custom beans, it can also be used in your bean to get introspection feature about the current bean, interceptor, decorator or the currently intercepted or decorated bean.</p>
+</div>
+<div class="paragraph">
+<p>The rest of the CDI meta data SPI interfaces are below:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/cdi-meta.svg" alt="cdi meta" width="100%" height="522">
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-observermethod-code-and-code-eventmetadata-code"><a class="anchor" href="#code-observermethod-code-and-code-eventmetadata-code"></a><code>ObserverMethod</code> and <code>EventMetaData</code></h3>
+<div class="paragraph">
+<p><code>ObserverMethod</code> interface represent meta data for a given observer method and doesn&#8217;t have any usage outside a potable extension.
+So I&#8217;ll deal with in my next article on extensions.</p>
+</div>
+<div class="paragraph">
+<p><code>EventMetadata</code> is also related to events but at the opposite logic of <code>EventMetadata</code>, it is only used in usual code and never in an extension.
+You can inject it in your observer to get information about the event that triggered it.</p>
+</div>
+<div class="paragraph">
+<p>For instance, you can use it to have stricter approach to observer resolution.</p>
+</div>
+<div class="paragraph">
+<p>As I wrote in my <a href="/2014/06/you-think-you-know-everything-about-cdi-events-think-again/" target="_blank">event post</a>, observer resolution for a given type and qualifiers set, also include an observer for any subclass of the event type and without any qualifier.
+ You could use <code>EventMetadata</code> to restrict this rule by checking effective event type and qualifier like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">MyService</span> {
+  <span class="directive">private</span> <span class="type">void</span> strictListen(<span class="annotation">@Observes</span> <span class="annotation">@Qualified</span> Payload evt, EventMetadata meta) {
+    <span class="keyword">if</span>(meta.getQualifiers().contains(<span class="keyword">new</span> QualifiedLiteral())
+       &amp;&amp; meta.getType().equals(Payload.class))
+         <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Do something</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
+       <span class="keyword">else</span>
+         <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">ignore</span><span class="delimiter">&quot;</span></span>)
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>this code will be executed only if event type is strictly <code>Payload</code> and its qualifiers contains <code>@Qualified</code></td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-producer-code-and-code-injectiontarget-code-and-their-factories"><a class="anchor" href="#code-producer-code-and-code-injectiontarget-code-and-their-factories"></a><code>Producer</code> and <code>InjectionTarget</code> and their factories</h3>
+<div class="paragraph">
+<p><code>Producer</code> and <code>InjectionTarget</code> are also mostly used in extension.
+But if you took a look to <code>Unmanaged</code> presented above you may have seen that <code>InjectionTarget</code> can be used in usual code to perform some lifecycle operations an injection on a non CDI class.</p>
+</div>
+<div class="paragraph">
+<p>As <code>Unmanaged</code> doesn&#8217;t allow you to perform injection on existing object you can use this code to do it yourself.
+This can be useful if you want to have object provided by a third party, perform injection in CDI way.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java">AnnotatedType&lt;MyClass&gt; type = beanManager.createAnnotatedType(MyClass.class);
+InjectionTarget&lt;MyClass&gt; injectionTarget = beanManager.getInjectionTargetFactory(MyClass.class).createInjectionTarget(<span class="predefined-constant">null</span>);
+CreationalContext&lt;MyClass&gt; ctx = beanManager.createCreationalContext(<span class="predefined-constant">null</span>);
+
+MyClass instance = <span class="keyword">new</span> Myclass;
+injectionTarget.inject(instance, ctx);
+injectionTarget.postConstruct(instance);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>CDI 1.1 introduced <code>ProducerFactory</code> and <code>InjectionTargetFactory</code> to resolve circular dependency issues when using <code>Producer</code> or <code>InjectionTarget</code> in an extension to create a new kind of <code>Bean</code>.
+I will detail them in my next post.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-injectionpoint-code-meta-data"><a class="anchor" href="#code-injectionpoint-code-meta-data"></a><code>InjectionPoint</code> meta-data</h3>
+<div class="paragraph">
+<p>Last but not least in this SPI family: the <code>InjectionPoint</code>.
+This swiss-army knife is as much used in extension than in usual code.
+But in the later case you can only use it to get information on injection point related to <code>@Dependent</code> scoped bean.
+It&#8217;s the only way to guarantee the injection point uniqueness (i.e. the same <code>@RequestScoped</code> instance can be injected in multiple place).
+That&#8217;s the price to access <code>InjectionPoint</code> power.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s check some nice way to use the <code>InjectionPoint</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="using-a-qualifier-to-pass-parameter-to-a-producer"><a class="anchor" href="#using-a-qualifier-to-pass-parameter-to-a-producer"></a>Using a qualifier to pass parameter to a producer</h4>
+<div class="paragraph">
+<p>As <code>InjectionPoint</code> is used to get info about what&#8217;s being injected, info included in a qualifier can be used to decide what to return in a producer</p>
+</div>
+<div class="paragraph">
+<p>First let&#8217;s create a qualifier with non binding member</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Qualifier</span>
+<span class="annotation">@Retention</span>(<span class="predefined-type">RetentionPolicy</span>.RUNTIME)
+<span class="directive">public</span> <span class="annotation">@interface</span> HttpParam {
+    <span class="annotation">@Nonbinding</span> <span class="directive">public</span> <span class="predefined-type">String</span> value(); <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This qualifier integrates a non binding member, that let us pass information to our producer</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Then a producer for a dependent bean that analysis info at his injection point.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Produces</span>
+<span class="annotation">@HttpParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="annotation">@Dependent</span> <i class="conum" data-value="2"></i><b>(2)</b>
+<span class="predefined-type">String</span> getParamValue(InjectionPoint ip, HttpServletRequest req) { <i class="conum" data-value="3"></i><b>(3)</b>
+  <span class="keyword">return</span> req.getParameter(ip.getAnnotated().getAnnotation(HttpParam.class).value());
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This producer defines a bean having <code>String</code> in its type set and qualified with our qualifier</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Remember to use injection point in your bean must be in dependent scope.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>this producer injects the <code>InjectionPoint</code> meta-data and the built-in <code>HttpServletRequest</code> bean</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Finally we can use this producer by injecting the matching bean type and qualifier, with the parameter in the qualifier</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span>
+<span class="annotation">@HttpParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">productId</span><span class="delimiter">&quot;</span></span>)
+<span class="predefined-type">String</span> productId;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="analyze-requested-types-a-injection-point"><a class="anchor" href="#analyze-requested-types-a-injection-point"></a>Analyze requested types a injection point</h4>
+<div class="paragraph">
+<p>CDI does a great job to avoid type erasure and guarantee a powerful usage of parameterized types.</p>
+</div>
+<div class="paragraph">
+<p>In the example below, we have a producer for a generic <code>Map</code> that use different implementations depending on the type of map values requested at the injection point.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="type">class</span> <span class="class">MyMapProducer</span>() {
+
+    <span class="annotation">@Produces</span>
+    &lt;K, V&gt; <span class="predefined-type">Map</span>&lt;K, V&gt; produceMap(InjectionPoint ip) {
+        <span class="keyword">if</span> (valueIsNumber(((<span class="predefined-type">ParameterizedType</span>) ip.getType()))) <i class="conum" data-value="1"></i><b>(1)</b>
+            <span class="keyword">return</span> <span class="keyword">new</span> <span class="predefined-type">TreeMap</span>&lt;K, V&gt;();
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;K, V&gt;();
+    }
+
+    <span class="type">boolean</span> valueIsNumber(<span class="predefined-type">ParameterizedType</span> type) { <i class="conum" data-value="2"></i><b>(2)</b>
+        <span class="predefined-type">Class</span>&lt;?&gt; valueClass = (<span class="predefined-type">Class</span>&lt;?&gt;) type.getActualTypeArguments()[<span class="integer">1</span>];
+        <span class="keyword">return</span> <span class="predefined-type">Number</span>.class.isAssignableFrom(valueClass)
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>this code retrieve the parameterized type defined at the injection point and send it to the test function</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>this test function will check the effective type of the second type prameter (type of the map values) and return true if this type inherit <code>Number</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With the code above <code>@Inject Map&lt;String,String&gt; map</code> will use an <code>HashMap</code> under the hood while <code>@Inject Map&lt;String,Integer&gt; map</code> will use a <code>TreeMap</code>.
+An elegant way to optimize or change behaviour without leakage in business code.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="conclusion"><a class="anchor" href="#conclusion"></a>conclusion</h4>
+<div class="paragraph">
+<p>There are lot of features you can imagine to build with <code>InjectionPoint</code> and keep in mind that we only saw a few example in usual code.
+Imagine what you can do in an extension&#8230;&#8203;</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="spi-dedicated-to-extensions"><a class="anchor" href="#spi-dedicated-to-extensions"></a>SPI dedicated to extensions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s end this SPI tour by a cliffhanger.</p>
+</div>
+<div class="paragraph">
+<p>The following SPI classes are totally dedicated to extension development.</p>
+</div>
+<div class="paragraph">
+<p>In fact they defined events type for each step in the container lifecycle (mainly the bootstrap part) where the portable extension magic occurs.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/spi-extensions.svg" alt="spi extensions" width="100%" height="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s discover this magic in a coming post about extension.</p>
+</div>
+</div>
+</div></div><div class="footer"><a href="/2016/02/cdi-the-spi-who-loved-me/"> Permalink</a> <a href="http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me/#disqus_thread">Comments</a> </div><ul class="pager visible-md-block visible-lg-block"><li class="previous"><a href="/2015/12/how-to-recognize-different-types-of-cdi-beans/">Previous: How to recognize different types of beans from quite a long way away </a></li></ul><ul class="pager visible-sm-block visible-xs-block"><li class="previous"><a href="/2015/12/how-to-recognize-different-types-of-cdi-beans/"> Previous</a></li></ul>
+            <script type="text/javascript">
+            var disqus_shortname = 'nextpresso';
+            (function () {
+              var s = document.createElement('script'); s.async = true;
+              s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+              (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+            }());
+            </script>
+          <div class="comments">
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+            var disqus_shortname = 'nextpresso';
+            var disqus_url = "http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me/";
+            var disqus_developer = null;
+            var disqus_identifier = null;
+            (function() {
+              var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+            })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=nextpresso">comments powered by Disqus.</a></noscript>
+          </div></div></div></article></div><div class="col-lg-3"><aside class="hidden-xs"><a class="twitter-timeline" data-widget-id="666631820319019009" href="https://twitter.com/antoine_sd"> Tweets by @antoine_sd</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></aside><aside class="visible-xs"><div class="panel panel-default"><div class="panel-footer" style="text-align:justify;"></div></div><a class="twitter-timeline" data-widget-id="666631820319019009" href="https://twitter.com/antoine_sd"> Tweets by @antoine_sd</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></aside></div></div></div></div></div><hr><footer></footer><script>
+ (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ 
+ga('create', 'UA-5919317-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+</body></html>

@@ -2,13 +2,542 @@
 <feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">
   <id>http://www.next-presso.com/</id>
   <title>Next Presso</title>
-  <updated>2015-12-14T15:39:25+01:00</updated>
+  <updated>2016-02-22T11:34:12+01:00</updated>
   <link href="http://www.next-presso.com/news.atom" rel="self" type="application/atom+xml" />
   <link href="http://www.next-presso.com/" rel="alternate" type="text/html" />
   <entry>
+    <id>http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html</id>
+    <title>CDI, the SPI who loved me</title>
+    <updated>2016-02-22T11:34:12+01:00</updated>
+    <published>2016-02-20T00:00:00+00:00</published>
+    <link href="http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html" rel="alternate" type="text/html" />
+    <category term="CDI"></category>
+    <category term="SPI"></category>
+    <category term="Extension"></category>
+    <summary>
+      CDI users ask me very often why they should adopt CDI and stop using their old framework of way of doing their developments.
+      The answer to this question can be found in advanced CDI stuff: extension mechanism and CDI SPI.
+      
+      
+      Yes, CDI true killing feature is not accessible out of the box and you have to dig into the spec to grab its power.
+      Unfortunately, the way it&#8217;s introduced and explained in the specification document doesn&#8217;t make it particularly shine.
+      
+      
+      With this article and a coming one on portable extensions, I&#8217;ll try to fix that and help beginner users get an overview of the...
+    </summary>
+    <content type="html">
+      &lt;div class=&quot;imageblock&quot; style=&quot;float: left&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img src=&quot;http://www.next-presso.com/images/posts/2016/legobricks.jpg&quot; alt=&quot;legobricks&quot; width=&quot;285&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;CDI users ask me very often why they should adopt CDI and stop using their old framework of way of doing their developments.
+      The answer to this question can be found in advanced CDI stuff: extension mechanism and CDI SPI.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Yes, CDI true killing feature is not accessible out of the box and you have to dig into the spec to grab its power.
+      Unfortunately, the way it’s introduced and explained in the specification document doesn’t make it particularly shine.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;With this article and a coming one on portable extensions, I’ll try to fix that and help beginner users get an overview of the power they’ll have if they invest time in learning CDI SPI.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;I’ll try to show you all the aspects of the CDI SPI and how you can use part of it in your day to day work.
+      In this article I’ll use the term &quot;usual code&quot; in opposition to portable extension code to differentiate standard development from development to extend CDI.
+      At the end of the day you’ll see how much the CDI SPI loves developers ;).&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;what-is-this-spi&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#what-is-this-spi&quot;&gt;&lt;/a&gt;What is this SPI?&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;CDI SPI is the introspection part of the spec allowing developers to access meta-information about CDI concepts (Beans, events, injection point, interceptors, etc…​)&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;While some of you may be more familiar with the term API (Application Programming Interface), the CDI specification is mainly built on a SPI concept (Service Provider Interface).
+      So what’s the difference?&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;ulist&quot;&gt;
+      &lt;ul&gt;
+      &lt;li&gt;
+      &lt;p&gt;An API is the description of classes/interfaces/methods/…​ that you call and use to achieve a goal&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+      &lt;p&gt;An SPI is the description of classes/interfaces/methods/…​ that you extend and implement to achieve a goal&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;To make short, CDI provides interfaces that you implement (or that spec implementation implement for you) to perform a specific task.
+      Access to these implementation are usually done through injection or event observation but you’ll have on the rare occasion to create your own implementation.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;To ease the understand of the SPI, I’d like to split in 4 parts:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;ulist&quot;&gt;
+      &lt;ul&gt;
+      &lt;li&gt;
+      &lt;p&gt;CDI entry points&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+      &lt;p&gt;Type meta-model&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+      &lt;p&gt;CDI meta-model&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+      &lt;p&gt;SPI dedicated to extensions&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;This division is a subjective approach I use to introduce elements of the SPI, it doesn’t reflect organisation of CDI packages or documentation.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Let’s explore these different parts&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;spi-providing-cdi-entry-points&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#spi-providing-cdi-entry-points&quot;&gt;&lt;/a&gt;SPI providing CDI entry points&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Usually, when you develop a Java EE application you don’t have to bother &quot;entering&quot; in CDI bean graph.
+      It’s automatically done from the UI (via expression language), CDI event triggered automatically at boot time or EJB call.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;But sometimes, you may need to access CDI from non CDI code or plug non CDI code to CDI beans at run time.
+      This part of the SPI gives you the tools to do it.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img src=&quot;http://www.next-presso.com/images/entry-points.svg&quot; alt=&quot;entry points&quot; width=&quot;100%&quot; height=&quot;726&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect2&quot;&gt;
+      &lt;h3 id=&quot;code-beanmanager-code-and-code-cdi-code&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#code-beanmanager-code-and-code-cdi-code&quot;&gt;&lt;/a&gt;&lt;code&gt;BeanManager&lt;/code&gt; and &lt;code&gt;CDI&lt;/code&gt;&lt;/h3&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;In CDI 1.0 the only solution you had to access CDI bean graph was to retrieve the &lt;code&gt;BeanManager&lt;/code&gt; from JNDI&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;BeanManager bm = &lt;span class=&quot;predefined-constant&quot;&gt;null&lt;/span&gt;;
+      &lt;span class=&quot;keyword&quot;&gt;try&lt;/span&gt; {
+          &lt;span class=&quot;predefined-type&quot;&gt;InitialContext&lt;/span&gt; context = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;predefined-type&quot;&gt;InitialContext&lt;/span&gt;();
+          bm = (BeanManager) context.lookup(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;java:comp/BeanManager&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;);
+      } &lt;span class=&quot;keyword&quot;&gt;catch&lt;/span&gt; (&lt;span class=&quot;exception&quot;&gt;Exception&lt;/span&gt; e) {
+          e.printStackTrace();
+      }&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The &lt;code&gt;BeanManager&lt;/code&gt; is a central interface in CDI SPI, giving access to all meta-data and instantiated components in your application.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Checking its &lt;a href=&quot;http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#beanmanager&quot; target=&quot;_blank&quot;&gt;section in spec&lt;/a&gt; or its &lt;a href=&quot;http://docs.jboss.org/cdi/api/1.2/javax/enterprise/inject/spi/BeanManager.html&quot;&gt;javadoc&lt;/a&gt; gives a complete overview of all the features it contains.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The main reason for developers to access CDI from non CDI code is to request a &lt;code&gt;Bean&lt;/code&gt; instance to enter the CDI bean graph.
+      Doing so with the BeanManager is a bit verbose.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;BeanManager bm = &lt;span class=&quot;predefined-constant&quot;&gt;null&lt;/span&gt;;
+      &lt;span class=&quot;keyword&quot;&gt;try&lt;/span&gt; {
+          &lt;span class=&quot;predefined-type&quot;&gt;InitialContext&lt;/span&gt; context = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;predefined-type&quot;&gt;InitialContext&lt;/span&gt;();
+          bm = (BeanManager) context.lookup(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;java:comp/BeanManager&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;); &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
+      } &lt;span class=&quot;keyword&quot;&gt;catch&lt;/span&gt; (&lt;span class=&quot;exception&quot;&gt;Exception&lt;/span&gt; e) {
+          e.printStackTrace();
+      }
+      &lt;span class=&quot;predefined-type&quot;&gt;Set&lt;/span&gt;&amp;lt;Bean&amp;lt;?&amp;gt;&amp;gt; beans = bm.getBeans(MyService.class); &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
+      Bean&amp;lt;?&amp;gt; bean =  bm.resolve(beans); &lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;(3)&lt;/b&gt;
+      CreationalContext&amp;lt;MyService&amp;gt; ctx = bm.createCreationalContext(bean); &lt;i class=&quot;conum&quot; data-value=&quot;4&quot;&gt;&lt;/i&gt;&lt;b&gt;(4)&lt;/b&gt;
+      MyService myService = (MyService) bm.getReference(bean, MyService.class, ctx); &lt;i class=&quot;conum&quot; data-value=&quot;5&quot;&gt;&lt;/i&gt;&lt;b&gt;(5)&lt;/b&gt;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;colist arabic&quot;&gt;
+      &lt;table&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;Retrieving BeanManager thru JNDI&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;retrieving all the beans having MyService in their type and the @Default qualifier&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;3&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;apply the ambiguous dependency resolution for the set of beans&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;4&quot;&gt;&lt;/i&gt;&lt;b&gt;4&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;create a &lt;code&gt;CreationalContext&lt;/code&gt; to help bean instance creation for complex use cases like circularities&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;5&quot;&gt;&lt;/i&gt;&lt;b&gt;5&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;get the instance&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/table&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;This verbosity is the proof that the &lt;code&gt;BeanManager&lt;/code&gt; is and advanced CDI tool allowing very basic operation on CDI echos system.
+      It’s obviously not the best solution if you just want to access an instance.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;That’s why, in CDI 1.1  we introduced the abstract &lt;code&gt;CDI&lt;/code&gt; class which use Java Service Loader to retrieve a concrete &lt;code&gt;CDI&lt;/code&gt; class from the implementation.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;CDI&amp;lt;&lt;span class=&quot;predefined-type&quot;&gt;Object&lt;/span&gt;&amp;gt; cdi = CDI.current();&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;&lt;code&gt;CDI&lt;/code&gt; gives a faster access to the BeanManager with &lt;code&gt;CDI.getBeanManager()&lt;/code&gt; method, but more interestingly, it provides a convenient way to request a bean instance without using the cumbersome code with &lt;code&gt;BeanManager&lt;/code&gt;.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;As &lt;code&gt;CDI&lt;/code&gt; extends &lt;code&gt;Instance&amp;lt;Object&amp;gt;&lt;/code&gt; it naturally provides bean instance resolution with &lt;a href=&quot;http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#programmatic_lookup&quot; target=&quot;_blank&quot;&gt;programmatic lookup&lt;/a&gt;.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;To make short accessing &lt;code&gt;CDI&lt;/code&gt; in your non CDI code provides the same service than having the following injection in CDI code.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span class=&quot;annotation&quot;&gt;@Inject&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@Any&lt;/span&gt; Instance&amp;lt;&lt;span class=&quot;predefined-type&quot;&gt;Object&lt;/span&gt;&amp;gt; cdi;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Retrieving an instance becomes as simple as&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;CDI&amp;lt;&lt;span class=&quot;predefined-type&quot;&gt;Object&lt;/span&gt;&amp;gt; cdi = CDI.current();
+      MyService service = cdi.select(MyService.class).get();&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect2&quot;&gt;
+      &lt;h3 id=&quot;code-unmanaged-code&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#code-unmanaged-code&quot;&gt;&lt;/a&gt;&lt;code&gt;Unmanaged&lt;/code&gt;&lt;/h3&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;CDI 1.1 introduced an other nice feature to help you integrating CDI in non CDI code.
+      The &lt;code&gt;Unmanaged&lt;/code&gt; class allows you to apply some CDI operation to a non CDI class.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;With it you can call lifecycle callbacks (&lt;code&gt;@Postconstruct&lt;/code&gt; and &lt;code&gt;@Predestroy&lt;/code&gt;) and perform injection on such class instance.
+      Third party framework developers can then provide their non CDI class including injection point (remember @Inject is not part of CDI spec but AtInject spec) and Unmanaged can be used to get instances of this class.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;For instance, imagine this class included in a non CDI archive.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;NonCDI&lt;/span&gt; {
+      
+        &lt;span class=&quot;annotation&quot;&gt;@Inject&lt;/span&gt;
+        SomeClass someInstance;
+      
+        &lt;span class=&quot;annotation&quot;&gt;@PostConstruct&lt;/span&gt;
+        &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; init()  {
+        ...
+        }
+      
+        &lt;span class=&quot;annotation&quot;&gt;@Predestroy&lt;/span&gt;
+        &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; cleanUp() {
+        ...
+        }
+      }&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;You can obtain an instance of this class with injection point satisfied with this code&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;Unmanaged&amp;lt;NonCDI&amp;gt; unmanaged = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; Unmanaged(NonCDI.class);
+      UnmanagedInstance&amp;lt;NonCDI&amp;gt; inst = unmanaged.newInstance();
+      NonCDI nonCdi = inst.produce().inject().postConstruct().get();&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;By checking the &lt;a href=&quot;https://github.com/cdi-spec/cdi/blob/1.2/api/src/main/java/javax/enterprise/inject/spi/Unmanaged.java&quot;&gt;code in Unmanaged and UnManagedInstance&lt;/a&gt; classes you can see how other CDI SPI interfaces are used to provide this feature^&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;spi-for-type-meta-model&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#spi-for-type-meta-model&quot;&gt;&lt;/a&gt;SPI for type meta-model&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;As all configuration in CDI is based on annotations, we need a mutable meta-model to create or modify existing configuration.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;In an other world we could have rely on JDK for type representation and reflection, but as it is read only we had to create our own model in CDI.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img src=&quot;http://www.next-presso.com/images/type-meta.svg&quot; alt=&quot;type meta&quot; width=&quot;100%&quot; height=&quot;518&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The &lt;code&gt;AnnotatedType&lt;/code&gt; interface is main element of this annotation centric type meta-model.
+      other interfaces are abstraction or contained by it.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Defining an &lt;code&gt;AnnotatedType&lt;/code&gt; let’s you put all annotations you need on the type, fields, methods or method parameters.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;&lt;code&gt;AnnotatedType&lt;/code&gt; are mainly used in portable extension
+      They are constructed by the container from existing types.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;As you can see, this model has no CDI specific feature, so if a third party developer decide to couple his framework to CDI he can allow his users to play with &lt;code&gt;AnnotatedType&lt;/code&gt; to configure his framework&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;spi-dedicated-to-cdi-meta-model&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#spi-dedicated-to-cdi-meta-model&quot;&gt;&lt;/a&gt;SPI dedicated to CDI meta-model&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;I already gave a good overview of the interfaces related to Bean meta model in my &lt;a href=&quot;http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans/&quot; target=&quot;_blank&quot;&gt;previous article&lt;/a&gt;, so I wont go back into detail on it.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img src=&quot;http://www.next-presso.com/images/bean-meta.svg&quot; alt=&quot;bean meta&quot; width=&quot;645&quot; height=&quot;436&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Just remember that while this meta-model is mainly used in portable extensions to declare custom beans, it can also be used in your bean to get introspection feature about the current bean, interceptor, decorator or the currently intercepted or decorated bean.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The rest of the CDI meta data SPI interfaces are below:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img src=&quot;http://www.next-presso.com/images/cdi-meta.svg&quot; alt=&quot;cdi meta&quot; width=&quot;100%&quot; height=&quot;522&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect2&quot;&gt;
+      &lt;h3 id=&quot;code-observermethod-code-and-code-eventmetadata-code&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#code-observermethod-code-and-code-eventmetadata-code&quot;&gt;&lt;/a&gt;&lt;code&gt;ObserverMethod&lt;/code&gt; and &lt;code&gt;EventMetaData&lt;/code&gt;&lt;/h3&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;&lt;code&gt;ObserverMethod&lt;/code&gt; interface represent meta data for a given observer method and doesn’t have any usage outside a potable extension.
+      So I’ll deal with in my next article on extensions.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;&lt;code&gt;EventMetadata&lt;/code&gt; is also related to events but at the opposite logic of &lt;code&gt;EventMetadata&lt;/code&gt;, it is only used in usual code and never in an extension.
+      You can inject it in your observer to get information about the event that triggered it.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;For instance, you can use it to have stricter approach to observer resolution.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;As I wrote in my &lt;a href=&quot;http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again/&quot; target=&quot;_blank&quot;&gt;event post&lt;/a&gt;, observer resolution for a given type and qualifiers set, also include an observer for any subclass of the event type and without any qualifier.
+       You could use &lt;code&gt;EventMetadata&lt;/code&gt; to restrict this rule by checking effective event type and qualifier like this:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;MyService&lt;/span&gt; {
+        &lt;span class=&quot;directive&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; strictListen(&lt;span class=&quot;annotation&quot;&gt;@Observes&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@Qualified&lt;/span&gt; Payload evt, EventMetadata meta) {
+          &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(meta.getQualifiers().contains(&lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; QualifiedLiteral())
+             &amp;amp;&amp;amp; meta.getType().equals(Payload.class))
+               &lt;span class=&quot;predefined-type&quot;&gt;System&lt;/span&gt;.out.println(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;Do something&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
+             &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;
+               &lt;span class=&quot;predefined-type&quot;&gt;System&lt;/span&gt;.out.println(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;ignore&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;)
+        }
+      }&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;colist arabic&quot;&gt;
+      &lt;table&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;this code will be executed only if event type is strictly &lt;code&gt;Payload&lt;/code&gt; and its qualifiers contains &lt;code&gt;@Qualified&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/table&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect2&quot;&gt;
+      &lt;h3 id=&quot;code-producer-code-and-code-injectiontarget-code-and-their-factories&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#code-producer-code-and-code-injectiontarget-code-and-their-factories&quot;&gt;&lt;/a&gt;&lt;code&gt;Producer&lt;/code&gt; and &lt;code&gt;InjectionTarget&lt;/code&gt; and their factories&lt;/h3&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;&lt;code&gt;Producer&lt;/code&gt; and &lt;code&gt;InjectionTarget&lt;/code&gt; are also mostly used in extension.
+      But if you took a look to &lt;code&gt;Unmanaged&lt;/code&gt; presented above you may have seen that &lt;code&gt;InjectionTarget&lt;/code&gt; can be used in usual code to perform some lifecycle operations an injection on a non CDI class.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;As &lt;code&gt;Unmanaged&lt;/code&gt; doesn’t allow you to perform injection on existing object you can use this code to do it yourself.
+      This can be useful if you want to have object provided by a third party, perform injection in CDI way.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;AnnotatedType&amp;lt;MyClass&amp;gt; type = beanManager.createAnnotatedType(MyClass.class);
+      InjectionTarget&amp;lt;MyClass&amp;gt; injectionTarget = beanManager.getInjectionTargetFactory(MyClass.class).createInjectionTarget(&lt;span class=&quot;predefined-constant&quot;&gt;null&lt;/span&gt;);
+      CreationalContext&amp;lt;MyClass&amp;gt; ctx = beanManager.createCreationalContext(&lt;span class=&quot;predefined-constant&quot;&gt;null&lt;/span&gt;);
+      
+      MyClass instance = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; Myclass;
+      injectionTarget.inject(instance, ctx);
+      injectionTarget.postConstruct(instance);&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;CDI 1.1 introduced &lt;code&gt;ProducerFactory&lt;/code&gt; and &lt;code&gt;InjectionTargetFactory&lt;/code&gt; to resolve circular dependency issues when using &lt;code&gt;Producer&lt;/code&gt; or &lt;code&gt;InjectionTarget&lt;/code&gt; in an extension to create a new kind of &lt;code&gt;Bean&lt;/code&gt;.
+      I will detail them in my next post.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect2&quot;&gt;
+      &lt;h3 id=&quot;code-injectionpoint-code-meta-data&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#code-injectionpoint-code-meta-data&quot;&gt;&lt;/a&gt;&lt;code&gt;InjectionPoint&lt;/code&gt; meta-data&lt;/h3&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Last but not least in this SPI family: the &lt;code&gt;InjectionPoint&lt;/code&gt;.
+      This swiss-army knife is as much used in extension than in usual code.
+      But in the later case you can only use it to get information on injection point related to &lt;code&gt;@Dependent&lt;/code&gt; scoped bean.
+      It’s the only way to guarantee the injection point uniqueness (i.e. the same &lt;code&gt;@RequestScoped&lt;/code&gt; instance can be injected in multiple place).
+      That’s the price to access &lt;code&gt;InjectionPoint&lt;/code&gt; power.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Let’s check some nice way to use the &lt;code&gt;InjectionPoint&lt;/code&gt;.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect3&quot;&gt;
+      &lt;h4 id=&quot;using-a-qualifier-to-pass-parameter-to-a-producer&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#using-a-qualifier-to-pass-parameter-to-a-producer&quot;&gt;&lt;/a&gt;Using a qualifier to pass parameter to a producer&lt;/h4&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;As &lt;code&gt;InjectionPoint&lt;/code&gt; is used to get info about what’s being injected, info included in a qualifier can be used to decide what to return in a producer&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;First let’s create a qualifier with non binding member&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span class=&quot;annotation&quot;&gt;@Qualifier&lt;/span&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@Retention&lt;/span&gt;(&lt;span class=&quot;predefined-type&quot;&gt;RetentionPolicy&lt;/span&gt;.RUNTIME)
+      &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@interface&lt;/span&gt; HttpParam {
+          &lt;span class=&quot;annotation&quot;&gt;@Nonbinding&lt;/span&gt; &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;predefined-type&quot;&gt;String&lt;/span&gt; value(); &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
+      }&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;colist arabic&quot;&gt;
+      &lt;table&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;This qualifier integrates a non binding member, that let us pass information to our producer&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/table&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Then a producer for a dependent bean that analysis info at his injection point.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@HttpParam&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@Dependent&lt;/span&gt; &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
+      &lt;span class=&quot;predefined-type&quot;&gt;String&lt;/span&gt; getParamValue(InjectionPoint ip, HttpServletRequest req) { &lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;(3)&lt;/b&gt;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; req.getParameter(ip.getAnnotated().getAnnotation(HttpParam.class).value());
+      }&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;colist arabic&quot;&gt;
+      &lt;table&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;This producer defines a bean having &lt;code&gt;String&lt;/code&gt; in its type set and qualified with our qualifier&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;Remember to use injection point in your bean must be in dependent scope.&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;3&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;this producer injects the &lt;code&gt;InjectionPoint&lt;/code&gt; meta-data and the built-in &lt;code&gt;HttpServletRequest&lt;/code&gt; bean&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/table&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Finally we can use this producer by injecting the matching bean type and qualifier, with the parameter in the qualifier&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span class=&quot;annotation&quot;&gt;@Inject&lt;/span&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@HttpParam&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;productId&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;)
+      &lt;span class=&quot;predefined-type&quot;&gt;String&lt;/span&gt; productId;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect3&quot;&gt;
+      &lt;h4 id=&quot;analyze-requested-types-a-injection-point&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#analyze-requested-types-a-injection-point&quot;&gt;&lt;/a&gt;Analyze requested types a injection point&lt;/h4&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;CDI does a great job to avoid type erasure and guarantee a powerful usage of parameterized types.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;In the example below, we have a producer for a generic &lt;code&gt;Map&lt;/code&gt; that use different implementations depending on the type of map values requested at the injection point.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span class=&quot;type&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;MyMapProducer&lt;/span&gt;() {
+      
+          &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
+          &amp;lt;K, V&amp;gt; &lt;span class=&quot;predefined-type&quot;&gt;Map&lt;/span&gt;&amp;lt;K, V&amp;gt; produceMap(InjectionPoint ip) {
+              &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (valueIsNumber(((&lt;span class=&quot;predefined-type&quot;&gt;ParameterizedType&lt;/span&gt;) ip.getType()))) &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
+                  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;predefined-type&quot;&gt;TreeMap&lt;/span&gt;&amp;lt;K, V&amp;gt;();
+              &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;predefined-type&quot;&gt;HashMap&lt;/span&gt;&amp;lt;K, V&amp;gt;();
+          }
+      
+          &lt;span class=&quot;type&quot;&gt;boolean&lt;/span&gt; valueIsNumber(&lt;span class=&quot;predefined-type&quot;&gt;ParameterizedType&lt;/span&gt; type) { &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
+              &lt;span class=&quot;predefined-type&quot;&gt;Class&lt;/span&gt;&amp;lt;?&amp;gt; valueClass = (&lt;span class=&quot;predefined-type&quot;&gt;Class&lt;/span&gt;&amp;lt;?&amp;gt;) type.getActualTypeArguments()[&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;];
+              &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;predefined-type&quot;&gt;Number&lt;/span&gt;.class.isAssignableFrom(valueClass)
+          }
+      }&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;colist arabic&quot;&gt;
+      &lt;table&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;this code retrieve the parameterized type defined at the injection point and send it to the test function&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;this test function will check the effective type of the second type prameter (type of the map values) and return true if this type inherit &lt;code&gt;Number&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/table&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;With the code above &lt;code&gt;@Inject Map&amp;lt;String,String&amp;gt; map&lt;/code&gt; will use an &lt;code&gt;HashMap&lt;/code&gt; under the hood while &lt;code&gt;@Inject Map&amp;lt;String,Integer&amp;gt; map&lt;/code&gt; will use a &lt;code&gt;TreeMap&lt;/code&gt;.
+      An elegant way to optimize or change behaviour without leakage in business code.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect3&quot;&gt;
+      &lt;h4 id=&quot;conclusion&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#conclusion&quot;&gt;&lt;/a&gt;conclusion&lt;/h4&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;There are lot of features you can imagine to build with &lt;code&gt;InjectionPoint&lt;/code&gt; and keep in mind that we only saw a few example in usual code.
+      Imagine what you can do in an extension…​&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;spi-dedicated-to-extensions&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#spi-dedicated-to-extensions&quot;&gt;&lt;/a&gt;SPI dedicated to extensions&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Let’s end this SPI tour by a cliffhanger.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The following SPI classes are totally dedicated to extension development.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;In fact they defined events type for each step in the container lifecycle (mainly the bootstrap part) where the portable extension magic occurs.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img src=&quot;http://www.next-presso.com/images/spi-extensions.svg&quot; alt=&quot;spi extensions&quot; width=&quot;100%&quot; height=&quot;100%&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Let’s discover this magic in a coming post about extension.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+    </content>
+  </entry>
+  <entry>
     <id>http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html</id>
     <title>How to recognize different types of beans from quite a long way away</title>
-    <updated>2015-12-14T15:39:25+01:00</updated>
+    <updated>2016-02-22T11:35:19+01:00</updated>
     <published>2015-12-14T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -74,7 +603,7 @@
       &lt;/div&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;they think: &amp;quot;I have injected the &lt;code&gt;MyBean&lt;/code&gt; bean having &lt;code&gt;@MyQualifier&lt;/code&gt; qualifier&amp;quot;.&lt;/p&gt;
+      &lt;p&gt;they think: &quot;I have injected the &lt;code&gt;MyBean&lt;/code&gt; bean having &lt;code&gt;@MyQualifier&lt;/code&gt; qualifier&quot;.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;That’s not correct and it’s important to understand the exact mechanism behind this injection point definition.&lt;/p&gt;
@@ -107,7 +636,7 @@
       &lt;div class=&quot;ulist&quot;&gt;
       &lt;ul&gt;
       &lt;li&gt;
-      &lt;p&gt;Providing a &amp;quot;recipe&amp;quot; to create and destroy bean instances (methods from &lt;code&gt;Contextual&amp;lt;T&amp;gt;&lt;/code&gt;)&lt;/p&gt;
+      &lt;p&gt;Providing a &quot;recipe&quot; to create and destroy bean instances (methods from &lt;code&gt;Contextual&amp;lt;T&amp;gt;&lt;/code&gt;)&lt;/p&gt;
       &lt;/li&gt;
       &lt;li&gt;
       &lt;p&gt;Storing bean metadata obtained from bean definition (methods from &lt;code&gt;BeanAttributes&amp;lt;T&amp;gt;&lt;/code&gt;)&lt;/p&gt;
@@ -161,7 +690,7 @@
       &lt;div class=&quot;sect2&quot;&gt;
       &lt;h3 id=&quot;so-when-do-we-refer-to-the-code-bean-t-code&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#so-when-do-we-refer-to-the-code-bean-t-code&quot;&gt;&lt;/a&gt;So when do we refer to the &lt;code&gt;Bean&amp;lt;T&amp;gt;&lt;/code&gt;?&lt;/h3&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;In basic CDI, the answer is &amp;quot;never&amp;quot; (or almost).&lt;/p&gt;
+      &lt;p&gt;In basic CDI, the answer is &quot;never&quot; (or almost).&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;&lt;code&gt;Bean&amp;lt;T&amp;gt;&lt;/code&gt; will be used 90% of the time in portable extension to create a custom bean or analyse bean metadata.&lt;/p&gt;
@@ -189,11 +718,11 @@
       
           &lt;span class=&quot;annotation&quot;&gt;@AroundInvoke&lt;/span&gt;
           &lt;span class=&quot;directive&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;predefined-type&quot;&gt;Object&lt;/span&gt; intercept(InvocationContext ic) &lt;span class=&quot;directive&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;exception&quot;&gt;Exception&lt;/span&gt; {
-              logger.info(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt; + intercepted.getBeanClass().getName() + &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt; - &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt; + ic.getMethod().getName()); &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
+              logger.info(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt; + intercepted.getBeanClass().getName() + &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt; - &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt; + ic.getMethod().getName()); &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
               &lt;span class=&quot;keyword&quot;&gt;try&lt;/span&gt; {
                   &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; ic.proceed();
               } &lt;span class=&quot;keyword&quot;&gt;finally&lt;/span&gt; {
-                  logger.info(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;&amp;lt;&amp;lt; &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt; + intercepted.getBeanClass().getName() + &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt; - &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt; + ic.getMethod().getName());
+                  logger.info(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;&amp;lt;&amp;lt; &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt; + intercepted.getBeanClass().getName() + &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt; - &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt; + ic.getMethod().getName());
               }
           }
       }&lt;/code&gt;&lt;/pre&gt;
@@ -427,7 +956,7 @@
       &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;ShoppingCart&lt;/span&gt; { ... } &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
       
       &lt;span class=&quot;annotation&quot;&gt;@Stateless&lt;/span&gt;
-      &lt;span class=&quot;annotation&quot;&gt;@Named&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;loginAction&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;)
+      &lt;span class=&quot;annotation&quot;&gt;@Named&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;loginAction&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;)
       &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;LoginActionImpl&lt;/span&gt; &lt;span class=&quot;directive&quot;&gt;implements&lt;/span&gt; LoginAction { ... } &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
       
       
@@ -623,26 +1152,26 @@
       &lt;div class=&quot;title&quot;&gt;Declaring resources beans&lt;/div&gt;
       &lt;div class=&quot;content&quot;&gt;
       &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
-      &lt;span class=&quot;annotation&quot;&gt;@WebServiceRef&lt;/span&gt;(lookup=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;java:app/service/PaymentService&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@WebServiceRef&lt;/span&gt;(lookup=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;java:app/service/PaymentService&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
       PaymentService paymentService;
       
       &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
-      &lt;span class=&quot;annotation&quot;&gt;@EJB&lt;/span&gt;(beanname=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;../their.jar#PaymentService&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@EJB&lt;/span&gt;(beanname=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;../their.jar#PaymentService&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
       PaymentService paymentService;
       
       &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
       &lt;span class=&quot;annotation&quot;&gt;@CustomerDatabase&lt;/span&gt;
-      &lt;span class=&quot;annotation&quot;&gt;@PersistenceContext&lt;/span&gt;(unitName=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;CustomerDatabase&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;(3)&lt;/b&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@PersistenceContext&lt;/span&gt;(unitName=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;CustomerDatabase&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;(3)&lt;/b&gt;
       EntityManager customerDatabasePersistenceContext;
       
       &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
       &lt;span class=&quot;annotation&quot;&gt;@CustomerDatabase&lt;/span&gt;
-      &lt;span class=&quot;annotation&quot;&gt;@PersistenceUnit&lt;/span&gt;(unitName=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;CustomerDatabase&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;4&quot;&gt;&lt;/i&gt;&lt;b&gt;(4)&lt;/b&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@PersistenceUnit&lt;/span&gt;(unitName=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;CustomerDatabase&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;4&quot;&gt;&lt;/i&gt;&lt;b&gt;(4)&lt;/b&gt;
       EntityManagerFactory customerDatabasePersistenceUnit;
       
       &lt;span class=&quot;annotation&quot;&gt;@Produces&lt;/span&gt;
       &lt;span class=&quot;annotation&quot;&gt;@CustomerDatabase&lt;/span&gt;
-      &lt;span class=&quot;annotation&quot;&gt;@Resource&lt;/span&gt;(lookup=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;java:global/env/jdbc/CustomerDatasource&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;5&quot;&gt;&lt;/i&gt;&lt;b&gt;(5)&lt;/b&gt;
+      &lt;span class=&quot;annotation&quot;&gt;@Resource&lt;/span&gt;(lookup=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;java:global/env/jdbc/CustomerDatasource&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;) &lt;i class=&quot;conum&quot; data-value=&quot;5&quot;&gt;&lt;/i&gt;&lt;b&gt;(5)&lt;/b&gt;
       Datasource customerDatabase;&lt;/code&gt;&lt;/pre&gt;
       &lt;/div&gt;
       &lt;/div&gt;
@@ -832,7 +1361,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html</id>
     <title>You think you know everything about CDI events… Think again!</title>
-    <updated>2015-12-14T15:39:25+01:00</updated>
+    <updated>2015-12-14T15:41:08+01:00</updated>
     <published>2014-06-10T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1029,13 +1558,13 @@
       &lt;span class=&quot;annotation&quot;&gt;@Retention&lt;/span&gt;(RUNTIME)
       &lt;span class=&quot;annotation&quot;&gt;@Documented&lt;/span&gt;
       &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@interface&lt;/span&gt; Qualified {
-          &lt;span class=&quot;predefined-type&quot;&gt;String&lt;/span&gt; value() &lt;span class=&quot;keyword&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;;
+          &lt;span class=&quot;predefined-type&quot;&gt;String&lt;/span&gt; value() &lt;span class=&quot;keyword&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;;
       }
       
       &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;EventTestService&lt;/span&gt; {
       
           &lt;span class=&quot;annotation&quot;&gt;@Inject&lt;/span&gt;
-          &lt;span class=&quot;annotation&quot;&gt;@Qualified&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;strong&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;)
+          &lt;span class=&quot;annotation&quot;&gt;@Qualified&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;strong&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;)
           &lt;span class=&quot;predefined-type&quot;&gt;Event&lt;/span&gt;&amp;lt;Payload&amp;gt; payLoadEvent;
       
           &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; fireEvent() {
@@ -1044,11 +1573,11 @@
       
           &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; processUnqualifiedPayload(&lt;span class=&quot;annotation&quot;&gt;@Observes&lt;/span&gt; Payload event) {}
       
-          &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; processQualifiedPayload(&lt;span class=&quot;annotation&quot;&gt;@Observes&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@Qualified&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;strong&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) Payload event) {}
+          &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; processQualifiedPayload(&lt;span class=&quot;annotation&quot;&gt;@Observes&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@Qualified&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;strong&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;) Payload event) {}
       
           &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; processUnqualifiedObject(&lt;span class=&quot;annotation&quot;&gt;@Observes&lt;/span&gt; &lt;span class=&quot;predefined-type&quot;&gt;Object&lt;/span&gt; event) {}
       
-          &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; processQualifiedObject(&lt;span class=&quot;annotation&quot;&gt;@Observes&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@Qualified&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;strong&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) &lt;span class=&quot;predefined-type&quot;&gt;Object&lt;/span&gt; event) {}
+          &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; processQualifiedObject(&lt;span class=&quot;annotation&quot;&gt;@Observes&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@Qualified&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;strong&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;) &lt;span class=&quot;predefined-type&quot;&gt;Object&lt;/span&gt; event) {}
       
       }&lt;/code&gt;&lt;/pre&gt;
       &lt;/div&gt;
@@ -1085,14 +1614,14 @@
       
       &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;QualifiedLiteral&lt;/span&gt; &lt;span class=&quot;directive&quot;&gt;extends&lt;/span&gt; AnnotationLiteral&amp;lt;Qualified&amp;gt; &lt;span class=&quot;directive&quot;&gt;implements&lt;/span&gt; Qualified {
       
-          &lt;span class=&quot;directive&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;predefined-type&quot;&gt;String&lt;/span&gt; value=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;;
+          &lt;span class=&quot;directive&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;predefined-type&quot;&gt;String&lt;/span&gt; value=&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;;
       
           &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; QualifiedLiteral(&lt;span class=&quot;predefined-type&quot;&gt;String&lt;/span&gt; value) {
               &lt;span class=&quot;local-variable&quot;&gt;this&lt;/span&gt;.value = value;
           }
       
           &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; QualifiedLiteral() {
-              &lt;span class=&quot;local-variable&quot;&gt;this&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;);
+              &lt;span class=&quot;local-variable&quot;&gt;this&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;);
           }
       
           &lt;span class=&quot;directive&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;predefined-type&quot;&gt;String&lt;/span&gt; value() {
@@ -1102,7 +1631,7 @@
       &lt;/div&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;will add the &lt;code&gt;@Qualified&lt;/code&gt; qualifier to the event before firing it. So the final event will have &lt;code&gt;@MyQualifier @Qualified(&amp;quot;&amp;quot;)&lt;/code&gt; qualifiers.&lt;/p&gt;
+      &lt;p&gt;will add the &lt;code&gt;@Qualified&lt;/code&gt; qualifier to the event before firing it. So the final event will have &lt;code&gt;@MyQualifier @Qualified(&quot;&quot;)&lt;/code&gt; qualifiers.&lt;/p&gt;
       &lt;/div&gt;
       &lt;/div&gt;
       &lt;/div&gt;
@@ -1319,7 +1848,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/03/forward-cdi-2-0.html</id>
     <title>Forward CDI 2.0</title>
-    <updated>2015-12-14T15:39:25+01:00</updated>
+    <updated>2015-12-14T15:41:08+01:00</updated>
     <published>2014-03-15T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/03/forward-cdi-2-0.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1499,7 +2028,7 @@
       &lt;/div&gt;
       &lt;div class=&quot;listingblock&quot;&gt;
       &lt;div class=&quot;content&quot;&gt;
-      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;myBeanInstance.restrictedTo(BeanImp.class).withQualifier(&lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@MyQualifier&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;Binding&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;) AnnotationLiteral&amp;lt;&amp;gt;(), &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@MyOtherQualifier&lt;/span&gt; AnnotationLiteral&amp;lt;&amp;gt;()).select();&lt;/code&gt;&lt;/pre&gt;
+      &lt;pre class=&quot;CodeRay highlight nowrap&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;myBeanInstance.restrictedTo(BeanImp.class).withQualifier(&lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@MyQualifier&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;Binding&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;) AnnotationLiteral&amp;lt;&amp;gt;(), &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;annotation&quot;&gt;@MyOtherQualifier&lt;/span&gt; AnnotationLiteral&amp;lt;&amp;gt;()).select();&lt;/code&gt;&lt;/pre&gt;
       &lt;/div&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
