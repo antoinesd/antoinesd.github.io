@@ -1,0 +1,77 @@
+---
+title: "Meet Swarmic, the CDI Stack for Java SE and EE"
+summary: First release of Swarmic
+layout: post
+authors: [asd]
+tags: [CDI,Swarmic]
+---
+
+image::posts/2016/Swarmic-logo.png[width="285",float="left"]
+Today, I'm proud to announce the first release of the brand new project https://github.com/swarmic[Swarmic^] (version 1.0.0.Alpha1).
+
+Swarmic is a mix of CDI extension and tooling to create standalone CDI application on Java SE.
+It can be used to build desktop application, Microservices or batch process.
+
+It is directly inspired by http://wildfly-swarm.io/[WildFly Swarm] and reuse some of its concepts like fractions.
+The project also comes from John Ament's Hammock project who donated his code to Swarmic.
+
+Swarmic uses CDI as an integration backbone and as a programming model at the same time.
+The good side of this approach makes the produced fat jars rather small.
+Downside is the usage of a flat class loader preventing some advanced and nice stuff that we have in WildFly Swarm.
+
+Swarmic aim CDI 2.0 and uses last Weld 3.0 Alpha version.
+The idea is avoid being tied to Weld and give feature usable on others CDI 2.0 implementations
+
+== Why Swarmic
+
+As you may know CDI 2.0 will support Java SE bootstrap at spec level.
+But what is the interest of such a feature if user don't have integration with basic services like persistence or Rest exposition?
+
+So the first mission of Swarmic is to propose the glue code to integrate these services that were available in Java EE.
+
+The second mission of this project and the most important is to create high level CDI extension or integration code for major framework out there.
+This ecosystem creation will benefit all platform supporting CDI (Java EE, Java SE or OSGi).
+
+The third and last mission is the "enhance our own dog food" mission.
+By putting Swarmic on the edge of technology (CDI 2.0, Java 9), we'll be able to test and experiment the future of the spec and implementations.
+Like static code generation, InvokeDynamic usage or others.
+
+== One programming model to unite them all
+
+Swarmic is the missing link to make CDI cross platformin whole Java world.
+
+By making it's programming model usable everywhere user can always take right platform for their needs nad keep their using their knowledge.
+
+* You need something small start with Swarmic.
+* Your needs grows and you want more features and better monitoring, go for WildFly Swarm.
+* Your project need to run on a standardized platform switch to Wildfly
+* You need professional support, Jboss EAP is your choice.
+
+In all the cases, CDI stay the same and provides (nearly) the same.
+
+== What's in this version ?
+
+This first alpha version of Swarmic provides the following fractions:
+
+* Web-Undertow: provides servlet engine based on UnderTow
+* Web-Jetty: provides servlet engine based on Jetty
+* Camel: support of Camel thru camel-cdi
+* Rest-RestEasy: support of Jax-RS with RestEasy implementation
+* JPA-Hibernate: support of JPA  with Hibernate implementation
+* JTA-Narayana: support of JTA (transactions) with Narayana
+
+You can test all these by grabbing our https://github.com/swarmic/swarmic-examples[examples]
+
+== A community first project
+
+We really need community feedback on Swarmic.
+If you find the project useful and want to see it growing give us your feedback, put a star on our https://github.com/swarmic/swarmic[Github repo^], follow our https://twitter.com/swarmic[Twitter account], spread the world about it, or even contribute.
+
+You can join the swarmic development team on the following channels:
+
+* Gitter https://gitter.im/swarmic/devs?utm_source=share-link&utm_medium=link&utm_campaign=share-link[chat room]
+* Google https://groups.google.com/forum/#!forum/swarmic[group & mailing list]
+* Of course you can fill an issue and send a pull request directly on our https://github.com/swarmic/swarmic[repo]
+* Follow us on https://twitter.com/swarmic[Twitter] to stay up to date.
+
+Thanks for help and feedback.
