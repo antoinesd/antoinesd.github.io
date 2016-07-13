@@ -2,180 +2,13 @@
 <feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">
   <id>http://www.next-presso.com/</id>
   <title>Next Presso</title>
-  <updated>2016-06-17T13:07:04+02:00</updated>
+  <updated>2016-06-17T12:09:42+01:00</updated>
   <link href="http://www.next-presso.com/news.atom" rel="self" type="application/atom+xml" />
   <link href="http://www.next-presso.com/" rel="alternate" type="text/html" />
   <entry>
-    <id>http://www.next-presso.com/2016/06/meet-swarmic-the-cdi-stack.html</id>
-    <title>Meet Swarmic, the CDI Stack for Java SE and EE</title>
-    <updated>2016-06-17T13:07:04+02:00</updated>
-    <published>2016-06-16T00:00:00+00:00</published>
-    <link href="http://www.next-presso.com/2016/06/meet-swarmic-the-cdi-stack.html" rel="alternate" type="text/html" />
-    <category term="CDI"></category>
-    <category term="Swarmic"></category>
-    <summary>
-      Today, I&#8217;m proud to announce the first release of the brand new project Swarmic (version 1.0.0.Alpha1).
-      
-      
-      Swarmic is a mix of CDI extension and tooling to create standalone CDI application on Java SE.
-      It can be used to build desktop application, Microservices or batch process.
-      
-      
-      It is directly inspired by WildFly Swarm and reuse some of its concepts like fractions.
-      The project also comes from John Ament&#8217;s Hammock project who donated his code to Swarmic.
-      
-      
-      Swarmic uses CDI as an integration backbone and as a programming model at the same time.
-      The good side of this approach makes the produced fat jars rather small.
-      Downside is the...
-    </summary>
-    <content type="html">
-      &lt;div class=&quot;imageblock&quot; style=&quot;float: left&quot;&gt;
-      &lt;div class=&quot;content&quot;&gt;
-      &lt;img src=&quot;http://www.next-presso.com/images/posts/2016/Swarmic-logo.png&quot; alt=&quot;Swarmic logo&quot; width=&quot;285&quot; /&gt;
-      &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;Today, I’m proud to announce the first release of the brand new project &lt;a href=&quot;https://github.com/swarmic&quot; target=&quot;_blank&quot;&gt;Swarmic&lt;/a&gt; (version 1.0.0.Alpha1).&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;Swarmic is a mix of CDI extension and tooling to create standalone CDI application on Java SE.
-      It can be used to build desktop application, Microservices or batch process.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;It is directly inspired by &lt;a href=&quot;http://wildfly-swarm.io/&quot;&gt;WildFly Swarm&lt;/a&gt; and reuse some of its concepts like fractions.
-      The project also comes from John Ament’s Hammock project who donated his code to Swarmic.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;Swarmic uses CDI as an integration backbone and as a programming model at the same time.
-      The good side of this approach makes the produced fat jars rather small.
-      Downside is the usage of a flat class loader preventing some advanced and nice stuff that we have in WildFly Swarm.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;Swarmic aim CDI 2.0 and uses last Weld 3.0 Alpha version.
-      The idea is avoid being tied to Weld and give feature usable on others CDI 2.0 implementations&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;sect1&quot;&gt;
-      &lt;h2 id=&quot;why-swarmic&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#why-swarmic&quot;&gt;&lt;/a&gt;Why Swarmic&lt;/h2&gt;
-      &lt;div class=&quot;sectionbody&quot;&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;As you may know CDI 2.0 will support Java SE bootstrap at spec level.
-      But what is the interest of such a feature if user don’t have integration with basic services like persistence or Rest exposition?&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;So the first mission of Swarmic is to propose the glue code to integrate these services that were available in Java EE.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;The second mission of this project and the most important is to create high level CDI extension or integration code for major framework out there.
-      This ecosystem creation will benefit all platform supporting CDI (Java EE, Java SE or OSGi).&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;The third and last mission is the &quot;enhance our own dog food&quot; mission.
-      By putting Swarmic on the edge of technology (CDI 2.0, Java 9), we’ll be able to test and experiment the future of the spec and implementations.
-      Like static code generation, InvokeDynamic usage or others.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;sect1&quot;&gt;
-      &lt;h2 id=&quot;one-programming-model-to-unite-them-all&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#one-programming-model-to-unite-them-all&quot;&gt;&lt;/a&gt;One programming model to unite them all&lt;/h2&gt;
-      &lt;div class=&quot;sectionbody&quot;&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;Swarmic is the missing link to make CDI cross platformin whole Java world.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;By making it’s programming model usable everywhere user can always take right platform for their needs nad keep their using their knowledge.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;ulist&quot;&gt;
-      &lt;ul&gt;
-      &lt;li&gt;
-      &lt;p&gt;You need something small start with Swarmic.&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-      &lt;p&gt;Your needs grows and you want more features and better monitoring, go for WildFly Swarm.&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-      &lt;p&gt;Your project need to run on a standardized platform switch to Wildfly&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-      &lt;p&gt;You need professional support, Jboss EAP is your choice.&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;In all the cases, CDI stay the same and provides (nearly) the same.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;sect1&quot;&gt;
-      &lt;h2 id=&quot;what-s-in-this-version&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#what-s-in-this-version&quot;&gt;&lt;/a&gt;What’s in this version ?&lt;/h2&gt;
-      &lt;div class=&quot;sectionbody&quot;&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;This first alpha version of Swarmic provides the following fractions:&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;ulist&quot;&gt;
-      &lt;ul&gt;
-      &lt;li&gt;
-      &lt;p&gt;Web-Undertow: provides servlet engine based on UnderTow&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-      &lt;p&gt;Web-Jetty: provides servlet engine based on Jetty&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-      &lt;p&gt;Camel: support of Camel thru camel-cdi&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-      &lt;p&gt;Rest-RestEasy: support of Jax-RS with RestEasy implementation&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-      &lt;p&gt;JPA-Hibernate: support of JPA  with Hibernate implementation&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-      &lt;p&gt;JTA-Narayana: support of JTA (transactions) with Narayana&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;You can test all these by grabbing our &lt;a href=&quot;https://github.com/swarmic/swarmic-examples&quot;&gt;examples&lt;/a&gt;&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;sect1&quot;&gt;
-      &lt;h2 id=&quot;a-community-first-project&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#a-community-first-project&quot;&gt;&lt;/a&gt;A community first project&lt;/h2&gt;
-      &lt;div class=&quot;sectionbody&quot;&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;We really need community feedback on Swarmic.
-      If you find the project useful and want to see it growing give us your feedback, put a star on our &lt;a href=&quot;https://github.com/swarmic/swarmic&quot; target=&quot;_blank&quot;&gt;Github repo&lt;/a&gt;, follow our &lt;a href=&quot;https://twitter.com/swarmic&quot;&gt;Twitter account&lt;/a&gt;, spread the world about it, or even contribute.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;You can join the swarmic development team on the following channels:&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;ulist&quot;&gt;
-      &lt;ul&gt;
-      &lt;li&gt;
-      &lt;p&gt;Gitter &lt;a href=&quot;https://gitter.im/swarmic/devs?utm_source=share-link&amp;amp;utm_medium=link&amp;amp;utm_campaign=share-link&quot;&gt;chat room&lt;/a&gt;&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-      &lt;p&gt;Google &lt;a href=&quot;https://groups.google.com/forum/#!forum/swarmic&quot;&gt;group &amp;amp; mailing list&lt;/a&gt;&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-      &lt;p&gt;Of course you can fill an issue and send a pull request directly on our &lt;a href=&quot;https://github.com/swarmic/swarmic&quot;&gt;repo&lt;/a&gt;&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-      &lt;p&gt;Follow us on &lt;a href=&quot;https://twitter.com/swarmic&quot;&gt;Twitter&lt;/a&gt; to stay up to date.&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;/ul&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;Thanks for help and feedback.&lt;/p&gt;
-      &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;/div&gt;
-    </content>
-  </entry>
-  <entry>
     <id>http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html</id>
     <title>CDI, the SPI who loved me</title>
-    <updated>2016-02-22T19:00:24+01:00</updated>
+    <updated>2016-06-17T12:09:42+01:00</updated>
     <published>2016-02-20T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -704,7 +537,7 @@
   <entry>
     <id>http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html</id>
     <title>How to recognize different types of beans from quite a long way away</title>
-    <updated>2016-02-22T19:00:24+01:00</updated>
+    <updated>2016-06-17T12:09:42+01:00</updated>
     <published>2015-12-14T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1528,7 +1361,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html</id>
     <title>You think you know everything about CDI events… Think again!</title>
-    <updated>2016-02-22T19:00:24+01:00</updated>
+    <updated>2016-06-17T12:09:42+01:00</updated>
     <published>2014-06-10T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -2015,7 +1848,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/03/forward-cdi-2-0.html</id>
     <title>Forward CDI 2.0</title>
-    <updated>2016-02-22T19:00:24+01:00</updated>
+    <updated>2016-06-17T12:09:42+01:00</updated>
     <published>2014-03-15T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/03/forward-cdi-2-0.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
