@@ -9,7 +9,6 @@ asciidoctor:
   :base_dir: null
   :attributes:
     imagesoutdir: _site/images
-    source-highlighter: highlight.js
     compat-mode: '@'
     attribute-missing: warn
     relfileprefix: '../'
@@ -19,7 +18,7 @@ asciidoctor:
     icons: font
     sectanchors: ''
     linkattrs: ''
-    source-highlighter: coderay
+    source-highlighter: highlightjs
     source-language: java
     prewrap: null
     figure-caption: null
