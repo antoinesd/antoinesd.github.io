@@ -452,6 +452,8 @@ public interface ProcessInjectionTarget<X> { <1>
 
 === ProcessBeanAttributes
 
+This event is fired before registration of a discovered bean.
+
 [source]
 ----
 public interface ProcessBeanAttributes<T> {
