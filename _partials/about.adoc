@@ -12,3 +12,5 @@ I'm also writing a lot of doc and article on CDI and its eco-system.
 You can follow me on https://twitter.com/antoine_sd[twitter^] and https://fr.linkedin.com/in/antoinesabotdurand[LinkedIn^].
 
 When I'm not coding or writing technical stuff I spend most of my time with my wife and 3 kids.
+
+Opinions expressed on this blog are my own and not the views of my employer.
