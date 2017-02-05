@@ -390,7 +390,7 @@ endif
 ....
 
 
-=== ProcessInjectionPoint
+=== ProcessInjectionPoint event
 
 For each injection point encountered during this process, the container will fire a `ProcessInjectionPoint` event.
 Injection points are fired for managed beans, producer methods and observer methods.
@@ -409,21 +409,46 @@ public interface ProcessInjectionPoint<T, X> { <1>
 <1> event is a parameterized type allowing observer to target a specific class `T` containig the injection point or a specific injection point type `X`
 <2> returns the `InjectionPoint` processed by this event
 <3> allow replacement of processed `InjectionPoint` either by implementing custom `InjectionPoint` or using and `InjectionPointConfigurator` (new CDI in 2.0)
-<4> allow observer to abort deployment by adding a definition error
+<4> allows observer to abort deployment by adding a definition error
 
-
-=== ProcessInjectionTarget
+An extension can observe this event for multiple reason.
+For instance it can be used to collect all types for a given qualifier and later create a bean to match these injection points
 
 [source]
 ----
-public interface ProcessInjectionTarget<X> {
 
-    public AnnotatedType<X> getAnnotatedType();
-    public InjectionTarget<X> getInjectionTarget();
-    public void setInjectionTarget(InjectionTarget<X> injectionTarget);
-    public void addDefinitionError(Throwable t);
+//TODO: example
+
+----
+
+=== ProcessInjectionTarget event
+
+An `InjectionTarget` can be seen as a non managed bean.
+It mainly provides dependency injection mechanism and some callback feature.
+
+[source]
+----
+public interface ProcessInjectionTarget<X> { <1>
+    public AnnotatedType<X> getAnnotatedType(); <2>
+    public InjectionTarget<X> getInjectionTarget(); <3>
+    public void setInjectionTarget(InjectionTarget<X> injectionTarget); <4>
+    public void addDefinitionError(Throwable t); <5>
 }
 ----
+<1> the event is a paramterized type to target a specific base type of the `InjectionTarget` to process
+<2> returns the `AnnotatedType` which defined the processed `InjectionTarget`
+<3> returns the `InjectionTarget` processed by this event
+<4> allows replacing the processed `InjectionTarget`
+<5> allows observer to abort deployment by adding a definition error
+
+
+[source]
+----
+
+//TODO: example with InjectionTargetFactory
+
+----
+
 
 === ProcessBeanAttributes
 
