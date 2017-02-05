@@ -1,0 +1,629 @@
+---
+title: "Nobody expects the CDI portable extensions"
+summary: One of the most
+layout: post
+authors: [asd]
+tags: [CDI,SPI,Extension]
+---
+
+image::posts/2016/legobricks.jpg[width="285",float="left"]
+Portable extensions are probably the coolest feature of CDI.
+
+Unfortunately, this gem is a bit hidden in the spec and some developers totally missed it while others may wrongly think that using extension is too complicated.
+
+With this article, I'll try to show that everybody can use extension in their work as it can be used to provide simple feature or advanced integration mechanism.
+
+But first things first, let's answer the basic question "why would you need to develop a portable extension".
+
+== What can I do with an extension
+
+At boot time CDI scans most of the class in the classpath to create its configuration and the bean graph.
+The configuration and meta data that are created at this moment are created from static content (class file) and may need some more dynamic content.
+
+That's where portable extension gets in.
+
+A CDI portable extension allows you to hook on the CDI scanning process which occurs at boot time and modify or add information to the meta data created by the CDI container.
+
+That includes add Beans, remove classes from set of type that should become bean, add producers, observers and most of the link:/2016/02/cdi-the-spi-who-loved-me/[SPI elements] that exist in CDI.
+
+So to make short, extensions are how developers can configure CDI and override default behaviour created from reading the classes.
+
+== Getting started with CDI extension
+
+CDI portable extensions are based on https://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html[Java SE service-provider^].
+
+Service interface is `javax.enterprise.inject.spi.Extension`, so to add an extension you'll need to create a class implementing `javax.enterprise.inject.spi.Extension` interface and add this class qualified name to the `META-INF/services/javax.enterprise.inject.spi.Extension` service provider text file.
+
+Extension feature is defined by adding observers on specific lifecycle event of the CDI container.
+At boot time, the CDI container will use service provider mechanism to discover all extensions and register these observers.
+
+This approach allows you to hook on internal lifecycle steps of the container and modify their outcome.
+
+Let's check what are these step.
+
+
+== Extension step by step
+
+To understand how to work with extensions, we can start by splitting container lifecycle in 4 Big steps:
+
+.The major steps of the CDI container lifecycle
+[plantuml, broaderlifecycle, svg]
+....
+@startuml
+skinparam activity {
+  BackgroundColor #337788
+  BackgroundColor<< Internal >> #888888
+  ArrowColor #888888
+  BarColor #888888
+  BorderColor White
+  FontColor White
+  FontSize 20
+}
+
+(*) -right-> "Types discovery"
+-right-> "Beans discovery"
+-right-> "Application running" << Internal >>
+-right-> "Before shutdown"
+-right-> (*)
+@enduml
+....
+
+Eah of these step (except "Application running") contains one or more events for which you can define one or more observers in your extension to hook on CDI elements discovery and meta data building.
+
+Let's focus on each of these steps and describe the events that you can use in each one.
+
+Some examples given below will use new features coming from CDI 2.0.
+I'll explain how same result can be obtained in CDI 1.2.
+
+== Types discovery
+
+Type discovery can be illustrated like this
+
+.Types discovery
+[plantuml, typesdiscovery, svg]
+....
+@startuml
+
+
+:Fire **BeforeTypeDiscovery** event;
+#lightgrey:Start type scanning process;
+#lightgrey:while (Does the scanning process found a new type?) is (yes)
+  #lightgrey:Creates an **AnnotatedType** from type found;
+  :Fire **ProcessAnnotatedType** (PAT) for the AnnotatedType;
+  #lightgrey:if(PAT.veto() wasn't called) then (yes)
+    #lightgrey:add PAT.getAnnotatedType() to discovered type set;
+  endif
+endwhile (no)
+:Fire **AfterTypeDiscovery**;
+
+@enduml
+....
+
+NOTE: In this schema (and next ones), yellow boxes are the in which an extension can observes an event and perform actions, grey ones are simplification of internal container behaviour.
+
+The goal of this step is to create a set of `AnnotatedType` which will be candidate to become beans.
+
+Ths set can be filled explicitly in a `BeforeTypeDiscovery` or `AfterDiscovery` observers
+
+It is also filled automatically by the container class scanning process on which developer can place a hook to alter the discovered by using a `ProcessAnnotatedType` observer.
+
+Let's see in detail how all this work.
+
+=== Adding types before scanning (`BeforeBeanDiscovery` event)
+
+Before CDI container start automatic types scan on the class path, it fires the BeforeBeanDiscovery event.
+
+Observing this events allows addition of a specific type to the set of discovered types or addition of specific CDI annotations like qualifier, stereotype or interceptor binding.
+
+
+[source]
+----
+public interface BeforeBeanDiscovery {
+  void addQualifier(Class<? extends Annotation> qualifier); <1>
+  void addQualifier(AnnotatedType<? extends Annotation> qualifier); <1>
+  void addScope(Class<? extends Annotation> scopeType, boolean normal, boolean passivating); <2>
+  void addStereotype(Class<? extends Annotation> stereotype, Annotation... stereotypeDef); <3>
+  void addInterceptorBinding(AnnotatedType<? extends Annotation> bindingType); <4>
+  void addInterceptorBinding(Class<? extends Annotation> bindingType, Annotation... bindingTypeDef); <4>
+  void addAnnotatedType(AnnotatedType<?> type, String id); <5>
+
+  /* New methods in CDI 2.0 */
+  <T> AnnotatedTypeConfigurator<T> addAnnotatedType(Class<T> type, String id); <5>
+  <T extends Annotation> AnnotatedTypeConfigurator<T> configureQualifier(Class<T> qualifier); <1>
+  <T extends Annotation> AnnotatedTypeConfigurator<T> configureInterceptorBinding(Class<T> bt); <4>
+}
+----
+<1> Add a new qualifier with an `Annotation`, an `AnnotatedType` or by using the CDI 2.0 `AnnotatedTypeConfigurator`
+<2> Add a new scope `Annotation`
+<3> Define a new Stereotype by giving its `Annotation` and the `Annotations` collection it stands for
+<4> Add a new interceptor binding with an `Annotation` and its meta annotations, an `AnnotatedType` or by using the CDI 2.0 `AnnotatedTypeConfigurator`
+<5> Add a new `AnnotatedType` from a custom `AnnotatedType` or by using the CDI 2.0 `AnnotatedTypeConfigurator`
+
+The following example illustrate usage of this event.
+
+[source]
+----
+public class MetricsExtension implements Extension { <1>
+
+    public void addMetricAsQual(@Observes BeforeBeanDiscovery bbd) { <2>
+        bbd.addQualifier(Metric.class); <3>
+    }
+}
+----
+<1> defining the extension (remember to also add class FQN to `META-INF/services/javax.enterprise.inject.spi.Extension` text file
+<2> An observer for the `BeforeBeanDiscovery` lifecycle event
+<3> Declaring an annotation from a 3rd party non-CDI framework as a qualifier
+
+The example above is a piece of the https://github.com/astefanutti/metrics-cdi[Dropwizard Metrics CDI integration extension^].
+It declares a standard annotation (`@Metrics`) as a CDI qualifier.
+
+You can also transform a non-CDI class to have it discovered as a managed bean by the container:
+
+[source]
+----
+public class MyLegacyFrameworkService { <1>
+
+    private Configurator config;
+
+    public MyLegacyFrameworkService(Configurator config) {
+        this.config = config;
+    }
+}
+
+...
+
+public class LegacyIntegrationExtension implements Extension {
+
+    public void addLegacyServiceAsBean(@Observes BeforeBeanDiscovery bbd) {
+        bbd.addAnnotatedType(MyLegacyFrameworkService.class,MyLegacyFrameworkService.class.getName()) <2>
+                .add(ApplicationScoped.Literal.INSTANCE) <3>
+                .filterConstructors(c -> c.getParameters().size() == 1)
+                .findFirst().get().add(InjectLiteral.INSTANCE); <4>
+    }
+----
+<1> class from a legacy framework that we want to integrate into CDI programming model without changing its code
+<2> using an `AnnotatedTypeConfigurator` (new in CDI 2.0) based on the `MyLegacyFrameworkService` class
+<3> adding `@ApplicationScoped` scope on the `AnnotatedTypeConfigurator`
+<4> find the first constructor with one parameters and add the `@Inject` on it
+
+
+The example above use new feature from CDI 2.0: the `AnnotatedTypeConfigurator` returned by one of the `addAnnotatedType()` methods of BeforeBeanDiscovery event.
+If you are in CDI 1.1 you can don the same but you'll have to implement your own `AnnotatedType` to do the same in more verbose way.
+to configure a new `AnnotatedType` add a scope on it and an `@Inject` annotation on one of its constructors.
+At the end of observer invocation, the container will automatically build the matching `AnnotatedType` from this configurator and add it to the discovered type set.
+
+=== Automatic types scanning process
+
+After this first event, the container starts a process of type discovery in the application classpath.
+
+This scanning can be configured differently for each bean archive (i.e. jar or module) in the classpath.
+
+Each jar in the application path may (or may not) contain a `beans.xml` file defining how types will be scanned by the CDI container for this bean archive.
+
+Remember that CDI doesn't provide a global configuration file so each of your bean archive (including the war container others bean archive) must define its discovery mode.
+
+There are 3 discovery mode:
+
+* `none`: no type will be discovered for this bean archive
+* `annotated` (default mode): only class having specific annotations (http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#bean_defining_annotations[bean defining annotation]^) will be discovered
+* `all`: all types will be discovered
+
+Discovery mode is inferred by analyzing the bean archive `beans.xml` file
+
+.what is my discovery mode?
+|===
+|`beans.xml` file state |discovery mode
+
+|No `beans.xml`
+|`annotated`
+
+|empty `beans.xml`
+|`all`
+
+|`beans.xml` using CDI 1.0 xsd
+|`all`
+
+|`beans.xml` using CDI 1.1 xsd
+|value of `bean-discovery-mode` attribute
+|===
+
+You can also fine grain type discovery by using http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#exclude_filters[exclusion filters^]
+
+In CDI 2.0 when you are working on Java SE, jars without `beans.xml` file are ignored by default.
+
+=== ProcessAnnotatedType event
+
+After this scanning phase, the container creates an AnnotatedType and fire the ProcessAnnotatedType event for each type discovered (except for annotations).
+
+[source]
+----
+public interface ProcessAnnotatedType<X> { <1>
+    AnnotatedType<X> getAnnotatedType(); <2>
+    void setAnnotatedType(AnnotatedType<X> type); <3>
+    void veto(); <4>
+
+    /* New in CDI 2.0 */
+    AnnotatedTypeConfigurator<X> configureAnnotatedType(); <3>
+}
+----
+<1> the event is a parameterized type allowing user to only process `AnnotatedType` based on a given original type
+<2> returns the current processed `AnnotatedType`
+<3> replaces the processed `AnnotatedType` by a new one defined by implementing `AnnotatedType` interface or with the help of an `AnnotatedTypeConfigurator` (new in CDI 2.0)
+<4> remove the processed AnnotatedType from the set of discovered type: this type won't become a bean
+
+This event is often use to override configuration on an existing type.
+
+For instance the example below remove adds transactional annotation on the `StandardService` class in a third party library.
+
+[source]
+----
+public class AddTranscationalToServiceExtension implements Extension {
+
+    public void addTransactional(@Observes ProcessAnnotatedType<StandardService> pat) { <1>
+        pat.configureAnnotatedType().add(new AnnotationLiteral<Transactional>(){});
+    }
+----
+<1> observer will only be triggered for any `AnnotatedType` based on `StandardService` type
+
+It can also be used to veto type implementing an interface or having a specific annotation (thanks to the `@WithAnnotations` filter).
+
+[source]
+----
+public class VetEntitiesExtension implements Extension {
+
+    public void vetoEntities(@Observes @WithAnnotations(Entity.class) ProcessAnnotatedType<?> pat) { <1>
+        pat.veto();
+    }
+----
+<1> observer will be triggered for any `AnnotatedType` based on any type having @Entity annotation
+
+This last example vetoes all JPA entities in the application to avoid using them as CDI beans.
+
+=== AfterTypeDiscovery event
+
+This event closes the type discovery process
+
+[source]
+----
+public interface AfterTypeDiscovery {
+    List<Class<?>> getAlternatives(); <1>
+    List<Class<?>> getInterceptors(); <1>
+    List<Class<?>> getDecorators(); <1>
+    void addAnnotatedType(AnnotatedType<?> type, String id); <2>
+
+    /* New in CDI 2.0 */
+    <T> AnnotatedTypeConfigurator<T> addAnnotatedType(Class<T> type, String id); <2>
+}
+----
+<1> these methods give you access to classes list discovered as possible alternatives beans, interceptors or decorators.
+You can use these inventory list to check everything you need is here or add a new class to them since these lists are mutable
+<2> as in `BeforeBeanDiscovery` you can add a custom `AnnotatedType` to the set of discovered `AnnotatedType`
+
+The following extension checks that if `LastInterceptor` class was discovered as an interceptor, this one will be invoked after all other interceptors.
+
+[source]
+----
+public class lastInteceptorExtension implements Extension {
+
+public void lastInterceptorCheck (@Observes AfterTypeDiscovery atd) {
+        List<Class<?>> interceptors = atd.getInterceptors();
+        if(interceptors.indexOf(LastInterceptor.class) < interceptors.size()) {
+            interceptors.remove(LastInterceptor.class);
+            interceptors.add(LastInterceptor.class);
+        }
+    }
+}
+----
+
+== Beans discovery phase
+
+In this phase each discovered type is analyzed to check if they are eligible to become beans.
+
+If it's the case a series of events are fired to allow modification of the future bean.
+
+If the bean was not vetoed by an extension, container launch producers and observers discovring processes.
+
+At the end of this phase, extension has opportunity to register custom beans or observers with the `AfterBeanDiscovery` event.
+
+The phase ends with the validation of all the element by the container and the `AfterDeploymentValidation` event.
+
+The following schema illustrates all the phase steps.
+While it could looks complicated at first, this process is rather easy to understand.
+
+
+.Beans discovery
+[plantuml, beansdiscovery, svg]
+....
+@startuml
+#lightgrey:while (type is available in discovered type set) is (yes)
+  #lightgrey:if (type metadata makes it eligible to become a bean) then (yes)
+    #lightgrey:if (there is no definition error on the class) then (yes)
+      #lightgrey:while (class has injection point) is (yes)
+        :Fire **ProcessInjectionPoint** event;
+      endwhile (no)
+      :Fire **ProcessInjectionTarget** event;
+      :Fire **ProcessBeanAttributes (PBA)** event;
+      #lightgrey:if (PBA.veto() wasn't called) then (yes)
+        :Fire **ProcessBean** event;
+        #lightgrey:bean is registered in container;
+          fork
+            partition #lightblue Producers {
+            #lightgrey:while (bean has producer fields or methods) is (yes)
+              #lightgrey:while (Producer has injection points) is (yes)
+                :Fire **ProcessInjectionPoint** event;
+              endwhile (no)
+              :Fire **ProcessProducer** event;
+              :Fire **ProcessBeanAttributes (PBA)** event;
+              #lightgrey:if (PBA.veto() wasn't called) then (yes)
+                :Fire **ProcessProducerMethod** or **ProcessProducerField** event;
+              endif
+            endwhile (no)
+            }
+          fork again
+            partition #lightgreen Observers {
+            #lightgrey:while (bean has observer methods) is (yes)
+              #lightgrey:while (Observer method has injection points) is (yes)
+                :Fire **ProcessInjectionPoint** event;
+               endwhile (no)
+              :Fire **ProcessObserverMethod** event;
+            endwhile (no)
+            }
+          end fork
+      else (no)
+      endif
+    else (no)
+      #lightgrey:throws a deployment exception;
+      stop
+    endif
+  else (no)
+  endif
+endwhile (no)
+:Fire **AfterBeanDiscovery**;
+#lightgrey:if (Meta data is non valid) then (yes)
+  #lightgrey:throws a deployment exception;
+  stop
+else (no)
+endif
+:Fire **AfterDeploymentValidation**;
+#lightgrey: Application is running;
+@enduml
+....
+
+
+=== ProcessInjectionPoint
+
+For each injection point encountered during this process, the container will fire a `ProcessInjectionPoint` event.
+Injection points are fired for managed beans, producer methods and observer methods.
+
+[source]
+----
+public interface ProcessInjectionPoint<T, X> { <1>
+    InjectionPoint getInjectionPoint(); <2>
+    void setInjectionPoint(InjectionPoint injectionPoint); <3>
+    void addDefinitionError(Throwable t); <4>
+
+    /* New in CDI 2.0 */
+    InjectionPointConfigurator configureInjectionPoint(); <3>
+}
+----
+<1> event is a parameterized type allowing observer to target a specific class `T` containig the injection point or a specific injection point type `X`
+<2> returns the `InjectionPoint` processed by this event
+<3> allow replacement of processed `InjectionPoint` either by implementing custom `InjectionPoint` or using and `InjectionPointConfigurator` (new CDI in 2.0)
+<4> allow observer to abort deployment by adding a definition error
+
+
+=== ProcessInjectionTarget
+
+[source]
+----
+public interface ProcessInjectionTarget<X> {
+
+    public AnnotatedType<X> getAnnotatedType();
+    public InjectionTarget<X> getInjectionTarget();
+    public void setInjectionTarget(InjectionTarget<X> injectionTarget);
+    public void addDefinitionError(Throwable t);
+}
+----
+
+=== ProcessBeanAttributes
+
+[source]
+----
+public interface ProcessBeanAttributes<T> {
+
+    public Annotated getAnnotated();
+    public BeanAttributes<T> getBeanAttributes();
+    public void setBeanAttributes(BeanAttributes<T> beanAttributes);
+    public void addDefinitionError(Throwable t);
+    public void veto();
+
+    public BeanAttributesConfigurator<T> configureBeanAttributes();
+    public void ignoreFinalMethods();
+}
+----
+
+=== ProcessBean
+
+ProcessProducerMethod
+
+
+[source]
+----
+public interface ProcessBean<X> {
+
+    public Annotated getAnnotated();
+    public Bean<X> getBean();
+    public void addDefinitionError(Throwable t);
+}
+----
+
+edfezfez
+
+[plantuml, "processBean_hierarchy", "svg", width="100%"]
+....
+@startuml
+
+ProcessBean <|-- ProcessProducerMethod
+ProcessBean <|-- ProcessProducerField
+ProcessBean <|-- ProcessManagedBean
+ProcessManagedBean <|-- ProcessSessionBean
+
+interface ProcessBean<X> {
+    +Annotated getAnnotated()
+    +Bean<X> getBean()
+    +void addDefinitionError(Throwable)
+}
+
+
+interface ProcessProducerMethod<T, X> {
+    +AnnotatedMethod<T> getAnnotatedProducerMethod()
+    +AnnotatedParameter<T> getAnnotatedDisposedParameter()
+}
+
+interface ProcessProducerField<T, X> {
+    +AnnotatedField<T> getAnnotatedProducerField()
+    +AnnotatedParameter<T> getAnnotatedDisposedParameter()
+}
+
+interface ProcessManagedBean<X> {
+    +AnnotatedType<X> getAnnotatedBeanClass();
+}
+
+interface ProcessSessionBean<X> {
+    +String getEjbName();
+    +SessionBeanType getSessionBeanType();
+}
+
+
+@enduml
+....
+
+
+=== ProcessProducer
+
+[source]
+----
+public interface ProcessProducer<T, X> {
+    AnnotatedMember<T> getAnnotatedMember();
+    Producer<X> getProducer();
+    void addDefinitionError(Throwable t);
+    void setProducer(Producer<X> producer);
+
+    ProducerConfigurator<X> configureProducer();
+}
+----
+
+=== ProcessObserverMethod
+
+[source]
+----
+public interface ProcessObserverMethod<T, X> {
+    AnnotatedMethod<X> getAnnotatedMethod();
+    ObserverMethod<T> getObserverMethod();
+    void addDefinitionError(Throwable t);
+
+
+    void setObserverMethod(ObserverMethod<T> observerMethod);
+    ObserverMethodConfigurator<T> configureObserverMethod();
+    void veto();
+}
+----
+
+=== AfterBeanDiscovery
+
+[source]
+----
+public interface AfterBeanDiscovery {
+    void addDefinitionError(Throwable t);
+    void addBean(Bean<?> bean);
+    void addObserverMethod(ObserverMethod<?> observerMethod);
+    void addContext(Context context);
+    <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id);
+    <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type);
+
+    <T> BeanConfigurator<T> addBean();
+    <T> ObserverMethodConfigurator<T> addObserverMethod();
+
+
+}
+----
+
+
+=== AfterDeploymentValidation
+
+[source]
+----
+public interface AfterDeploymentValidation {
+    void addDeploymentProblem(Throwable t);
+}
+----
+
+lnkjklj
+
+
+[plantuml, "lifecycle-complete", "svg", height="95%"]
+----
+@startuml
+
+skinparam shadowing false
+skinparam backgroundColor transparent
+skinparam defaultFontName Consolas
+skinparam titleFontSize 30
+
+skinparam activity {
+  BackgroundColor #337788
+  ArrowColor #888888
+  BarColor #888888
+  BorderColor White
+  FontName Consolas
+  FontColor White
+  FontSize 20
+  DiamondFontSize 14
+}
+
+|**Application Lifecycle**|
+start
+#BB3322:BeforeBeanDiscovery>
+
+|**Type Discovery**|
+
+while (<color:#FFFFFF>while types in</color>\n<color:#FFFFFF>deployment archive?</color>) is (yes)
+fork
+    :ProcessAnnotatedType<X> >
+/' fork again
+    :ProcessSyntheticAnnotatedType<X> > '/
+end fork
+endwhile (no)
+
+|**Application Lifecycle**|
+#BB3322:AfterTypeDiscovery>
+
+|**Bean Discovery**|
+fork
+partition "**For each discovered types during type discovery**" {
+    :ProcessInjectionPoint<T, X> >
+    :ProcessInjectionTarget<X> >
+    :ProcessBeanAttributes<T> >
+    :ProcessManagedBean<X> >
+}
+fork again
+partition "**For each producer methods / fields of enabled beans**" {
+    :ProcessInjectionPoint<T, X> >
+    :ProcessProducer<T, X> >
+    :ProcessBeanAttributes<T> >
+    :ProcessProducerMethod<T, X>\nProcessProducerField<T, X> >
+}
+fork again
+partition "**For each observer methods of enabled beans**" {
+    :ProcessInjectionPoint<T, X> >
+    :ProcessObserverMethod<T, X> >
+}
+end fork
+
+|**Application Lifecycle**|
+#BB3322:AfterBeanDiscovery>
+#BB3322:AfterDeploymentValidation>
+stop
+
+@enduml
+----
