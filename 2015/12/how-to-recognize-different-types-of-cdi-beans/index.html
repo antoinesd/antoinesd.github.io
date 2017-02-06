@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>How to recognize different types of beans from quite a long way away  | Next Presso</title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/asciidoctor.css"><link rel="stylesheet" href="/stylesheets/styles.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><!--[if lt IE 9]><script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><script>hljs.initHighlightingOnLoad(); </script></head><body><div class="container"><div class="row"><div class="col-lg-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-lg-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://www.next-presso.com"><i class="fa fa-home fa-fw"></i> Home </a><a class="navbar-brand" href="/about"><i class="fa fa-user fa-fw"></i> About me </a></div></div></nav><script>var indexOfSharp = window.location.pathname.indexOf('#');
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>How to recognize different types of beans from quite a long way away  | Next Presso</title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/asciidoctor.css"><link rel="stylesheet" href="/stylesheets/styles.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/github.min.css"><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><!--[if lt IE 9]><script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><script>hljs.initHighlightingOnLoad(); </script></head><body><div class="container"><div class="row"><div class="col-lg-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-lg-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://www.next-presso.com"><i class="fa fa-home fa-fw"></i> Home </a><a class="navbar-brand" href="/about"><i class="fa fa-user fa-fw"></i> About me </a></div></div></nav><script>var indexOfSharp = window.location.pathname.indexOf('#');
 var pathname = indexOfSharp > 0 ? window.location.pathname.substring(0, indexOfSharp) : window.location.pathname;
 var selector = "body > .container > .row > .col-md-12 > .navbar > .container-fluid > .navbar-collapse a[href='http://www.next-presso.com" + pathname + "']";
 $(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-lg-12"><div class="row"><div class="col-lg-9"><article class="post"><div class="panel panel-primary"><div class="panel-body"><ul class="pager visible-md-block visible-lg-block"><li class="previous"><a href="/2014/06/you-think-you-know-everything-about-cdi-events-think-again/">Previous: You think you know everything about CDI events… Think again!</a></li><li class="next"><a href="/2016/02/cdi-the-spi-who-loved-me/">Next: CDI, the SPI who loved me</a></li></ul><ul class="pager visible-sm-block visible-xs-block"><li class="previous"><a href="/2014/06/you-think-you-know-everything-about-cdi-events-think-again/"> Previous</a></li><li class="next"><a href="/2016/02/cdi-the-spi-who-loved-me/"> Next</a></li></ul><h1><a href="/2015/12/how-to-recognize-different-types-of-cdi-beans/">How to recognize different types of beans from quite a long way away </a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Dec 14, 2015</span> |  <a href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans/#disqus_thread">Comments</a> </strong></div><div class="content"><div id="preamble">
@@ -23,8 +23,8 @@ In this article I&#8217;ll try to clarify most of bean related concepts and deta
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="annotation">@MyQualifier</span>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Inject
+@MyQualifier
 MyBean bean;</code></pre>
 </div>
 </div>
@@ -132,23 +132,23 @@ This approach allows the implementation to cache the matching bean for a given i
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Loggable</span>
-<span class="annotation">@Interceptor</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">LoggingInterceptor</span> {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Loggable
+@Interceptor
+public class LoggingInterceptor {
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> <span class="predefined-type">Logger</span> logger;
+    @Inject
+    private Logger logger;
 
-    <span class="annotation">@Inject</span> <span class="annotation">@Intercepted</span> <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="directive">private</span> Bean&lt;?&gt; intercepted;
+    @Inject @Intercepted <i class="conum" data-value="1"></i><b>(1)</b>
+    private Bean&lt;?&gt; intercepted;
 
-    <span class="annotation">@AroundInvoke</span>
-    <span class="directive">private</span> <span class="predefined-type">Object</span> intercept(InvocationContext ic) <span class="directive">throws</span> <span class="exception">Exception</span> {
-        logger.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">&gt;&gt; </span><span class="delimiter">&quot;</span></span> + intercepted.getBeanClass().getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content"> - </span><span class="delimiter">&quot;</span></span> + ic.getMethod().getName()); <i class="conum" data-value="2"></i><b>(2)</b>
-        <span class="keyword">try</span> {
-            <span class="keyword">return</span> ic.proceed();
-        } <span class="keyword">finally</span> {
-            logger.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;&lt; </span><span class="delimiter">&quot;</span></span> + intercepted.getBeanClass().getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content"> - </span><span class="delimiter">&quot;</span></span> + ic.getMethod().getName());
+    @AroundInvoke
+    private Object intercept(InvocationContext ic) throws Exception {
+        logger.info("&gt;&gt; " + intercepted.getBeanClass().getName() + " - " + ic.getMethod().getName()); <i class="conum" data-value="2"></i><b>(2)</b>
+        try {
+            return ic.proceed();
+        } finally {
+            logger.info("&lt;&lt; " + intercepted.getBeanClass().getName() + " - " + ic.getMethod().getName());
         }
     }
 }</code></pre>
@@ -377,20 +377,20 @@ You can for instance have asynchronous behavior and observer features in one bea
 <h4 id="examples"><a class="anchor" href="#examples"></a>Examples</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@ConversationScoped</span>
-<span class="annotation">@Stateful</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ShoppingCart</span> { ... } <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@ConversationScoped
+@Stateful
+public class ShoppingCart { ... } <i class="conum" data-value="1"></i><b>(1)</b>
 
-<span class="annotation">@Stateless</span>
-<span class="annotation">@Named</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">loginAction</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">LoginActionImpl</span> <span class="directive">implements</span> LoginAction { ... } <i class="conum" data-value="2"></i><b>(2)</b>
+@Stateless
+@Named("loginAction")
+public class LoginActionImpl implements LoginAction { ... } <i class="conum" data-value="2"></i><b>(2)</b>
 
 
-<span class="annotation">@ApplicationScoped</span>
-<span class="annotation">@Singleton</span> <i class="conum" data-value="3"></i><b>(3)</b>
-<span class="annotation">@Startup</span> <i class="conum" data-value="4"></i><b>(4)</b>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">bootBean</span> {
- <span class="annotation">@Inject</span>
+@ApplicationScoped
+@Singleton <i class="conum" data-value="3"></i><b>(3)</b>
+@Startup <i class="conum" data-value="4"></i><b>(4)</b>
+public class bootBean {
+ @Inject
  MyBean bean;
 }</code></pre>
 </div>
@@ -508,18 +508,18 @@ When the container container finds producer method or field, it looks for matchi
 <h4 id="examples-2"><a class="anchor" href="#examples-2"></a>Examples</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ProducerBean</span> {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class ProducerBean {
 
-  <span class="annotation">@Produces</span>
-  <span class="annotation">@ApplicationScoped</span>
-  <span class="directive">private</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Integer</span>&gt; mapInt = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;(); <i class="conum" data-value="1"></i><b>(1)</b>
+  @Produces
+  @ApplicationScoped
+  private List&lt;Integer&gt; mapInt = new ArrayList&lt;&gt;(); <i class="conum" data-value="1"></i><b>(1)</b>
 
-  <span class="annotation">@Produces</span> <span class="annotation">@RequestScoped</span> <span class="annotation">@UserDatabase</span>
-  <span class="directive">public</span> EntityManager create(EntityManagerFactory emf) { <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="keyword">return</span> emf.createEntityManager();
+  @Produces @RequestScoped @UserDatabase
+  public EntityManager create(EntityManagerFactory emf) { <i class="conum" data-value="2"></i><b>(2)</b>
+    return emf.createEntityManager();
   }
 
-  <span class="directive">public</span> <span class="type">void</span> close(<span class="annotation">@Disposes</span> <span class="annotation">@Any</span> EntityManager em) {  <i class="conum" data-value="3"></i><b>(3)</b>
+  public void close(@Disposes @Any EntityManager em) {  <i class="conum" data-value="3"></i><b>(3)</b>
     em.close();
   }
 
@@ -577,27 +577,27 @@ When the container container finds producer method or field, it looks for matchi
 <div class="listingblock">
 <div class="title">Declaring resources beans</div>
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Produces</span>
-<span class="annotation">@WebServiceRef</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:app/service/PaymentService</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Produces
+@WebServiceRef(lookup="java:app/service/PaymentService") <i class="conum" data-value="1"></i><b>(1)</b>
 PaymentService paymentService;
 
-<span class="annotation">@Produces</span>
-<span class="annotation">@EJB</span>(beanname=<span class="string"><span class="delimiter">&quot;</span><span class="content">../their.jar#PaymentService</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="2"></i><b>(2)</b>
+@Produces
+@EJB(beanname="../their.jar#PaymentService") <i class="conum" data-value="2"></i><b>(2)</b>
 PaymentService paymentService;
 
-<span class="annotation">@Produces</span>
-<span class="annotation">@CustomerDatabase</span>
-<span class="annotation">@PersistenceContext</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
+@Produces
+@CustomerDatabase
+@PersistenceContext(unitName="CustomerDatabase") <i class="conum" data-value="3"></i><b>(3)</b>
 EntityManager customerDatabasePersistenceContext;
 
-<span class="annotation">@Produces</span>
-<span class="annotation">@CustomerDatabase</span>
-<span class="annotation">@PersistenceUnit</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="4"></i><b>(4)</b>
+@Produces
+@CustomerDatabase
+@PersistenceUnit(unitName="CustomerDatabase") <i class="conum" data-value="4"></i><b>(4)</b>
 EntityManagerFactory customerDatabasePersistenceUnit;
 
-<span class="annotation">@Produces</span>
-<span class="annotation">@CustomerDatabase</span>
-<span class="annotation">@Resource</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:global/env/jdbc/CustomerDatasource</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="5"></i><b>(5)</b>
+@Produces
+@CustomerDatabase
+@Resource(lookup="java:global/env/jdbc/CustomerDatasource") <i class="conum" data-value="5"></i><b>(5)</b>
 Datasource customerDatabase;</code></pre>
 </div>
 </div>
@@ -631,15 +631,15 @@ Datasource customerDatabase;</code></pre>
 <div class="listingblock">
 <div class="title">producing an <code>EntityManager</code> with <code>COMMIT</code> flush mode</div>
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">EntityManagerBeanProducer</span> {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class EntityManagerBeanProducer {
 
-  <span class="annotation">@PersistenceContext</span>
-  <span class="directive">private</span> EntityManager em;
+  @PersistenceContext
+  private EntityManager em;
 
-  <span class="annotation">@Produces</span>
+  @Produces
   EntityManager produceCommitEm() {
     em.setFlushMode(COMMIT);
-    <span class="keyword">return</span> em;
+    return em;
   }
 }</code></pre>
 </div>

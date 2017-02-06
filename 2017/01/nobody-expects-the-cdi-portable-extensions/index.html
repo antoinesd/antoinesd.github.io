@@ -1,0 +1,1077 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Nobody expects the CDI portable extensions | Next Presso</title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/asciidoctor.css"><link rel="stylesheet" href="/stylesheets/styles.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/github.min.css"><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><!--[if lt IE 9]><script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><script>hljs.initHighlightingOnLoad(); </script></head><body><div class="container"><div class="row"><div class="col-lg-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-lg-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://www.next-presso.com"><i class="fa fa-home fa-fw"></i> Home </a><a class="navbar-brand" href="/about"><i class="fa fa-user fa-fw"></i> About me </a></div></div></nav><script>var indexOfSharp = window.location.pathname.indexOf('#');
+var pathname = indexOfSharp > 0 ? window.location.pathname.substring(0, indexOfSharp) : window.location.pathname;
+var selector = "body > .container > .row > .col-md-12 > .navbar > .container-fluid > .navbar-collapse a[href='http://www.next-presso.com" + pathname + "']";
+$(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-lg-12"><div class="row"><div class="col-lg-9"><article class="post"><div class="panel panel-primary"><div class="panel-body"><ul class="pager visible-md-block visible-lg-block"><li class="previous"><a href="/2016/02/cdi-the-spi-who-loved-me/">Previous: CDI, the SPI who loved me</a></li></ul><ul class="pager visible-sm-block visible-xs-block"><li class="previous"><a href="/2016/02/cdi-the-spi-who-loved-me/"> Previous</a></li></ul><h1><a href="/2017/01/nobody-expects-the-cdi-portable-extensions/">Nobody expects the CDI portable extensions</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Jan 27, 2017</span> |  <a href="http://www.next-presso.com/2017/01/nobody-expects-the-cdi-portable-extensions/#disqus_thread">Comments</a> </strong></div><div class="content"><div class="imageblock" style="float: right">
+<div class="content">
+<img src="/images/posts/2017/rainbow_lego.jpg" alt="rainbow lego" width="285">
+</div>
+</div>
+<div class="paragraph">
+<p>Portable extensions are probably the coolest feature of CDI.</p>
+</div>
+<div class="paragraph">
+<p>Unfortunately, this gem is a bit hidden in the spec and some developers totally missed it while others may wrongly think that using extension is too complicated.</p>
+</div>
+<div class="paragraph">
+<p>With this article, I&#8217;ll try to show that everybody can use extension in their work as it can be used to provide simple feature or advanced integration mechanism.</p>
+</div>
+<div class="paragraph">
+<p>But first things first, let&#8217;s answer the basic question "why would you need to develop a portable extension".</p>
+</div>
+<div class="sect1">
+<h2 id="what-can-i-do-with-an-extension"><a class="anchor" href="#what-can-i-do-with-an-extension"></a>What can I do with an extension</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>At boot time CDI scans most of the class in the classpath to create its configuration and the bean graph.
+The configuration and meta data that are created at this moment are created from static content (class file) and may need some more dynamic content.</p>
+</div>
+<div class="paragraph">
+<p>That&#8217;s where portable extension gets in.</p>
+</div>
+<div class="paragraph">
+<p>A CDI portable extension allows you to hook on the CDI scanning process which occurs at boot time and modify or add information to the meta data created by the CDI container.</p>
+</div>
+<div class="paragraph">
+<p>That includes add Beans, remove classes from set of type that should become bean, add producers, observers and most of the <a href="/2016/02/cdi-the-spi-who-loved-me/">SPI elements</a> that exist in CDI.</p>
+</div>
+<div class="paragraph">
+<p>So to make short, extensions are how developers can configure CDI and override default behaviour created from reading the classes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="getting-started-with-cdi-extension"><a class="anchor" href="#getting-started-with-cdi-extension"></a>Getting started with CDI extension</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CDI portable extensions are based on <a href="https://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html" target="_blank">Java SE service-provider</a>.</p>
+</div>
+<div class="paragraph">
+<p>Service interface is <code>javax.enterprise.inject.spi.Extension</code>, so to add an extension you&#8217;ll need to create a class implementing <code>javax.enterprise.inject.spi.Extension</code> interface and add this class qualified name to the <code>META-INF/services/javax.enterprise.inject.spi.Extension</code> service provider text file.</p>
+</div>
+<div class="paragraph">
+<p>Extension feature is defined by adding observers on specific lifecycle event of the CDI container.
+At boot time, the CDI container will use service provider mechanism to discover all extensions and register these observers.</p>
+</div>
+<div class="paragraph">
+<p>This approach allows you to hook on internal lifecycle steps of the container and modify their outcome.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s check what are these step.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extension-step-by-step"><a class="anchor" href="#extension-step-by-step"></a>Extension step by step</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To understand how to work with extensions, we can start by splitting container lifecycle in 4 Big steps:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/broaderlifecycle.svg" alt="The major steps of the CDI container lifecycle" width="889" height="60">
+</div>
+<div class="title">The major steps of the CDI container lifecycle</div>
+</div>
+<div class="paragraph">
+<p>Eah of these step (except "Application running") contains one or more events for which you can define one or more observers in your extension to hook on CDI elements discovery and meta data building.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s focus on each of these steps and describe the events that you can use in each one.</p>
+</div>
+<div class="paragraph">
+<p>Some examples given below will use new features coming from CDI 2.0.
+I&#8217;ll explain how same result can be obtained in CDI 1.2.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="types-discovery"><a class="anchor" href="#types-discovery"></a>Types discovery</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Type discovery can be illustrated like this</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/typesdiscovery.svg" alt="Types discovery" width="413" height="507">
+</div>
+<div class="title">Types discovery</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In this schema (and next ones), yellow boxes are the in which an extension can observes an event and perform actions, grey ones are simplification of internal container behaviour.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The goal of this step is to create a set of <code>AnnotatedType</code> which will be candidate to become beans.</p>
+</div>
+<div class="paragraph">
+<p>Ths set can be filled explicitly in a <code>BeforeTypeDiscovery</code> or <code>AfterDiscovery</code> observers</p>
+</div>
+<div class="paragraph">
+<p>It is also filled automatically by the container class scanning process on which developer can place a hook to alter the discovered by using a <code>ProcessAnnotatedType</code> observer.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s see in detail how all this work.</p>
+</div>
+<div class="sect2">
+<h3 id="adding-types-before-scanning-code-beforebeandiscovery-code-event"><a class="anchor" href="#adding-types-before-scanning-code-beforebeandiscovery-code-event"></a>Adding types before scanning (<code>BeforeBeanDiscovery</code> event)</h3>
+<div class="paragraph">
+<p>Before CDI container start automatic types scan on the class path, it fires the BeforeBeanDiscovery event.</p>
+</div>
+<div class="paragraph">
+<p>Observing this events allows addition of a specific type to the set of discovered types or addition of specific CDI annotations like qualifier, stereotype or interceptor binding.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface BeforeBeanDiscovery {
+  void addQualifier(Class&lt;? extends Annotation&gt; qualifier); <i class="conum" data-value="1"></i><b>(1)</b>
+  void addQualifier(AnnotatedType&lt;? extends Annotation&gt; qualifier); <i class="conum" data-value="1"></i><b>(1)</b>
+  void addScope(Class&lt;? extends Annotation&gt; scopeType, boolean normal, boolean passivating); <i class="conum" data-value="2"></i><b>(2)</b>
+  void addStereotype(Class&lt;? extends Annotation&gt; stereotype, Annotation... stereotypeDef); <i class="conum" data-value="3"></i><b>(3)</b>
+  void addInterceptorBinding(AnnotatedType&lt;? extends Annotation&gt; bindingType); <i class="conum" data-value="4"></i><b>(4)</b>
+  void addInterceptorBinding(Class&lt;? extends Annotation&gt; bindingType, Annotation... bindingTypeDef); <i class="conum" data-value="4"></i><b>(4)</b>
+  void addAnnotatedType(AnnotatedType&lt;?&gt; type, String id); <i class="conum" data-value="5"></i><b>(5)</b>
+
+  /* New methods in CDI 2.0 */
+  &lt;T&gt; AnnotatedTypeConfigurator&lt;T&gt; addAnnotatedType(Class&lt;T&gt; type, String id); <i class="conum" data-value="5"></i><b>(5)</b>
+  &lt;T extends Annotation&gt; AnnotatedTypeConfigurator&lt;T&gt; configureQualifier(Class&lt;T&gt; qualifier); <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;T extends Annotation&gt; AnnotatedTypeConfigurator&lt;T&gt; configureInterceptorBinding(Class&lt;T&gt; bt); <i class="conum" data-value="4"></i><b>(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Add a new qualifier with an <code>Annotation</code>, an <code>AnnotatedType</code> or by using the CDI 2.0 <code>AnnotatedTypeConfigurator</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Add a new scope <code>Annotation</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Define a new Stereotype by giving its <code>Annotation</code> and the <code>Annotations</code> collection it stands for</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Add a new interceptor binding with an <code>Annotation</code> and its meta annotations, an <code>AnnotatedType</code> or by using the CDI 2.0 <code>AnnotatedTypeConfigurator</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Add a new <code>AnnotatedType</code> from a custom <code>AnnotatedType</code> or by using the CDI 2.0 <code>AnnotatedTypeConfigurator</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following example illustrate usage of this event.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class MetricsExtension implements Extension { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    public void addMetricAsQual(@Observes BeforeBeanDiscovery bbd) { <i class="conum" data-value="2"></i><b>(2)</b>
+        bbd.addQualifier(Metric.class); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>defining the extension (remember to also add class FQN to <code>META-INF/services/javax.enterprise.inject.spi.Extension</code> text file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>An observer for the <code>BeforeBeanDiscovery</code> lifecycle event</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Declaring an annotation from a 3rd party non-CDI framework as a qualifier</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The example above is a piece of the <a href="https://github.com/astefanutti/metrics-cdi" target="_blank">Dropwizard Metrics CDI integration extension</a>.
+It declares a standard annotation (<code>@Metrics</code>) as a CDI qualifier.</p>
+</div>
+<div class="paragraph">
+<p>You can also transform a non-CDI class to have it discovered as a managed bean by the container:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class MyLegacyFrameworkService { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    private Configurator config;
+
+    public MyLegacyFrameworkService(Configurator config) {
+        this.config = config;
+    }
+}
+
+...
+
+public class LegacyIntegrationExtension implements Extension {
+
+    public void addLegacyServiceAsBean(@Observes BeforeBeanDiscovery bbd) {
+        bbd.addAnnotatedType(MyLegacyFrameworkService.class,MyLegacyFrameworkService.class.getName()) <i class="conum" data-value="2"></i><b>(2)</b>
+                .add(ApplicationScoped.Literal.INSTANCE) <i class="conum" data-value="3"></i><b>(3)</b>
+                .filterConstructors(c -&gt; c.getParameters().size() == 1)
+                .findFirst().get().add(InjectLiteral.INSTANCE); <i class="conum" data-value="4"></i><b>(4)</b>
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>class from a legacy framework that we want to integrate into CDI programming model without changing its code</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>using an <code>AnnotatedTypeConfigurator</code> (new in CDI 2.0) based on the <code>MyLegacyFrameworkService</code> class</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>adding <code>@ApplicationScoped</code> scope on the <code>AnnotatedTypeConfigurator</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>find the first constructor with one parameters and add the <code>@Inject</code> on it</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The example above use new feature from CDI 2.0: the <code>AnnotatedTypeConfigurator</code> returned by one of the <code>addAnnotatedType()</code> methods of BeforeBeanDiscovery event.
+If you are in CDI 1.1 you can don the same but you&#8217;ll have to implement your own <code>AnnotatedType</code> to do the same in more verbose way.
+to configure a new <code>AnnotatedType</code> add a scope on it and an <code>@Inject</code> annotation on one of its constructors.
+At the end of observer invocation, the container will automatically build the matching <code>AnnotatedType</code> from this configurator and add it to the discovered type set.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="automatic-types-scanning-process"><a class="anchor" href="#automatic-types-scanning-process"></a>Automatic types scanning process</h3>
+<div class="paragraph">
+<p>After this first event, the container starts a process of type discovery in the application classpath.</p>
+</div>
+<div class="paragraph">
+<p>This scanning can be configured differently for each bean archive (i.e. jar or module) in the classpath.</p>
+</div>
+<div class="paragraph">
+<p>Each jar in the application path may (or may not) contain a <code>beans.xml</code> file defining how types will be scanned by the CDI container for this bean archive.</p>
+</div>
+<div class="paragraph">
+<p>Remember that CDI doesn&#8217;t provide a global configuration file so each of your bean archive (including the war container others bean archive) must define its discovery mode.</p>
+</div>
+<div class="paragraph">
+<p>There are 3 discovery mode:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>none</code>: no type will be discovered for this bean archive</p>
+</li>
+<li>
+<p><code>annotated</code> (default mode): only class having specific annotations (<a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#bean_defining_annotations">bean defining annotation</a>^) will be discovered</p>
+</li>
+<li>
+<p><code>all</code>: all types will be discovered</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Discovery mode is inferred by analyzing the bean archive <code>beans.xml</code> file</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. what is my discovery mode?</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><code>beans.xml</code> file state</th>
+<th class="tableblock halign-left valign-top">discovery mode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No <code>beans.xml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>annotated</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">empty <code>beans.xml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>all</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>beans.xml</code> using CDI 1.0 xsd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>all</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>beans.xml</code> using CDI 1.1 xsd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">value of <code>bean-discovery-mode</code> attribute</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>You can also fine grain type discovery by using <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#exclude_filters" target="_blank">exclusion filters</a></p>
+</div>
+<div class="paragraph">
+<p>In CDI 2.0 when you are working on Java SE, jars without <code>beans.xml</code> file are ignored by default.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="processannotatedtype-event"><a class="anchor" href="#processannotatedtype-event"></a>ProcessAnnotatedType event</h3>
+<div class="paragraph">
+<p>After this scanning phase, the container creates an AnnotatedType and fire the ProcessAnnotatedType event for each type discovered (except for annotations).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessAnnotatedType&lt;X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    AnnotatedType&lt;X&gt; getAnnotatedType(); <i class="conum" data-value="2"></i><b>(2)</b>
+    void setAnnotatedType(AnnotatedType&lt;X&gt; type); <i class="conum" data-value="3"></i><b>(3)</b>
+    void veto(); <i class="conum" data-value="4"></i><b>(4)</b>
+
+    /* New in CDI 2.0 */
+    AnnotatedTypeConfigurator&lt;X&gt; configureAnnotatedType(); <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the event is a parameterized type allowing user to only process <code>AnnotatedType</code> based on a given original type</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the current processed <code>AnnotatedType</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>replaces the processed <code>AnnotatedType</code> by a new one defined by implementing <code>AnnotatedType</code> interface or with the help of an <code>AnnotatedTypeConfigurator</code> (new in CDI 2.0)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>remove the processed AnnotatedType from the set of discovered type: this type won&#8217;t become a bean</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This event is often use to override configuration on an existing type.</p>
+</div>
+<div class="paragraph">
+<p>For instance the example below remove adds transactional annotation on the <code>StandardService</code> class in a third party library.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class AddTranscationalToServiceExtension implements Extension {
+
+    public void addTransactional(@Observes ProcessAnnotatedType&lt;StandardService&gt; pat) { <i class="conum" data-value="1"></i><b>(1)</b>
+        pat.configureAnnotatedType().add(new AnnotationLiteral&lt;Transactional&gt;(){});
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>observer will only be triggered for any <code>AnnotatedType</code> based on <code>StandardService</code> type</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It can also be used to veto type implementing an interface or having a specific annotation (thanks to the <code>@WithAnnotations</code> filter).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class VetEntitiesExtension implements Extension {
+
+    public void vetoEntities(@Observes @WithAnnotations(Entity.class) ProcessAnnotatedType&lt;?&gt; pat) { <i class="conum" data-value="1"></i><b>(1)</b>
+        pat.veto();
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>observer will be triggered for any <code>AnnotatedType</code> based on any type having @Entity annotation</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This last example vetoes all JPA entities in the application to avoid using them as CDI beans.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="aftertypediscovery-event"><a class="anchor" href="#aftertypediscovery-event"></a>AfterTypeDiscovery event</h3>
+<div class="paragraph">
+<p>This event closes the type discovery process</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface AfterTypeDiscovery {
+    List&lt;Class&lt;?&gt;&gt; getAlternatives(); <i class="conum" data-value="1"></i><b>(1)</b>
+    List&lt;Class&lt;?&gt;&gt; getInterceptors(); <i class="conum" data-value="1"></i><b>(1)</b>
+    List&lt;Class&lt;?&gt;&gt; getDecorators(); <i class="conum" data-value="1"></i><b>(1)</b>
+    void addAnnotatedType(AnnotatedType&lt;?&gt; type, String id); <i class="conum" data-value="2"></i><b>(2)</b>
+
+    /* New in CDI 2.0 */
+    &lt;T&gt; AnnotatedTypeConfigurator&lt;T&gt; addAnnotatedType(Class&lt;T&gt; type, String id); <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>these methods give you access to classes list discovered as possible alternatives beans, interceptors or decorators.
+You can use these inventory list to check everything you need is here or add a new class to them since these lists are mutable</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>as in <code>BeforeBeanDiscovery</code> you can add a custom <code>AnnotatedType</code> to the set of discovered <code>AnnotatedType</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following extension checks that if <code>LastInterceptor</code> class was discovered as an interceptor, this one will be invoked after all other interceptors.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class lastInteceptorExtension implements Extension {
+
+public void lastInterceptorCheck (@Observes AfterTypeDiscovery atd) {
+        List&lt;Class&lt;?&gt;&gt; interceptors = atd.getInterceptors();
+        if(interceptors.indexOf(LastInterceptor.class) &lt; interceptors.size()) {
+            interceptors.remove(LastInterceptor.class);
+            interceptors.add(LastInterceptor.class);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="beans-discovery-phase"><a class="anchor" href="#beans-discovery-phase"></a>Beans discovery phase</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this phase each discovered type is analyzed to check if they are eligible to become beans.</p>
+</div>
+<div class="paragraph">
+<p>If it&#8217;s the case a series of events are fired to allow modification of the future bean.</p>
+</div>
+<div class="paragraph">
+<p>If the bean was not vetoed by an extension, container launch producers and observers discovring processes.</p>
+</div>
+<div class="paragraph">
+<p>At the end of this phase, extension has opportunity to register custom beans or observers with the <code>AfterBeanDiscovery</code> event.</p>
+</div>
+<div class="paragraph">
+<p>The phase ends with the validation of all the element by the container and the <code>AfterDeploymentValidation</code> event.</p>
+</div>
+<div class="paragraph">
+<p>The following schema illustrates all the phase steps.
+While it could looks complicated at first, this process is rather easy to understand.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/beansdiscovery.svg" alt="Beans discovery" width="1217" height="1606">
+</div>
+<div class="title">Beans discovery</div>
+</div>
+<div class="sect2">
+<h3 id="code-processinjectionpoint-code-event"><a class="anchor" href="#code-processinjectionpoint-code-event"></a><code>ProcessInjectionPoint</code> event</h3>
+<div class="paragraph">
+<p>For each injection point encountered during this process, the container will fire a <code>ProcessInjectionPoint</code> event.
+Injection points are fired for managed beans, producer methods and observer methods.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessInjectionPoint&lt;T, X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    InjectionPoint getInjectionPoint(); <i class="conum" data-value="2"></i><b>(2)</b>
+    void setInjectionPoint(InjectionPoint injectionPoint); <i class="conum" data-value="3"></i><b>(3)</b>
+    void addDefinitionError(Throwable t); <i class="conum" data-value="4"></i><b>(4)</b>
+
+    /* New in CDI 2.0 */
+    InjectionPointConfigurator configureInjectionPoint(); <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>event is a parameterized type allowing observer to target a specific class <code>T</code> containig the injection point or a specific injection point type <code>X</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the <code>InjectionPoint</code> processed by this event</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>allow replacement of processed <code>InjectionPoint</code> either by implementing custom <code>InjectionPoint</code> or using and <code>InjectionPointConfigurator</code> (new CDI in 2.0)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>An extension can observe this event for multiple reason.
+For instance it can be used to collect all types for a given qualifier and later create a bean to match these injection points</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class ConvertExtension implements Extension {
+
+    Set&lt;Type&gt; convertTypes = new HashSet();
+
+    public void captureConfigTypes(@Observes ProcessInjectionPoint&lt;?, ?&gt; pip) {
+        InjectionPoint ip = pip.getInjectionPoint();
+        if (ip.getQualifiers().contains(Convert.Literal.Instance)) {
+            convertTypes.add(ip.getType());
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example above will create a set of types for all injection points in the application having the <code>@Convert</code> qualifier.</p>
+</div>
+<div class="paragraph">
+<p>Later it could use this collection to create custom beans matching each types found for instance.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-processinjectiontarget-code-event"><a class="anchor" href="#code-processinjectiontarget-code-event"></a><code>ProcessInjectionTarget</code> event</h3>
+<div class="paragraph">
+<p>An <code>InjectionTarget</code> can be seen as a non managed bean.
+It mainly provides dependency injection mechanism and some callback feature.</p>
+</div>
+<div class="paragraph">
+<p>This event is fired for all elements supporting injection.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessInjectionTarget&lt;X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    public AnnotatedType&lt;X&gt; getAnnotatedType(); <i class="conum" data-value="2"></i><b>(2)</b>
+    public InjectionTarget&lt;X&gt; getInjectionTarget(); <i class="conum" data-value="3"></i><b>(3)</b>
+    public void setInjectionTarget(InjectionTarget&lt;X&gt; injectionTarget); <i class="conum" data-value="4"></i><b>(4)</b>
+    public void addDefinitionError(Throwable t); <i class="conum" data-value="5"></i><b>(5)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the event is a parameterized type to target a specific base type of the <code>InjectionTarget</code> to process</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the <code>AnnotatedType</code> which defined the processed <code>InjectionTarget</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>returns the <code>InjectionTarget</code> processed by this event</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows replacing the processed <code>InjectionTarget</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Observing this event allows an extension to override the default InjectionTarget behaviour and perform specific tasks during injection like calling specific feature on a 3rd party framework.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-processbeanattributes-code-event"><a class="anchor" href="#code-processbeanattributes-code-event"></a><code>ProcessBeanAttributes</code> event</h3>
+<div class="paragraph">
+<p>This event is fired before registration of a discovered bean in the container.</p>
+</div>
+<div class="paragraph">
+<p>Observing this event allows attributes modification or registration canceling.</p>
+</div>
+<div class="paragraph">
+<p>This event is fired for all kind of beans:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Managed Beans</p>
+</li>
+<li>
+<p>Session Beans</p>
+</li>
+<li>
+<p>Producer Fields</p>
+</li>
+<li>
+<p>Producer Method</p>
+</li>
+<li>
+<p>Custom Beans</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessBeanAttributes&lt;T&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    public Annotated getAnnotated(); <i class="conum" data-value="2"></i><b>(2)</b>
+    public BeanAttributes&lt;T&gt; getBeanAttributes(); <i class="conum" data-value="3"></i><b>(3)</b>
+    public void setBeanAttributes(BeanAttributes&lt;T&gt; beanAttributes); <i class="conum" data-value="4"></i><b>(4)</b>
+    public void addDefinitionError(Throwable t); <i class="conum" data-value="5"></i><b>(5)</b>
+    public void veto(); <i class="conum" data-value="6"></i><b>(6)</b>
+
+    /* New in CDI 2.0 */
+    public BeanAttributesConfigurator&lt;T&gt; configureBeanAttributes(); <i class="conum" data-value="4"></i><b>(4)</b>
+    public void ignoreFinalMethods(); <i class="conum" data-value="7"></i><b>(7)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The event being a parameterized type allows observing this event only for a given type</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the Annotated defining the bean (i.e an <code>AnnotatedType</code> for managed Bean or a session bean, an <code>AnnotatedField</code> or <code>AnnotatedMethod</code> for a producer and null for a custom bean)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>returns the processed <code>BeanAttributes</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows replacement of processed <code>BeanAttributes</code> either by implementing the <code>BeanAttributes</code> interface or by using a <code>BeanAttributesConfigurator</code> (new in CDI 2.0)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>requests the container to ignore the matching bean and skip its registration</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>new method in CDI 2.0 to explicitly skip some restriction in the spec regarding proxy creation</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following extension checks that no beans was added by developer for type <code>SpecialClass</code> and no qualifiers will be registered since it will register a custom bean for it</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class CheckExtension implements Extension {
+
+public void filterSpecialClassBean(@Observes ProcessBeanAttributes&lt;SpecialClass&gt; pba) {
+        if(pba.getBeanAttributes().getQualifiers().contains(Default.Literal.INSTANCE))
+            pba.veto();
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-processbean-code-event"><a class="anchor" href="#code-processbean-code-event"></a><code>ProcessBean</code> event</h3>
+<div class="paragraph">
+<p>This event is fired when a bean is registered in the container.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessBean&lt;X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    public Annotated getAnnotated(); <i class="conum" data-value="2"></i><b>(2)</b>
+    public Bean&lt;X&gt; getBean(); <i class="conum" data-value="3"></i><b>(3)</b>
+    public void addDefinitionError(Throwable t); <i class="conum" data-value="4"></i><b>(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Parameterized type for better observer filtering</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the Annotated defining the bean (i.e an <code>AnnotatedType</code> for managed Bean or a session bean, an <code>AnnotatedField</code> or <code>AnnotatedMethod</code> for a producer and null for a custom bean)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>returns the created <code>Bean</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This event is mainly here to check that a specific bean is created and sometimes capture its definition for further use.</p>
+</div>
+<div class="paragraph">
+<p>An observer on <code>ProcessBean</code> for all kind of bean.
+If you want to be more specific, you can use a child of this event to only observe the event for a specific kind of bean.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/processBean_hierarchy.svg" alt="processBean hierarchy" width="100%" height="371">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-processproducer-code-event"><a class="anchor" href="#code-processproducer-code-event"></a><code>ProcessProducer</code> event</h3>
+<div class="paragraph">
+<p>This event is fired for all producers find in the application.</p>
+</div>
+<div class="paragraph">
+<p>Remember that a producer is a kind of bean.
+But its definition and discovery depends on the bean that contains it.
+In other words, producer defined in a class that will not be discovered as bean will be ignored.</p>
+</div>
+<div class="paragraph">
+<p>It mainly allows overriding of the producing code (i.e. you can override the code written to produce a specific bean instance in the application from an extension )</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessProducer&lt;T, X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    AnnotatedMember&lt;T&gt; getAnnotatedMember(); <i class="conum" data-value="2"></i><b>(2)</b>
+    Producer&lt;X&gt; getProducer(); <i class="conum" data-value="3"></i><b>(3)</b>
+    void addDefinitionError(Throwable t); <i class="conum" data-value="4"></i><b>(4)</b>
+    void setProducer(Producer&lt;X&gt; producer); <i class="conum" data-value="5"></i><b>(5)</b>
+
+    /* New in CDI 2.0 */
+    ProducerConfigurator&lt;X&gt; configureProducer(); <i class="conum" data-value="5"></i><b>(5)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Parameterized type for better observer filtering.
+<code>T</code> is the bean class of the bean containing the producer, <code>X</code> is the type of the producer</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the AnnotatedMember defining the producer (i.e an <code>AnnotatedField</code> for a field producer or <code>AnnotatedMethod</code> for a method producer)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>returns the producer being processed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Allow replacement of the processed producer, either by implementing the <code>Producer</code> interface or using the <code>ProducerConfigurator</code> helper (new in CDI 2.0)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following example is inspired by <a href="https://github.com/astefanutti/metrics-cdi">Metrics-CDI extension</a>.</p>
+</div>
+<div class="paragraph">
+<p>When user will declare a producer for a metric in the app, we want to check in the metric registry that it doesn&#8217;t already exist.
+If it exist, instead of creating an new instance, we&#8217;ll return the one in the registry.
+If it doesn&#8217;t exist, we&#8217;ll use the producer code to instantiate the metric, add it to the registry and returns it to the application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class MetricsExtension implements Extension {
+
+&lt;T extends com.codahale.metrics.Metric&gt; void processMetricProducer(@Observes ProcessProducer&lt;?, T&gt; pp, BeanManager bm) { <i class="conum" data-value="1"></i><b>(1)</b>
+        Metric m = pp.getAnnotatedMember().getAnnotation(Metric.class); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        if (m != null) { <i class="conum" data-value="3"></i><b>(3)</b>
+            String name = m.name(); <i class="conum" data-value="4"></i><b>(4)</b>
+            pp.configureProducer() <i class="conum" data-value="5"></i><b>(5)</b>
+                    .produceWith(ctx -&gt; { <i class="conum" data-value="6"></i><b>(6)</b>
+                        MetricRegistry reg = bm.createInstance().select(MetricRegistry.class).get(); <i class="conum" data-value="7"></i><b>(7)</b>
+                        if (!reg.getMetrics().containsKey(name)) <i class="conum" data-value="8"></i><b>(8)</b>
+                            reg.register(name, pp.getProducer().produce(ctx)); <i class="conum" data-value="9"></i><b>(9)</b>
+                        return (T) reg.getMetrics().get(name);  <i class="conum" data-value="10"></i><b>(10)</b>
+                    });
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>this observer needs <code>BeanManager</code>. This helper bean can be injected in any observer in an extension</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>retrieving <code>@Metric</code> annotation on the producer</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>treatment will be skip if no annotation found</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>retrieving name of the metric from the annotation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>we use the new <code>ProducerConfigurator</code> helpers. In CDI 1.2 we would have created our own implementation of <code>Producer</code> interface</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>we define a functional callback for producing the instance of the producer</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>retrieving the registry bean instance</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>looking for a metric with the matching name</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>if it doesn&#8217;t exist we create it by sing the original producer code and it to the registry</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>we return the metric with the matching name from the registry</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-processobservermethod-code-event"><a class="anchor" href="#code-processobservermethod-code-event"></a><code>ProcessObserverMethod</code> event</h3>
+<div class="paragraph">
+<p>This event is fired for all observers declared in enabled beans.</p>
+</div>
+<div class="paragraph">
+<p>Before CDI 2.0 it was mainly an event to check existence of an observer method.
+Since CDI 2.0, this gives more control by allowing <code>ObserverMethod</code> replacement or removing of it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessObserverMethod&lt;T, X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    AnnotatedMethod&lt;X&gt; getAnnotatedMethod(); <i class="conum" data-value="2"></i><b>(2)</b>
+    ObserverMethod&lt;T&gt; getObserverMethod(); <i class="conum" data-value="3"></i><b>(3)</b>
+    void addDefinitionError(Throwable t); <i class="conum" data-value="4"></i><b>(4)</b>
+
+    /* new in CDI 2.0 */
+    void setObserverMethod(ObserverMethod&lt;T&gt; observerMethod); <i class="conum" data-value="5"></i><b>(5)</b>
+    ObserverMethodConfigurator&lt;T&gt; configureObserverMethod(); <i class="conum" data-value="5"></i><b>(5)</b>
+    void veto(); <i class="conum" data-value="6"></i><b>(6)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Parameterized type for better observer filtering.
+<code>T</code> is the bean class of the bean containing the observer method, <code>X</code> is the type of the event</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the <code>AnnotatedMethod</code> defining the <code>ObserverMethod</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>returns the <code>ObserverMethod</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>allow replacement or overriding of the <code>ObserverMethod</code> either by providing a custom <code>ObserverMethod</code> instance or by using an <code>ObserverMethodConfigurator</code> (new in CDI 2.0)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The example below show how an extension can switch all synchronous observer for MyClass event type to asynchronous behaviour.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class SwitchExtension implements Extension {
+
+   public void switchToAsync(@Observes ProcessObserverMethod&lt;?, MyClass&gt; pom) {
+       pom.configureObserverMethod().async(true);
+   }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-afterbeandiscovery-code-event"><a class="anchor" href="#code-afterbeandiscovery-code-event"></a><code>AfterBeanDiscovery</code> event</h3>
+<div class="paragraph">
+<p>This event is fired after all beans, producers and observer discovery.</p>
+</div>
+<div class="paragraph">
+<p>It is the last occasion to change or enhance discovered meta data.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface AfterBeanDiscovery {
+    void addDefinitionError(Throwable t); <i class="conum" data-value="1"></i><b>(1)</b>
+    void addBean(Bean&lt;?&gt; bean); <i class="conum" data-value="2"></i><b>(2)</b>
+    void addObserverMethod(ObserverMethod&lt;?&gt; observerMethod); <i class="conum" data-value="3"></i><b>(3)</b>
+    void addContext(Context context); <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;T&gt; AnnotatedType&lt;T&gt; getAnnotatedType(Class&lt;T&gt; type, String id); <i class="conum" data-value="5"></i><b>(5)</b>
+    &lt;T&gt; Iterable&lt;AnnotatedType&lt;T&gt;&gt; getAnnotatedTypes(Class&lt;T&gt; type); <i class="conum" data-value="6"></i><b>(6)</b>
+
+    /* New in CDI 2.0 */
+    &lt;T&gt; BeanConfigurator&lt;T&gt; addBean(); <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;T&gt; ObserverMethodConfigurator&lt;T&gt; addObserverMethod(); <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>allows creation of a custom bean either by creating a custom implementation of <code>Bean</code> interface or by using the <code>BeanConfigurator</code> helper (new in CDI 2.0).
+registering a custom bean will trigger all the events linked to bean discovery and creation.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>allows  creation of an <code>ObserverMethod</code> either by creating a custom implementation of <code>ObserverMethod</code> interface or by using the <code>ObserverMethodConfigurator</code> helper (new in CDI 2.0).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>add a nex context to the container</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>returns a discovered <code>AnnotatedType</code> for the given class and id.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>returns an <code>Iterable</code> on all the discovered <code>AnnotatedType</code> in the application</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-afterdeploymentvalidation-code-event"><a class="anchor" href="#code-afterdeploymentvalidation-code-event"></a><code>AfterDeploymentValidation</code> event</h3>
+<div class="paragraph">
+<p>This last bootstrapping event is only a hook to check that everything is as expected in the meta data (remember that the observer can inject BeanManager to inspect these meta data).</p>
+</div>
+<div class="paragraph">
+<p>When this event is fired, the meta data in the container are no more mutable and the application is ready to run</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface AfterDeploymentValidation {
+    void addDeploymentProblem(Throwable t); <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="application-life-and-death"><a class="anchor" href="#application-life-and-death"></a>Application life and death</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>From the portable extension perspective we are nearly done.</p>
+</div>
+<div class="paragraph">
+<p>After this rich phase of bootstrapping, the application runs until an event request its shutting down.
+It&#8217;s when the last portable extension event is fired.</p>
+</div>
+<div class="sect2">
+<h3 id="code-beforeshutdown-code-event"><a class="anchor" href="#code-beforeshutdown-code-event"></a><code>BeforeShutdown</code> Event</h3>
+<div class="paragraph">
+<p>This event is a hook, to allow cleaning of specific resource created during application life</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface BeforeShutdown {
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="conclusion"><a class="anchor" href="#conclusion"></a>Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Portable extension are a very powerful tool.</p>
+</div>
+<div class="paragraph">
+<p>Mastering them may seems difficult, but once you understand most of the SPI and the container lifecycle shown in this post, it&#8217;s no more than a kind of big lego box only limited by your imagination.</p>
+</div>
+</div>
+</div></div><div class="footer"><a href="/2017/01/nobody-expects-the-cdi-portable-extensions/"> Permalink</a> <a href="http://www.next-presso.com/2017/01/nobody-expects-the-cdi-portable-extensions/#disqus_thread">Comments</a> </div><ul class="pager visible-md-block visible-lg-block"><li class="previous"><a href="/2016/02/cdi-the-spi-who-loved-me/">Previous: CDI, the SPI who loved me</a></li></ul><ul class="pager visible-sm-block visible-xs-block"><li class="previous"><a href="/2016/02/cdi-the-spi-who-loved-me/"> Previous</a></li></ul>
+            <script type="text/javascript">
+            var disqus_shortname = 'nextpresso';
+            (function () {
+              var s = document.createElement('script'); s.async = true;
+              s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+              (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+            }());
+            </script>
+          <div class="comments">
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+            var disqus_shortname = 'nextpresso';
+            var disqus_url = "http://www.next-presso.com/2017/01/nobody-expects-the-cdi-portable-extensions/";
+            var disqus_developer = null;
+            var disqus_identifier = null;
+            (function() {
+              var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+            })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=nextpresso">comments powered by Disqus.</a></noscript>
+          </div></div></div></article></div><div class="col-lg-3"><aside class="hidden-xs"><a class="twitter-timeline" data-widget-id="666631820319019009" href="https://twitter.com/antoine_sd"> Tweets by @antoine_sd</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></aside><aside class="visible-xs"><div class="panel panel-default"><div class="panel-footer" style="text-align:justify;"></div></div><a class="twitter-timeline" data-widget-id="666631820319019009" href="https://twitter.com/antoine_sd"> Tweets by @antoine_sd</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></aside></div></div></div></div></div><hr><footer></footer><script>
+ (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ 
+ga('create', 'UA-5919317-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+</body></html>

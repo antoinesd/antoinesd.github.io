@@ -1,7 +1,1047 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Next Presso | </title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/asciidoctor.css"><link rel="stylesheet" href="/stylesheets/styles.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script><!--[if lt IE 9]><script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><script>hljs.initHighlightingOnLoad(); </script></head><body><div class="container"><div class="row"><div class="col-lg-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-lg-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://www.next-presso.com"><i class="fa fa-home fa-fw"></i> Home </a><a class="navbar-brand" href="/about"><i class="fa fa-user fa-fw"></i> About me </a></div></div></nav><script>var indexOfSharp = window.location.pathname.indexOf('#');
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Next Presso | </title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/asciidoctor.css"><link rel="stylesheet" href="/stylesheets/styles.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/github.min.css"><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><!--[if lt IE 9]><script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><script>hljs.initHighlightingOnLoad(); </script></head><body><div class="container"><div class="row"><div class="col-lg-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-lg-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://www.next-presso.com"><i class="fa fa-home fa-fw"></i> Home </a><a class="navbar-brand" href="/about"><i class="fa fa-user fa-fw"></i> About me </a></div></div></nav><script>var indexOfSharp = window.location.pathname.indexOf('#');
 var pathname = indexOfSharp > 0 ? window.location.pathname.substring(0, indexOfSharp) : window.location.pathname;
 var selector = "body > .container > .row > .col-md-12 > .navbar > .container-fluid > .navbar-collapse a[href='http://www.next-presso.com" + pathname + "']";
-$(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-lg-12"><div class="row"><div class="col-lg-9"><div class="posts"><article class="post"><div class="panel panel-primary"><div class="panel-body"><h1><a href="/2016/02/cdi-the-spi-who-loved-me/">CDI, the SPI who loved me</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Feb 20, 2016</span> |  <a href="http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me/#disqus_thread">Comments</a> </strong></div><div class="content"><div class="imageblock" style="float: left">
+$(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-lg-12"><div class="row"><div class="col-lg-9"><div class="posts"><article class="post"><div class="panel panel-primary"><div class="panel-body"><h1><a href="/2017/01/nobody-expects-the-cdi-portable-extensions/">Nobody expects the CDI portable extensions</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Jan 27, 2017</span> |  <a href="http://www.next-presso.com/2017/01/nobody-expects-the-cdi-portable-extensions/#disqus_thread">Comments</a> </strong></div><div class="content"><div class="imageblock" style="float: right">
+<div class="content">
+<img src="/images/posts/2017/rainbow_lego.jpg" alt="rainbow lego" width="285">
+</div>
+</div>
+<div class="paragraph">
+<p>Portable extensions are probably the coolest feature of CDI.</p>
+</div>
+<div class="paragraph">
+<p>Unfortunately, this gem is a bit hidden in the spec and some developers totally missed it while others may wrongly think that using extension is too complicated.</p>
+</div>
+<div class="paragraph">
+<p>With this article, I&#8217;ll try to show that everybody can use extension in their work as it can be used to provide simple feature or advanced integration mechanism.</p>
+</div>
+<div class="paragraph">
+<p>But first things first, let&#8217;s answer the basic question "why would you need to develop a portable extension".</p>
+</div>
+<div class="sect1">
+<h2 id="what-can-i-do-with-an-extension"><a class="anchor" href="#what-can-i-do-with-an-extension"></a>What can I do with an extension</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>At boot time CDI scans most of the class in the classpath to create its configuration and the bean graph.
+The configuration and meta data that are created at this moment are created from static content (class file) and may need some more dynamic content.</p>
+</div>
+<div class="paragraph">
+<p>That&#8217;s where portable extension gets in.</p>
+</div>
+<div class="paragraph">
+<p>A CDI portable extension allows you to hook on the CDI scanning process which occurs at boot time and modify or add information to the meta data created by the CDI container.</p>
+</div>
+<div class="paragraph">
+<p>That includes add Beans, remove classes from set of type that should become bean, add producers, observers and most of the <a href="/2016/02/cdi-the-spi-who-loved-me/">SPI elements</a> that exist in CDI.</p>
+</div>
+<div class="paragraph">
+<p>So to make short, extensions are how developers can configure CDI and override default behaviour created from reading the classes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="getting-started-with-cdi-extension"><a class="anchor" href="#getting-started-with-cdi-extension"></a>Getting started with CDI extension</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CDI portable extensions are based on <a href="https://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html" target="_blank">Java SE service-provider</a>.</p>
+</div>
+<div class="paragraph">
+<p>Service interface is <code>javax.enterprise.inject.spi.Extension</code>, so to add an extension you&#8217;ll need to create a class implementing <code>javax.enterprise.inject.spi.Extension</code> interface and add this class qualified name to the <code>META-INF/services/javax.enterprise.inject.spi.Extension</code> service provider text file.</p>
+</div>
+<div class="paragraph">
+<p>Extension feature is defined by adding observers on specific lifecycle event of the CDI container.
+At boot time, the CDI container will use service provider mechanism to discover all extensions and register these observers.</p>
+</div>
+<div class="paragraph">
+<p>This approach allows you to hook on internal lifecycle steps of the container and modify their outcome.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s check what are these step.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extension-step-by-step"><a class="anchor" href="#extension-step-by-step"></a>Extension step by step</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To understand how to work with extensions, we can start by splitting container lifecycle in 4 Big steps:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/broaderlifecycle.svg" alt="The major steps of the CDI container lifecycle" width="889" height="60">
+</div>
+<div class="title">The major steps of the CDI container lifecycle</div>
+</div>
+<div class="paragraph">
+<p>Eah of these step (except "Application running") contains one or more events for which you can define one or more observers in your extension to hook on CDI elements discovery and meta data building.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s focus on each of these steps and describe the events that you can use in each one.</p>
+</div>
+<div class="paragraph">
+<p>Some examples given below will use new features coming from CDI 2.0.
+I&#8217;ll explain how same result can be obtained in CDI 1.2.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="types-discovery"><a class="anchor" href="#types-discovery"></a>Types discovery</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Type discovery can be illustrated like this</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/typesdiscovery.svg" alt="Types discovery" width="413" height="507">
+</div>
+<div class="title">Types discovery</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In this schema (and next ones), yellow boxes are the in which an extension can observes an event and perform actions, grey ones are simplification of internal container behaviour.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The goal of this step is to create a set of <code>AnnotatedType</code> which will be candidate to become beans.</p>
+</div>
+<div class="paragraph">
+<p>Ths set can be filled explicitly in a <code>BeforeTypeDiscovery</code> or <code>AfterDiscovery</code> observers</p>
+</div>
+<div class="paragraph">
+<p>It is also filled automatically by the container class scanning process on which developer can place a hook to alter the discovered by using a <code>ProcessAnnotatedType</code> observer.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s see in detail how all this work.</p>
+</div>
+<div class="sect2">
+<h3 id="adding-types-before-scanning-code-beforebeandiscovery-code-event"><a class="anchor" href="#adding-types-before-scanning-code-beforebeandiscovery-code-event"></a>Adding types before scanning (<code>BeforeBeanDiscovery</code> event)</h3>
+<div class="paragraph">
+<p>Before CDI container start automatic types scan on the class path, it fires the BeforeBeanDiscovery event.</p>
+</div>
+<div class="paragraph">
+<p>Observing this events allows addition of a specific type to the set of discovered types or addition of specific CDI annotations like qualifier, stereotype or interceptor binding.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface BeforeBeanDiscovery {
+  void addQualifier(Class&lt;? extends Annotation&gt; qualifier); <i class="conum" data-value="1"></i><b>(1)</b>
+  void addQualifier(AnnotatedType&lt;? extends Annotation&gt; qualifier); <i class="conum" data-value="1"></i><b>(1)</b>
+  void addScope(Class&lt;? extends Annotation&gt; scopeType, boolean normal, boolean passivating); <i class="conum" data-value="2"></i><b>(2)</b>
+  void addStereotype(Class&lt;? extends Annotation&gt; stereotype, Annotation... stereotypeDef); <i class="conum" data-value="3"></i><b>(3)</b>
+  void addInterceptorBinding(AnnotatedType&lt;? extends Annotation&gt; bindingType); <i class="conum" data-value="4"></i><b>(4)</b>
+  void addInterceptorBinding(Class&lt;? extends Annotation&gt; bindingType, Annotation... bindingTypeDef); <i class="conum" data-value="4"></i><b>(4)</b>
+  void addAnnotatedType(AnnotatedType&lt;?&gt; type, String id); <i class="conum" data-value="5"></i><b>(5)</b>
+
+  /* New methods in CDI 2.0 */
+  &lt;T&gt; AnnotatedTypeConfigurator&lt;T&gt; addAnnotatedType(Class&lt;T&gt; type, String id); <i class="conum" data-value="5"></i><b>(5)</b>
+  &lt;T extends Annotation&gt; AnnotatedTypeConfigurator&lt;T&gt; configureQualifier(Class&lt;T&gt; qualifier); <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;T extends Annotation&gt; AnnotatedTypeConfigurator&lt;T&gt; configureInterceptorBinding(Class&lt;T&gt; bt); <i class="conum" data-value="4"></i><b>(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Add a new qualifier with an <code>Annotation</code>, an <code>AnnotatedType</code> or by using the CDI 2.0 <code>AnnotatedTypeConfigurator</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Add a new scope <code>Annotation</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Define a new Stereotype by giving its <code>Annotation</code> and the <code>Annotations</code> collection it stands for</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Add a new interceptor binding with an <code>Annotation</code> and its meta annotations, an <code>AnnotatedType</code> or by using the CDI 2.0 <code>AnnotatedTypeConfigurator</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Add a new <code>AnnotatedType</code> from a custom <code>AnnotatedType</code> or by using the CDI 2.0 <code>AnnotatedTypeConfigurator</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following example illustrate usage of this event.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class MetricsExtension implements Extension { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    public void addMetricAsQual(@Observes BeforeBeanDiscovery bbd) { <i class="conum" data-value="2"></i><b>(2)</b>
+        bbd.addQualifier(Metric.class); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>defining the extension (remember to also add class FQN to <code>META-INF/services/javax.enterprise.inject.spi.Extension</code> text file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>An observer for the <code>BeforeBeanDiscovery</code> lifecycle event</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Declaring an annotation from a 3rd party non-CDI framework as a qualifier</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The example above is a piece of the <a href="https://github.com/astefanutti/metrics-cdi" target="_blank">Dropwizard Metrics CDI integration extension</a>.
+It declares a standard annotation (<code>@Metrics</code>) as a CDI qualifier.</p>
+</div>
+<div class="paragraph">
+<p>You can also transform a non-CDI class to have it discovered as a managed bean by the container:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class MyLegacyFrameworkService { <i class="conum" data-value="1"></i><b>(1)</b>
+
+    private Configurator config;
+
+    public MyLegacyFrameworkService(Configurator config) {
+        this.config = config;
+    }
+}
+
+...
+
+public class LegacyIntegrationExtension implements Extension {
+
+    public void addLegacyServiceAsBean(@Observes BeforeBeanDiscovery bbd) {
+        bbd.addAnnotatedType(MyLegacyFrameworkService.class,MyLegacyFrameworkService.class.getName()) <i class="conum" data-value="2"></i><b>(2)</b>
+                .add(ApplicationScoped.Literal.INSTANCE) <i class="conum" data-value="3"></i><b>(3)</b>
+                .filterConstructors(c -&gt; c.getParameters().size() == 1)
+                .findFirst().get().add(InjectLiteral.INSTANCE); <i class="conum" data-value="4"></i><b>(4)</b>
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>class from a legacy framework that we want to integrate into CDI programming model without changing its code</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>using an <code>AnnotatedTypeConfigurator</code> (new in CDI 2.0) based on the <code>MyLegacyFrameworkService</code> class</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>adding <code>@ApplicationScoped</code> scope on the <code>AnnotatedTypeConfigurator</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>find the first constructor with one parameters and add the <code>@Inject</code> on it</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The example above use new feature from CDI 2.0: the <code>AnnotatedTypeConfigurator</code> returned by one of the <code>addAnnotatedType()</code> methods of BeforeBeanDiscovery event.
+If you are in CDI 1.1 you can don the same but you&#8217;ll have to implement your own <code>AnnotatedType</code> to do the same in more verbose way.
+to configure a new <code>AnnotatedType</code> add a scope on it and an <code>@Inject</code> annotation on one of its constructors.
+At the end of observer invocation, the container will automatically build the matching <code>AnnotatedType</code> from this configurator and add it to the discovered type set.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="automatic-types-scanning-process"><a class="anchor" href="#automatic-types-scanning-process"></a>Automatic types scanning process</h3>
+<div class="paragraph">
+<p>After this first event, the container starts a process of type discovery in the application classpath.</p>
+</div>
+<div class="paragraph">
+<p>This scanning can be configured differently for each bean archive (i.e. jar or module) in the classpath.</p>
+</div>
+<div class="paragraph">
+<p>Each jar in the application path may (or may not) contain a <code>beans.xml</code> file defining how types will be scanned by the CDI container for this bean archive.</p>
+</div>
+<div class="paragraph">
+<p>Remember that CDI doesn&#8217;t provide a global configuration file so each of your bean archive (including the war container others bean archive) must define its discovery mode.</p>
+</div>
+<div class="paragraph">
+<p>There are 3 discovery mode:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>none</code>: no type will be discovered for this bean archive</p>
+</li>
+<li>
+<p><code>annotated</code> (default mode): only class having specific annotations (<a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#bean_defining_annotations">bean defining annotation</a>^) will be discovered</p>
+</li>
+<li>
+<p><code>all</code>: all types will be discovered</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Discovery mode is inferred by analyzing the bean archive <code>beans.xml</code> file</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. what is my discovery mode?</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><code>beans.xml</code> file state</th>
+<th class="tableblock halign-left valign-top">discovery mode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No <code>beans.xml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>annotated</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">empty <code>beans.xml</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>all</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>beans.xml</code> using CDI 1.0 xsd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>all</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>beans.xml</code> using CDI 1.1 xsd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">value of <code>bean-discovery-mode</code> attribute</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>You can also fine grain type discovery by using <a href="http://docs.jboss.org/cdi/spec/1.2/cdi-spec.html#exclude_filters" target="_blank">exclusion filters</a></p>
+</div>
+<div class="paragraph">
+<p>In CDI 2.0 when you are working on Java SE, jars without <code>beans.xml</code> file are ignored by default.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="processannotatedtype-event"><a class="anchor" href="#processannotatedtype-event"></a>ProcessAnnotatedType event</h3>
+<div class="paragraph">
+<p>After this scanning phase, the container creates an AnnotatedType and fire the ProcessAnnotatedType event for each type discovered (except for annotations).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessAnnotatedType&lt;X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    AnnotatedType&lt;X&gt; getAnnotatedType(); <i class="conum" data-value="2"></i><b>(2)</b>
+    void setAnnotatedType(AnnotatedType&lt;X&gt; type); <i class="conum" data-value="3"></i><b>(3)</b>
+    void veto(); <i class="conum" data-value="4"></i><b>(4)</b>
+
+    /* New in CDI 2.0 */
+    AnnotatedTypeConfigurator&lt;X&gt; configureAnnotatedType(); <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the event is a parameterized type allowing user to only process <code>AnnotatedType</code> based on a given original type</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the current processed <code>AnnotatedType</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>replaces the processed <code>AnnotatedType</code> by a new one defined by implementing <code>AnnotatedType</code> interface or with the help of an <code>AnnotatedTypeConfigurator</code> (new in CDI 2.0)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>remove the processed AnnotatedType from the set of discovered type: this type won&#8217;t become a bean</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This event is often use to override configuration on an existing type.</p>
+</div>
+<div class="paragraph">
+<p>For instance the example below remove adds transactional annotation on the <code>StandardService</code> class in a third party library.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class AddTranscationalToServiceExtension implements Extension {
+
+    public void addTransactional(@Observes ProcessAnnotatedType&lt;StandardService&gt; pat) { <i class="conum" data-value="1"></i><b>(1)</b>
+        pat.configureAnnotatedType().add(new AnnotationLiteral&lt;Transactional&gt;(){});
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>observer will only be triggered for any <code>AnnotatedType</code> based on <code>StandardService</code> type</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It can also be used to veto type implementing an interface or having a specific annotation (thanks to the <code>@WithAnnotations</code> filter).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class VetEntitiesExtension implements Extension {
+
+    public void vetoEntities(@Observes @WithAnnotations(Entity.class) ProcessAnnotatedType&lt;?&gt; pat) { <i class="conum" data-value="1"></i><b>(1)</b>
+        pat.veto();
+    }</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>observer will be triggered for any <code>AnnotatedType</code> based on any type having @Entity annotation</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This last example vetoes all JPA entities in the application to avoid using them as CDI beans.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="aftertypediscovery-event"><a class="anchor" href="#aftertypediscovery-event"></a>AfterTypeDiscovery event</h3>
+<div class="paragraph">
+<p>This event closes the type discovery process</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface AfterTypeDiscovery {
+    List&lt;Class&lt;?&gt;&gt; getAlternatives(); <i class="conum" data-value="1"></i><b>(1)</b>
+    List&lt;Class&lt;?&gt;&gt; getInterceptors(); <i class="conum" data-value="1"></i><b>(1)</b>
+    List&lt;Class&lt;?&gt;&gt; getDecorators(); <i class="conum" data-value="1"></i><b>(1)</b>
+    void addAnnotatedType(AnnotatedType&lt;?&gt; type, String id); <i class="conum" data-value="2"></i><b>(2)</b>
+
+    /* New in CDI 2.0 */
+    &lt;T&gt; AnnotatedTypeConfigurator&lt;T&gt; addAnnotatedType(Class&lt;T&gt; type, String id); <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>these methods give you access to classes list discovered as possible alternatives beans, interceptors or decorators.
+You can use these inventory list to check everything you need is here or add a new class to them since these lists are mutable</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>as in <code>BeforeBeanDiscovery</code> you can add a custom <code>AnnotatedType</code> to the set of discovered <code>AnnotatedType</code></td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following extension checks that if <code>LastInterceptor</code> class was discovered as an interceptor, this one will be invoked after all other interceptors.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class lastInteceptorExtension implements Extension {
+
+public void lastInterceptorCheck (@Observes AfterTypeDiscovery atd) {
+        List&lt;Class&lt;?&gt;&gt; interceptors = atd.getInterceptors();
+        if(interceptors.indexOf(LastInterceptor.class) &lt; interceptors.size()) {
+            interceptors.remove(LastInterceptor.class);
+            interceptors.add(LastInterceptor.class);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="beans-discovery-phase"><a class="anchor" href="#beans-discovery-phase"></a>Beans discovery phase</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this phase each discovered type is analyzed to check if they are eligible to become beans.</p>
+</div>
+<div class="paragraph">
+<p>If it&#8217;s the case a series of events are fired to allow modification of the future bean.</p>
+</div>
+<div class="paragraph">
+<p>If the bean was not vetoed by an extension, container launch producers and observers discovring processes.</p>
+</div>
+<div class="paragraph">
+<p>At the end of this phase, extension has opportunity to register custom beans or observers with the <code>AfterBeanDiscovery</code> event.</p>
+</div>
+<div class="paragraph">
+<p>The phase ends with the validation of all the element by the container and the <code>AfterDeploymentValidation</code> event.</p>
+</div>
+<div class="paragraph">
+<p>The following schema illustrates all the phase steps.
+While it could looks complicated at first, this process is rather easy to understand.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/beansdiscovery.svg" alt="Beans discovery" width="1217" height="1606">
+</div>
+<div class="title">Beans discovery</div>
+</div>
+<div class="sect2">
+<h3 id="code-processinjectionpoint-code-event"><a class="anchor" href="#code-processinjectionpoint-code-event"></a><code>ProcessInjectionPoint</code> event</h3>
+<div class="paragraph">
+<p>For each injection point encountered during this process, the container will fire a <code>ProcessInjectionPoint</code> event.
+Injection points are fired for managed beans, producer methods and observer methods.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessInjectionPoint&lt;T, X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    InjectionPoint getInjectionPoint(); <i class="conum" data-value="2"></i><b>(2)</b>
+    void setInjectionPoint(InjectionPoint injectionPoint); <i class="conum" data-value="3"></i><b>(3)</b>
+    void addDefinitionError(Throwable t); <i class="conum" data-value="4"></i><b>(4)</b>
+
+    /* New in CDI 2.0 */
+    InjectionPointConfigurator configureInjectionPoint(); <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>event is a parameterized type allowing observer to target a specific class <code>T</code> containig the injection point or a specific injection point type <code>X</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the <code>InjectionPoint</code> processed by this event</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>allow replacement of processed <code>InjectionPoint</code> either by implementing custom <code>InjectionPoint</code> or using and <code>InjectionPointConfigurator</code> (new CDI in 2.0)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>An extension can observe this event for multiple reason.
+For instance it can be used to collect all types for a given qualifier and later create a bean to match these injection points</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class ConvertExtension implements Extension {
+
+    Set&lt;Type&gt; convertTypes = new HashSet();
+
+    public void captureConfigTypes(@Observes ProcessInjectionPoint&lt;?, ?&gt; pip) {
+        InjectionPoint ip = pip.getInjectionPoint();
+        if (ip.getQualifiers().contains(Convert.Literal.Instance)) {
+            convertTypes.add(ip.getType());
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example above will create a set of types for all injection points in the application having the <code>@Convert</code> qualifier.</p>
+</div>
+<div class="paragraph">
+<p>Later it could use this collection to create custom beans matching each types found for instance.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-processinjectiontarget-code-event"><a class="anchor" href="#code-processinjectiontarget-code-event"></a><code>ProcessInjectionTarget</code> event</h3>
+<div class="paragraph">
+<p>An <code>InjectionTarget</code> can be seen as a non managed bean.
+It mainly provides dependency injection mechanism and some callback feature.</p>
+</div>
+<div class="paragraph">
+<p>This event is fired for all elements supporting injection.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessInjectionTarget&lt;X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    public AnnotatedType&lt;X&gt; getAnnotatedType(); <i class="conum" data-value="2"></i><b>(2)</b>
+    public InjectionTarget&lt;X&gt; getInjectionTarget(); <i class="conum" data-value="3"></i><b>(3)</b>
+    public void setInjectionTarget(InjectionTarget&lt;X&gt; injectionTarget); <i class="conum" data-value="4"></i><b>(4)</b>
+    public void addDefinitionError(Throwable t); <i class="conum" data-value="5"></i><b>(5)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the event is a parameterized type to target a specific base type of the <code>InjectionTarget</code> to process</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the <code>AnnotatedType</code> which defined the processed <code>InjectionTarget</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>returns the <code>InjectionTarget</code> processed by this event</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows replacing the processed <code>InjectionTarget</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Observing this event allows an extension to override the default InjectionTarget behaviour and perform specific tasks during injection like calling specific feature on a 3rd party framework.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-processbeanattributes-code-event"><a class="anchor" href="#code-processbeanattributes-code-event"></a><code>ProcessBeanAttributes</code> event</h3>
+<div class="paragraph">
+<p>This event is fired before registration of a discovered bean in the container.</p>
+</div>
+<div class="paragraph">
+<p>Observing this event allows attributes modification or registration canceling.</p>
+</div>
+<div class="paragraph">
+<p>This event is fired for all kind of beans:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Managed Beans</p>
+</li>
+<li>
+<p>Session Beans</p>
+</li>
+<li>
+<p>Producer Fields</p>
+</li>
+<li>
+<p>Producer Method</p>
+</li>
+<li>
+<p>Custom Beans</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessBeanAttributes&lt;T&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    public Annotated getAnnotated(); <i class="conum" data-value="2"></i><b>(2)</b>
+    public BeanAttributes&lt;T&gt; getBeanAttributes(); <i class="conum" data-value="3"></i><b>(3)</b>
+    public void setBeanAttributes(BeanAttributes&lt;T&gt; beanAttributes); <i class="conum" data-value="4"></i><b>(4)</b>
+    public void addDefinitionError(Throwable t); <i class="conum" data-value="5"></i><b>(5)</b>
+    public void veto(); <i class="conum" data-value="6"></i><b>(6)</b>
+
+    /* New in CDI 2.0 */
+    public BeanAttributesConfigurator&lt;T&gt; configureBeanAttributes(); <i class="conum" data-value="4"></i><b>(4)</b>
+    public void ignoreFinalMethods(); <i class="conum" data-value="7"></i><b>(7)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The event being a parameterized type allows observing this event only for a given type</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the Annotated defining the bean (i.e an <code>AnnotatedType</code> for managed Bean or a session bean, an <code>AnnotatedField</code> or <code>AnnotatedMethod</code> for a producer and null for a custom bean)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>returns the processed <code>BeanAttributes</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows replacement of processed <code>BeanAttributes</code> either by implementing the <code>BeanAttributes</code> interface or by using a <code>BeanAttributesConfigurator</code> (new in CDI 2.0)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>requests the container to ignore the matching bean and skip its registration</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>new method in CDI 2.0 to explicitly skip some restriction in the spec regarding proxy creation</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following extension checks that no beans was added by developer for type <code>SpecialClass</code> and no qualifiers will be registered since it will register a custom bean for it</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class CheckExtension implements Extension {
+
+public void filterSpecialClassBean(@Observes ProcessBeanAttributes&lt;SpecialClass&gt; pba) {
+        if(pba.getBeanAttributes().getQualifiers().contains(Default.Literal.INSTANCE))
+            pba.veto();
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-processbean-code-event"><a class="anchor" href="#code-processbean-code-event"></a><code>ProcessBean</code> event</h3>
+<div class="paragraph">
+<p>This event is fired when a bean is registered in the container.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessBean&lt;X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    public Annotated getAnnotated(); <i class="conum" data-value="2"></i><b>(2)</b>
+    public Bean&lt;X&gt; getBean(); <i class="conum" data-value="3"></i><b>(3)</b>
+    public void addDefinitionError(Throwable t); <i class="conum" data-value="4"></i><b>(4)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Parameterized type for better observer filtering</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the Annotated defining the bean (i.e an <code>AnnotatedType</code> for managed Bean or a session bean, an <code>AnnotatedField</code> or <code>AnnotatedMethod</code> for a producer and null for a custom bean)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>returns the created <code>Bean</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This event is mainly here to check that a specific bean is created and sometimes capture its definition for further use.</p>
+</div>
+<div class="paragraph">
+<p>An observer on <code>ProcessBean</code> for all kind of bean.
+If you want to be more specific, you can use a child of this event to only observe the event for a specific kind of bean.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/processBean_hierarchy.svg" alt="processBean hierarchy" width="100%" height="371">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-processproducer-code-event"><a class="anchor" href="#code-processproducer-code-event"></a><code>ProcessProducer</code> event</h3>
+<div class="paragraph">
+<p>This event is fired for all producers find in the application.</p>
+</div>
+<div class="paragraph">
+<p>Remember that a producer is a kind of bean.
+But its definition and discovery depends on the bean that contains it.
+In other words, producer defined in a class that will not be discovered as bean will be ignored.</p>
+</div>
+<div class="paragraph">
+<p>It mainly allows overriding of the producing code (i.e. you can override the code written to produce a specific bean instance in the application from an extension )</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessProducer&lt;T, X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    AnnotatedMember&lt;T&gt; getAnnotatedMember(); <i class="conum" data-value="2"></i><b>(2)</b>
+    Producer&lt;X&gt; getProducer(); <i class="conum" data-value="3"></i><b>(3)</b>
+    void addDefinitionError(Throwable t); <i class="conum" data-value="4"></i><b>(4)</b>
+    void setProducer(Producer&lt;X&gt; producer); <i class="conum" data-value="5"></i><b>(5)</b>
+
+    /* New in CDI 2.0 */
+    ProducerConfigurator&lt;X&gt; configureProducer(); <i class="conum" data-value="5"></i><b>(5)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Parameterized type for better observer filtering.
+<code>T</code> is the bean class of the bean containing the producer, <code>X</code> is the type of the producer</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the AnnotatedMember defining the producer (i.e an <code>AnnotatedField</code> for a field producer or <code>AnnotatedMethod</code> for a method producer)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>returns the producer being processed</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Allow replacement of the processed producer, either by implementing the <code>Producer</code> interface or using the <code>ProducerConfigurator</code> helper (new in CDI 2.0)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following example is inspired by <a href="https://github.com/astefanutti/metrics-cdi">Metrics-CDI extension</a>.</p>
+</div>
+<div class="paragraph">
+<p>When user will declare a producer for a metric in the app, we want to check in the metric registry that it doesn&#8217;t already exist.
+If it exist, instead of creating an new instance, we&#8217;ll return the one in the registry.
+If it doesn&#8217;t exist, we&#8217;ll use the producer code to instantiate the metric, add it to the registry and returns it to the application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class MetricsExtension implements Extension {
+
+&lt;T extends com.codahale.metrics.Metric&gt; void processMetricProducer(@Observes ProcessProducer&lt;?, T&gt; pp, BeanManager bm) { <i class="conum" data-value="1"></i><b>(1)</b>
+        Metric m = pp.getAnnotatedMember().getAnnotation(Metric.class); <i class="conum" data-value="2"></i><b>(2)</b>
+
+        if (m != null) { <i class="conum" data-value="3"></i><b>(3)</b>
+            String name = m.name(); <i class="conum" data-value="4"></i><b>(4)</b>
+            pp.configureProducer() <i class="conum" data-value="5"></i><b>(5)</b>
+                    .produceWith(ctx -&gt; { <i class="conum" data-value="6"></i><b>(6)</b>
+                        MetricRegistry reg = bm.createInstance().select(MetricRegistry.class).get(); <i class="conum" data-value="7"></i><b>(7)</b>
+                        if (!reg.getMetrics().containsKey(name)) <i class="conum" data-value="8"></i><b>(8)</b>
+                            reg.register(name, pp.getProducer().produce(ctx)); <i class="conum" data-value="9"></i><b>(9)</b>
+                        return (T) reg.getMetrics().get(name);  <i class="conum" data-value="10"></i><b>(10)</b>
+                    });
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>this observer needs <code>BeanManager</code>. This helper bean can be injected in any observer in an extension</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>retrieving <code>@Metric</code> annotation on the producer</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>treatment will be skip if no annotation found</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>retrieving name of the metric from the annotation</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>we use the new <code>ProducerConfigurator</code> helpers. In CDI 1.2 we would have created our own implementation of <code>Producer</code> interface</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>we define a functional callback for producing the instance of the producer</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>retrieving the registry bean instance</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>looking for a metric with the matching name</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>if it doesn&#8217;t exist we create it by sing the original producer code and it to the registry</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>we return the metric with the matching name from the registry</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-processobservermethod-code-event"><a class="anchor" href="#code-processobservermethod-code-event"></a><code>ProcessObserverMethod</code> event</h3>
+<div class="paragraph">
+<p>This event is fired for all observers declared in enabled beans.</p>
+</div>
+<div class="paragraph">
+<p>Before CDI 2.0 it was mainly an event to check existence of an observer method.
+Since CDI 2.0, this gives more control by allowing <code>ObserverMethod</code> replacement or removing of it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface ProcessObserverMethod&lt;T, X&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+    AnnotatedMethod&lt;X&gt; getAnnotatedMethod(); <i class="conum" data-value="2"></i><b>(2)</b>
+    ObserverMethod&lt;T&gt; getObserverMethod(); <i class="conum" data-value="3"></i><b>(3)</b>
+    void addDefinitionError(Throwable t); <i class="conum" data-value="4"></i><b>(4)</b>
+
+    /* new in CDI 2.0 */
+    void setObserverMethod(ObserverMethod&lt;T&gt; observerMethod); <i class="conum" data-value="5"></i><b>(5)</b>
+    ObserverMethodConfigurator&lt;T&gt; configureObserverMethod(); <i class="conum" data-value="5"></i><b>(5)</b>
+    void veto(); <i class="conum" data-value="6"></i><b>(6)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Parameterized type for better observer filtering.
+<code>T</code> is the bean class of the bean containing the observer method, <code>X</code> is the type of the event</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>returns the <code>AnnotatedMethod</code> defining the <code>ObserverMethod</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>returns the <code>ObserverMethod</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>allow replacement or overriding of the <code>ObserverMethod</code> either by providing a custom <code>ObserverMethod</code> instance or by using an <code>ObserverMethodConfigurator</code> (new in CDI 2.0)</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The example below show how an extension can switch all synchronous observer for MyClass event type to asynchronous behaviour.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class SwitchExtension implements Extension {
+
+   public void switchToAsync(@Observes ProcessObserverMethod&lt;?, MyClass&gt; pom) {
+       pom.configureObserverMethod().async(true);
+   }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-afterbeandiscovery-code-event"><a class="anchor" href="#code-afterbeandiscovery-code-event"></a><code>AfterBeanDiscovery</code> event</h3>
+<div class="paragraph">
+<p>This event is fired after all beans, producers and observer discovery.</p>
+</div>
+<div class="paragraph">
+<p>It is the last occasion to change or enhance discovered meta data.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface AfterBeanDiscovery {
+    void addDefinitionError(Throwable t); <i class="conum" data-value="1"></i><b>(1)</b>
+    void addBean(Bean&lt;?&gt; bean); <i class="conum" data-value="2"></i><b>(2)</b>
+    void addObserverMethod(ObserverMethod&lt;?&gt; observerMethod); <i class="conum" data-value="3"></i><b>(3)</b>
+    void addContext(Context context); <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;T&gt; AnnotatedType&lt;T&gt; getAnnotatedType(Class&lt;T&gt; type, String id); <i class="conum" data-value="5"></i><b>(5)</b>
+    &lt;T&gt; Iterable&lt;AnnotatedType&lt;T&gt;&gt; getAnnotatedTypes(Class&lt;T&gt; type); <i class="conum" data-value="6"></i><b>(6)</b>
+
+    /* New in CDI 2.0 */
+    &lt;T&gt; BeanConfigurator&lt;T&gt; addBean(); <i class="conum" data-value="2"></i><b>(2)</b>
+    &lt;T&gt; ObserverMethodConfigurator&lt;T&gt; addObserverMethod(); <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>allows creation of a custom bean either by creating a custom implementation of <code>Bean</code> interface or by using the <code>BeanConfigurator</code> helper (new in CDI 2.0).
+registering a custom bean will trigger all the events linked to bean discovery and creation.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>allows  creation of an <code>ObserverMethod</code> either by creating a custom implementation of <code>ObserverMethod</code> interface or by using the <code>ObserverMethodConfigurator</code> helper (new in CDI 2.0).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>add a nex context to the container</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>returns a discovered <code>AnnotatedType</code> for the given class and id.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>returns an <code>Iterable</code> on all the discovered <code>AnnotatedType</code> in the application</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="code-afterdeploymentvalidation-code-event"><a class="anchor" href="#code-afterdeploymentvalidation-code-event"></a><code>AfterDeploymentValidation</code> event</h3>
+<div class="paragraph">
+<p>This last bootstrapping event is only a hook to check that everything is as expected in the meta data (remember that the observer can inject BeanManager to inspect these meta data).</p>
+</div>
+<div class="paragraph">
+<p>When this event is fired, the meta data in the container are no more mutable and the application is ready to run</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface AfterDeploymentValidation {
+    void addDeploymentProblem(Throwable t); <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>allows observer to abort deployment by adding a definition error</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="application-life-and-death"><a class="anchor" href="#application-life-and-death"></a>Application life and death</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>From the portable extension perspective we are nearly done.</p>
+</div>
+<div class="paragraph">
+<p>After this rich phase of bootstrapping, the application runs until an event request its shutting down.
+It&#8217;s when the last portable extension event is fired.</p>
+</div>
+<div class="sect2">
+<h3 id="code-beforeshutdown-code-event"><a class="anchor" href="#code-beforeshutdown-code-event"></a><code>BeforeShutdown</code> Event</h3>
+<div class="paragraph">
+<p>This event is a hook, to allow cleaning of specific resource created during application life</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public interface BeforeShutdown {
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="conclusion"><a class="anchor" href="#conclusion"></a>Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Portable extension are a very powerful tool.</p>
+</div>
+<div class="paragraph">
+<p>Mastering them may seems difficult, but once you understand most of the SPI and the container lifecycle shown in this post, it&#8217;s no more than a kind of big lego box only limited by your imagination.</p>
+</div>
+</div>
+</div></div><div class="footer"><a href="/2017/01/nobody-expects-the-cdi-portable-extensions/"> Permalink</a> <a href="http://www.next-presso.com/2017/01/nobody-expects-the-cdi-portable-extensions/#disqus_thread">Comments</a> </div></div></div></article><article class="post"><div class="panel panel-primary"><div class="panel-body"><h1><a href="/2016/02/cdi-the-spi-who-loved-me/">CDI, the SPI who loved me</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Feb 20, 2016</span> |  <a href="http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me/#disqus_thread">Comments</a> </strong></div><div class="content"><div class="imageblock" style="float: left">
 <div class="content">
 <img src="/images/posts/2016/legobricks.jpg" alt="legobricks" width="285">
 </div>
@@ -96,11 +1136,11 @@ This part of the SPI gives you the tools to do it.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java">BeanManager bm = <span class="predefined-constant">null</span>;
-<span class="keyword">try</span> {
-    <span class="predefined-type">InitialContext</span> context = <span class="keyword">new</span> <span class="predefined-type">InitialContext</span>();
-    bm = (BeanManager) context.lookup(<span class="string"><span class="delimiter">&quot;</span><span class="content">java:comp/BeanManager</span><span class="delimiter">&quot;</span></span>);
-} <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">BeanManager bm = null;
+try {
+    InitialContext context = new InitialContext();
+    bm = (BeanManager) context.lookup("java:comp/BeanManager");
+} catch (Exception e) {
     e.printStackTrace();
 }</code></pre>
 </div>
@@ -117,14 +1157,14 @@ Doing so with the BeanManager is a bit verbose.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java">BeanManager bm = <span class="predefined-constant">null</span>;
-<span class="keyword">try</span> {
-    <span class="predefined-type">InitialContext</span> context = <span class="keyword">new</span> <span class="predefined-type">InitialContext</span>();
-    bm = (BeanManager) context.lookup(<span class="string"><span class="delimiter">&quot;</span><span class="content">java:comp/BeanManager</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="1"></i><b>(1)</b>
-} <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">BeanManager bm = null;
+try {
+    InitialContext context = new InitialContext();
+    bm = (BeanManager) context.lookup("java:comp/BeanManager"); <i class="conum" data-value="1"></i><b>(1)</b>
+} catch (Exception e) {
     e.printStackTrace();
 }
-<span class="predefined-type">Set</span>&lt;Bean&lt;?&gt;&gt; beans = bm.getBeans(MyService.class); <i class="conum" data-value="2"></i><b>(2)</b>
+Set&lt;Bean&lt;?&gt;&gt; beans = bm.getBeans(MyService.class); <i class="conum" data-value="2"></i><b>(2)</b>
 Bean&lt;?&gt; bean =  bm.resolve(beans); <i class="conum" data-value="3"></i><b>(3)</b>
 CreationalContext&lt;MyService&gt; ctx = bm.createCreationalContext(bean); <i class="conum" data-value="4"></i><b>(4)</b>
 MyService myService = (MyService) bm.getReference(bean, MyService.class, ctx); <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
@@ -163,7 +1203,7 @@ It&#8217;s obviously not the best solution if you just want to access an instanc
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java">CDI&lt;<span class="predefined-type">Object</span>&gt; cdi = CDI.current();</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">CDI&lt;Object&gt; cdi = CDI.current();</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -177,7 +1217,7 @@ It&#8217;s obviously not the best solution if you just want to access an instanc
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span> <span class="annotation">@Any</span> Instance&lt;<span class="predefined-type">Object</span>&gt; cdi;</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Inject @Any Instance&lt;Object&gt; cdi;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -185,7 +1225,7 @@ It&#8217;s obviously not the best solution if you just want to access an instanc
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java">CDI&lt;<span class="predefined-type">Object</span>&gt; cdi = CDI.current();
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">CDI&lt;Object&gt; cdi = CDI.current();
 MyService service = cdi.select(MyService.class).get();</code></pre>
 </div>
 </div>
@@ -205,18 +1245,18 @@ Third party framework developers can then provide their non CDI class including 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">NonCDI</span> {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class NonCDI {
 
-  <span class="annotation">@Inject</span>
+  @Inject
   SomeClass someInstance;
 
-  <span class="annotation">@PostConstruct</span>
-  <span class="directive">public</span> <span class="type">void</span> init()  {
+  @PostConstruct
+  public void init()  {
   ...
   }
 
-  <span class="annotation">@Predestroy</span>
-  <span class="directive">public</span> <span class="type">void</span> cleanUp() {
+  @Predestroy
+  public void cleanUp() {
   ...
   }
 }</code></pre>
@@ -227,7 +1267,7 @@ Third party framework developers can then provide their non CDI class including 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java">Unmanaged&lt;NonCDI&gt; unmanaged = <span class="keyword">new</span> Unmanaged(NonCDI.class);
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">Unmanaged&lt;NonCDI&gt; unmanaged = new Unmanaged(NonCDI.class);
 UnmanagedInstance&lt;NonCDI&gt; inst = unmanaged.newInstance();
 NonCDI nonCdi = inst.produce().inject().postConstruct().get();</code></pre>
 </div>
@@ -309,13 +1349,13 @@ You can inject it in your observer to get information about the event that trigg
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">MyService</span> {
-  <span class="directive">private</span> <span class="type">void</span> strictListen(<span class="annotation">@Observes</span> <span class="annotation">@Qualified</span> Payload evt, EventMetadata meta) {
-    <span class="keyword">if</span>(meta.getQualifiers().contains(<span class="keyword">new</span> QualifiedLiteral())
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class MyService {
+  private void strictListen(@Observes @Qualified Payload evt, EventMetadata meta) {
+    if(meta.getQualifiers().contains(new QualifiedLiteral())
        &amp;&amp; meta.getType().equals(Payload.class))
-         <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Do something</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
-       <span class="keyword">else</span>
-         <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">ignore</span><span class="delimiter">&quot;</span></span>)
+         System.out.println("Do something") <i class="conum" data-value="1"></i><b>(1)</b>
+       else
+         System.out.println("ignore")
   }
 }</code></pre>
 </div>
@@ -341,11 +1381,11 @@ This can be useful if you want to have object provided by a third party, perform
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java">AnnotatedType&lt;MyClass&gt; type = beanManager.createAnnotatedType(MyClass.class);
-InjectionTarget&lt;MyClass&gt; injectionTarget = beanManager.getInjectionTargetFactory(MyClass.class).createInjectionTarget(<span class="predefined-constant">null</span>);
-CreationalContext&lt;MyClass&gt; ctx = beanManager.createCreationalContext(<span class="predefined-constant">null</span>);
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">AnnotatedType&lt;MyClass&gt; type = beanManager.createAnnotatedType(MyClass.class);
+InjectionTarget&lt;MyClass&gt; injectionTarget = beanManager.getInjectionTargetFactory(MyClass.class).createInjectionTarget(null);
+CreationalContext&lt;MyClass&gt; ctx = beanManager.createCreationalContext(null);
 
-MyClass instance = <span class="keyword">new</span> Myclass;
+MyClass instance = new Myclass;
 injectionTarget.inject(instance, ctx);
 injectionTarget.postConstruct(instance);</code></pre>
 </div>
@@ -377,10 +1417,10 @@ That&#8217;s the price to access <code>InjectionPoint</code> power.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Qualifier</span>
-<span class="annotation">@Retention</span>(<span class="predefined-type">RetentionPolicy</span>.RUNTIME)
-<span class="directive">public</span> <span class="annotation">@interface</span> HttpParam {
-    <span class="annotation">@Nonbinding</span> <span class="directive">public</span> <span class="predefined-type">String</span> value(); <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+public @interface HttpParam {
+    @Nonbinding public String value(); <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -397,11 +1437,11 @@ That&#8217;s the price to access <code>InjectionPoint</code> power.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Produces</span>
-<span class="annotation">@HttpParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
-<span class="annotation">@Dependent</span> <i class="conum" data-value="2"></i><b>(2)</b>
-<span class="predefined-type">String</span> getParamValue(InjectionPoint ip, HttpServletRequest req) { <i class="conum" data-value="3"></i><b>(3)</b>
-  <span class="keyword">return</span> req.getParameter(ip.getAnnotated().getAnnotation(HttpParam.class).value());
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Produces
+@HttpParam("") <i class="conum" data-value="1"></i><b>(1)</b>
+@Dependent <i class="conum" data-value="2"></i><b>(2)</b>
+String getParamValue(InjectionPoint ip, HttpServletRequest req) { <i class="conum" data-value="3"></i><b>(3)</b>
+  return req.getParameter(ip.getAnnotated().getAnnotation(HttpParam.class).value());
 }</code></pre>
 </div>
 </div>
@@ -426,9 +1466,9 @@ That&#8217;s the price to access <code>InjectionPoint</code> power.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="annotation">@HttpParam</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">productId</span><span class="delimiter">&quot;</span></span>)
-<span class="predefined-type">String</span> productId;</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Inject
+@HttpParam("productId")
+String productId;</code></pre>
 </div>
 </div>
 </div>
@@ -442,18 +1482,18 @@ That&#8217;s the price to access <code>InjectionPoint</code> power.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="type">class</span> <span class="class">MyMapProducer</span>() {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">class MyMapProducer() {
 
-    <span class="annotation">@Produces</span>
-    &lt;K, V&gt; <span class="predefined-type">Map</span>&lt;K, V&gt; produceMap(InjectionPoint ip) {
-        <span class="keyword">if</span> (valueIsNumber(((<span class="predefined-type">ParameterizedType</span>) ip.getType()))) <i class="conum" data-value="1"></i><b>(1)</b>
-            <span class="keyword">return</span> <span class="keyword">new</span> <span class="predefined-type">TreeMap</span>&lt;K, V&gt;();
-        <span class="keyword">return</span> <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;K, V&gt;();
+    @Produces
+    &lt;K, V&gt; Map&lt;K, V&gt; produceMap(InjectionPoint ip) {
+        if (valueIsNumber(((ParameterizedType) ip.getType()))) <i class="conum" data-value="1"></i><b>(1)</b>
+            return new TreeMap&lt;K, V&gt;();
+        return new HashMap&lt;K, V&gt;();
     }
 
-    <span class="type">boolean</span> valueIsNumber(<span class="predefined-type">ParameterizedType</span> type) { <i class="conum" data-value="2"></i><b>(2)</b>
-        <span class="predefined-type">Class</span>&lt;?&gt; valueClass = (<span class="predefined-type">Class</span>&lt;?&gt;) type.getActualTypeArguments()[<span class="integer">1</span>];
-        <span class="keyword">return</span> <span class="predefined-type">Number</span>.class.isAssignableFrom(valueClass)
+    boolean valueIsNumber(ParameterizedType type) { <i class="conum" data-value="2"></i><b>(2)</b>
+        Class&lt;?&gt; valueClass = (Class&lt;?&gt;) type.getActualTypeArguments()[1];
+        return Number.class.isAssignableFrom(valueClass)
     }
 }</code></pre>
 </div>
@@ -528,8 +1568,8 @@ In this article I&#8217;ll try to clarify most of bean related concepts and deta
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="annotation">@MyQualifier</span>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Inject
+@MyQualifier
 MyBean bean;</code></pre>
 </div>
 </div>
@@ -637,23 +1677,23 @@ This approach allows the implementation to cache the matching bean for a given i
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Loggable</span>
-<span class="annotation">@Interceptor</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">LoggingInterceptor</span> {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Loggable
+@Interceptor
+public class LoggingInterceptor {
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">private</span> <span class="predefined-type">Logger</span> logger;
+    @Inject
+    private Logger logger;
 
-    <span class="annotation">@Inject</span> <span class="annotation">@Intercepted</span> <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="directive">private</span> Bean&lt;?&gt; intercepted;
+    @Inject @Intercepted <i class="conum" data-value="1"></i><b>(1)</b>
+    private Bean&lt;?&gt; intercepted;
 
-    <span class="annotation">@AroundInvoke</span>
-    <span class="directive">private</span> <span class="predefined-type">Object</span> intercept(InvocationContext ic) <span class="directive">throws</span> <span class="exception">Exception</span> {
-        logger.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">&gt;&gt; </span><span class="delimiter">&quot;</span></span> + intercepted.getBeanClass().getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content"> - </span><span class="delimiter">&quot;</span></span> + ic.getMethod().getName()); <i class="conum" data-value="2"></i><b>(2)</b>
-        <span class="keyword">try</span> {
-            <span class="keyword">return</span> ic.proceed();
-        } <span class="keyword">finally</span> {
-            logger.info(<span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;&lt; </span><span class="delimiter">&quot;</span></span> + intercepted.getBeanClass().getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content"> - </span><span class="delimiter">&quot;</span></span> + ic.getMethod().getName());
+    @AroundInvoke
+    private Object intercept(InvocationContext ic) throws Exception {
+        logger.info("&gt;&gt; " + intercepted.getBeanClass().getName() + " - " + ic.getMethod().getName()); <i class="conum" data-value="2"></i><b>(2)</b>
+        try {
+            return ic.proceed();
+        } finally {
+            logger.info("&lt;&lt; " + intercepted.getBeanClass().getName() + " - " + ic.getMethod().getName());
         }
     }
 }</code></pre>
@@ -882,20 +1922,20 @@ You can for instance have asynchronous behavior and observer features in one bea
 <h4 id="examples"><a class="anchor" href="#examples"></a>Examples</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@ConversationScoped</span>
-<span class="annotation">@Stateful</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">ShoppingCart</span> { ... } <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@ConversationScoped
+@Stateful
+public class ShoppingCart { ... } <i class="conum" data-value="1"></i><b>(1)</b>
 
-<span class="annotation">@Stateless</span>
-<span class="annotation">@Named</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">loginAction</span><span class="delimiter">&quot;</span></span>)
-<span class="directive">public</span> <span class="type">class</span> <span class="class">LoginActionImpl</span> <span class="directive">implements</span> LoginAction { ... } <i class="conum" data-value="2"></i><b>(2)</b>
+@Stateless
+@Named("loginAction")
+public class LoginActionImpl implements LoginAction { ... } <i class="conum" data-value="2"></i><b>(2)</b>
 
 
-<span class="annotation">@ApplicationScoped</span>
-<span class="annotation">@Singleton</span> <i class="conum" data-value="3"></i><b>(3)</b>
-<span class="annotation">@Startup</span> <i class="conum" data-value="4"></i><b>(4)</b>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">bootBean</span> {
- <span class="annotation">@Inject</span>
+@ApplicationScoped
+@Singleton <i class="conum" data-value="3"></i><b>(3)</b>
+@Startup <i class="conum" data-value="4"></i><b>(4)</b>
+public class bootBean {
+ @Inject
  MyBean bean;
 }</code></pre>
 </div>
@@ -1013,18 +2053,18 @@ When the container container finds producer method or field, it looks for matchi
 <h4 id="examples-2"><a class="anchor" href="#examples-2"></a>Examples</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ProducerBean</span> {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class ProducerBean {
 
-  <span class="annotation">@Produces</span>
-  <span class="annotation">@ApplicationScoped</span>
-  <span class="directive">private</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Integer</span>&gt; mapInt = <span class="keyword">new</span> <span class="predefined-type">ArrayList</span>&lt;&gt;(); <i class="conum" data-value="1"></i><b>(1)</b>
+  @Produces
+  @ApplicationScoped
+  private List&lt;Integer&gt; mapInt = new ArrayList&lt;&gt;(); <i class="conum" data-value="1"></i><b>(1)</b>
 
-  <span class="annotation">@Produces</span> <span class="annotation">@RequestScoped</span> <span class="annotation">@UserDatabase</span>
-  <span class="directive">public</span> EntityManager create(EntityManagerFactory emf) { <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="keyword">return</span> emf.createEntityManager();
+  @Produces @RequestScoped @UserDatabase
+  public EntityManager create(EntityManagerFactory emf) { <i class="conum" data-value="2"></i><b>(2)</b>
+    return emf.createEntityManager();
   }
 
-  <span class="directive">public</span> <span class="type">void</span> close(<span class="annotation">@Disposes</span> <span class="annotation">@Any</span> EntityManager em) {  <i class="conum" data-value="3"></i><b>(3)</b>
+  public void close(@Disposes @Any EntityManager em) {  <i class="conum" data-value="3"></i><b>(3)</b>
     em.close();
   }
 
@@ -1082,27 +2122,27 @@ When the container container finds producer method or field, it looks for matchi
 <div class="listingblock">
 <div class="title">Declaring resources beans</div>
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Produces</span>
-<span class="annotation">@WebServiceRef</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:app/service/PaymentService</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Produces
+@WebServiceRef(lookup="java:app/service/PaymentService") <i class="conum" data-value="1"></i><b>(1)</b>
 PaymentService paymentService;
 
-<span class="annotation">@Produces</span>
-<span class="annotation">@EJB</span>(beanname=<span class="string"><span class="delimiter">&quot;</span><span class="content">../their.jar#PaymentService</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="2"></i><b>(2)</b>
+@Produces
+@EJB(beanname="../their.jar#PaymentService") <i class="conum" data-value="2"></i><b>(2)</b>
 PaymentService paymentService;
 
-<span class="annotation">@Produces</span>
-<span class="annotation">@CustomerDatabase</span>
-<span class="annotation">@PersistenceContext</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
+@Produces
+@CustomerDatabase
+@PersistenceContext(unitName="CustomerDatabase") <i class="conum" data-value="3"></i><b>(3)</b>
 EntityManager customerDatabasePersistenceContext;
 
-<span class="annotation">@Produces</span>
-<span class="annotation">@CustomerDatabase</span>
-<span class="annotation">@PersistenceUnit</span>(unitName=<span class="string"><span class="delimiter">&quot;</span><span class="content">CustomerDatabase</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="4"></i><b>(4)</b>
+@Produces
+@CustomerDatabase
+@PersistenceUnit(unitName="CustomerDatabase") <i class="conum" data-value="4"></i><b>(4)</b>
 EntityManagerFactory customerDatabasePersistenceUnit;
 
-<span class="annotation">@Produces</span>
-<span class="annotation">@CustomerDatabase</span>
-<span class="annotation">@Resource</span>(lookup=<span class="string"><span class="delimiter">&quot;</span><span class="content">java:global/env/jdbc/CustomerDatasource</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="5"></i><b>(5)</b>
+@Produces
+@CustomerDatabase
+@Resource(lookup="java:global/env/jdbc/CustomerDatasource") <i class="conum" data-value="5"></i><b>(5)</b>
 Datasource customerDatabase;</code></pre>
 </div>
 </div>
@@ -1136,15 +2176,15 @@ Datasource customerDatabase;</code></pre>
 <div class="listingblock">
 <div class="title">producing an <code>EntityManager</code> with <code>COMMIT</code> flush mode</div>
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">EntityManagerBeanProducer</span> {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class EntityManagerBeanProducer {
 
-  <span class="annotation">@PersistenceContext</span>
-  <span class="directive">private</span> EntityManager em;
+  @PersistenceContext
+  private EntityManager em;
 
-  <span class="annotation">@Produces</span>
+  @Produces
   EntityManager produceCommitEm() {
     em.setFlushMode(COMMIT);
-    <span class="keyword">return</span> em;
+    return em;
   }
 }</code></pre>
 </div>
@@ -1333,11 +2373,11 @@ The event Object could be of any Java type and don’t have to be CDI related (t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Inject
 BeanManager beanManager;
 
-<span class="directive">public</span> <span class="type">void</span> doSomething() {
-  beanManager.fireEvent(<span class="keyword">new</span> Payload());
+public void doSomething() {
+  beanManager.fireEvent(new Payload());
 }</code></pre>
 </div>
 </div>
@@ -1346,10 +2386,10 @@ BeanManager beanManager;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java">BeanManager beanManager = CDI.current().getBeanManager();
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">BeanManager beanManager = CDI.current().getBeanManager();
 
-<span class="directive">public</span> <span class="type">void</span> doSomething() {
-  beanManager.fireEvent(<span class="keyword">new</span> Payload());
+public void doSomething() {
+  beanManager.fireEvent(new Payload());
 }</code></pre>
 </div>
 </div>
@@ -1358,11 +2398,11 @@ BeanManager beanManager;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span>
-<span class="predefined-type">Event</span>&lt;Payload&gt; payloadEvent;
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Inject
+Event&lt;Payload&gt; payloadEvent;
 
-<span class="directive">public</span> <span class="type">void</span> doSomething() {
-  payloadEvent.fire(<span class="keyword">new</span> Payload());
+public void doSomething() {
+  payloadEvent.fire(new Payload());
 }</code></pre>
 </div>
 </div>
@@ -1377,7 +2417,7 @@ BeanManager beanManager;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> listenToPayload(<span class="annotation">@Observes</span> Payload event) {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public void listenToPayload(@Observes Payload event) {
   ...
 }</code></pre>
 </div>
@@ -1387,7 +2427,7 @@ BeanManager beanManager;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> listenToPayload(<span class="annotation">@Observes</span> <span class="annotation">@Qualified</span> Payload event) {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public void listenToPayload(@Observes @Qualified Payload event) {
   ...
 }</code></pre>
 </div>
@@ -1397,7 +2437,7 @@ BeanManager beanManager;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> listenToPayload(<span class="annotation">@Observes</span> Payload event, PayloadService service) {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public void listenToPayload(@Observes Payload event, PayloadService service) {
   ...
 }</code></pre>
 </div>
@@ -1421,11 +2461,11 @@ BeanManager beanManager;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> processNumberList(<span class="annotation">@Observes</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Number</span>&gt; event) {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public void processNumberList(@Observes List&lt;Number&gt; event) {
   ...
 }
 
-<span class="directive">public</span> <span class="type">void</span> processIntegerList(<span class="annotation">@Observes</span> <span class="predefined-type">List</span>&lt;<span class="predefined-type">Integer</span>&gt; event) {
+public void processIntegerList(@Observes List&lt;Integer&gt; event) {
   ...
 }</code></pre>
 </div>
@@ -1435,11 +2475,11 @@ BeanManager beanManager;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> processIntegerList(<span class="annotation">@Observes</span> <span class="predefined-type">List</span>&lt;? <span class="local-variable">super</span> <span class="predefined-type">Integer</span>&gt; event) {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public void processIntegerList(@Observes List&lt;? super Integer&gt; event) {
 ...
 }
 
-<span class="directive">public</span> <span class="type">void</span> processNumberList(<span class="annotation">@Observes</span> <span class="predefined-type">List</span>&lt;? <span class="directive">extends</span> <span class="predefined-type">Number</span>&gt; event) {
+public void processNumberList(@Observes List&lt;? extends Number&gt; event) {
 ...
 }</code></pre>
 </div>
@@ -1464,34 +2504,34 @@ BeanManager beanManager;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="comment">/**
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">/**
  * Qualifier with binding member
- */</span>
-<span class="annotation">@Qualifier</span>
-<span class="annotation">@Target</span>({TYPE, METHOD, PARAMETER, FIELD})
-<span class="annotation">@Retention</span>(RUNTIME)
-<span class="annotation">@Documented</span>
-<span class="directive">public</span> <span class="annotation">@interface</span> Qualified {
-    <span class="predefined-type">String</span> value() <span class="keyword">default</span> <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>;
+ */
+@Qualifier
+@Target({TYPE, METHOD, PARAMETER, FIELD})
+@Retention(RUNTIME)
+@Documented
+public @interface Qualified {
+    String value() default "";
 }
 
-<span class="directive">public</span> <span class="type">class</span> <span class="class">EventTestService</span> {
+public class EventTestService {
 
-    <span class="annotation">@Inject</span>
-    <span class="annotation">@Qualified</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">strong</span><span class="delimiter">&quot;</span></span>)
-    <span class="predefined-type">Event</span>&lt;Payload&gt; payLoadEvent;
+    @Inject
+    @Qualified("strong")
+    Event&lt;Payload&gt; payLoadEvent;
 
-    <span class="directive">public</span> <span class="type">void</span> fireEvent() {
-      payloadEvent.fire(<span class="keyword">new</span> Payload());
+    public void fireEvent() {
+      payloadEvent.fire(new Payload());
     }
 
-    <span class="directive">public</span> <span class="type">void</span> processUnqualifiedPayload(<span class="annotation">@Observes</span> Payload event) {}
+    public void processUnqualifiedPayload(@Observes Payload event) {}
 
-    <span class="directive">public</span> <span class="type">void</span> processQualifiedPayload(<span class="annotation">@Observes</span> <span class="annotation">@Qualified</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">strong</span><span class="delimiter">&quot;</span></span>) Payload event) {}
+    public void processQualifiedPayload(@Observes @Qualified("strong") Payload event) {}
 
-    <span class="directive">public</span> <span class="type">void</span> processUnqualifiedObject(<span class="annotation">@Observes</span> <span class="predefined-type">Object</span> event) {}
+    public void processUnqualifiedObject(@Observes Object event) {}
 
-    <span class="directive">public</span> <span class="type">void</span> processQualifiedObject(<span class="annotation">@Observes</span> <span class="annotation">@Qualified</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">strong</span><span class="delimiter">&quot;</span></span>) <span class="predefined-type">Object</span> event) {}
+    public void processQualifiedObject(@Observes @Qualified("strong") Object event) {}
 
 }</code></pre>
 </div>
@@ -1515,31 +2555,31 @@ For instance :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">EventTestService</span> {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public class EventTestService {
 
-    <span class="annotation">@Inject</span>
-    <span class="annotation">@MyQualifier</span>
-    <span class="predefined-type">Event</span>&lt;Payload&gt; payLoadEvent;
+    @Inject
+    @MyQualifier
+    Event&lt;Payload&gt; payLoadEvent;
 
-    <span class="directive">public</span> <span class="type">void</span> fireEvent() {
-      payloadEvent.select(<span class="keyword">new</span> QualifiedLiteral()).fire(<span class="keyword">new</span> Payload());
+    public void fireEvent() {
+      payloadEvent.select(new QualifiedLiteral()).fire(new Payload());
     }
 }
 
-<span class="directive">public</span> <span class="type">class</span> <span class="class">QualifiedLiteral</span> <span class="directive">extends</span> AnnotationLiteral&lt;Qualified&gt; <span class="directive">implements</span> Qualified {
+public class QualifiedLiteral extends AnnotationLiteral&lt;Qualified&gt; implements Qualified {
 
-    <span class="directive">private</span> <span class="predefined-type">String</span> value=<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>;
+    private String value="";
 
-    <span class="directive">public</span> QualifiedLiteral(<span class="predefined-type">String</span> value) {
-        <span class="local-variable">this</span>.value = value;
+    public QualifiedLiteral(String value) {
+        this.value = value;
     }
 
-    <span class="directive">public</span> QualifiedLiteral() {
-        <span class="local-variable">this</span>(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>);
+    public QualifiedLiteral() {
+        this("");
     }
 
-    <span class="directive">public</span> <span class="predefined-type">String</span> value() {
-        <span class="keyword">return</span> value;
+    public String value() {
+        return value;
     }
 }</code></pre>
 </div>
@@ -1561,14 +2601,14 @@ You can do that with the receive member of @Observes annotation which can take t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@RequestScoped</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">EventTestService</span> {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@RequestScoped
+public class EventTestService {
 
-    <span class="comment">// will always be called (bean my be instantiated for this call)</span>
-    <span class="directive">public</span> <span class="type">void</span> processQualifiedPayload(<span class="annotation">@Observes</span>(receive=ALWAYS) Type1 event) {}
+    // will always be called (bean my be instantiated for this call)
+    public void processQualifiedPayload(@Observes(receive=ALWAYS) Type1 event) {}
 
-    <span class="comment">// will be called only if the bean already exists in Request scope</span>
-    <span class="directive">public</span> <span class="type">void</span> processUnqualifiedPayload(<span class="annotation">@Observes</span>(receive=IF_EXISTS) Type2 event) {}
+    // will be called only if the bean already exists in Request scope
+    public void processUnqualifiedPayload(@Observes(receive=IF_EXISTS) Type2 event) {}
 
 }</code></pre>
 </div>
@@ -1612,14 +2652,14 @@ For instance:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@RequestScoped</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">EventTestService</span> {
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@RequestScoped
+public class EventTestService {
 
-    <span class="comment">// is called when the event is fired</span>
-    <span class="directive">public</span> <span class="type">void</span> processCustomerUpdateRequest(<span class="annotation">@Observes</span>(during=IN_PROGRESS) <span class="annotation">@Updated</span> customer cust) {}
+    // is called when the event is fired
+    public void processCustomerUpdateRequest(@Observes(during=IN_PROGRESS) @Updated customer cust) {}
 
-    <span class="comment">// is called by the same event fired than previous observer but only after the trnsaction complete successufully</span>
-    <span class="directive">public</span> <span class="type">void</span> processCustomerUpdated(<span class="annotation">@Observes</span>(during=AFTER_SUCCESS) <span class="annotation">@Updated</span> customer cust) {}
+    // is called by the same event fired than previous observer but only after the trnsaction complete successufully
+    public void processCustomerUpdated(@Observes(during=AFTER_SUCCESS) @Updated customer cust) {}
 
 }</code></pre>
 </div>
@@ -1637,21 +2677,21 @@ You can observe these event in your application like this (if it’s deployed in
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> processApplicationScopedInit(<span class="annotation">@Observes</span> <span class="annotation">@Initialized</span>(ApplicationScoped.class) ServletContext payload) {}
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public void processApplicationScopedInit(@Observes @Initialized(ApplicationScoped.class) ServletContext payload) {}
 
-<span class="directive">public</span> <span class="type">void</span> processApplicationScopedDestroyed(<span class="annotation">@Observes</span> <span class="annotation">@Destroyed</span>(ApplicationScoped.class) ServletContext payload) {}
+public void processApplicationScopedDestroyed(@Observes @Destroyed(ApplicationScoped.class) ServletContext payload) {}
 
-<span class="directive">public</span> <span class="type">void</span> processSessionScopedInit(<span class="annotation">@Observes</span> <span class="annotation">@Initialized</span>(SessionScoped.class) HttpSession payload) {}
+public void processSessionScopedInit(@Observes @Initialized(SessionScoped.class) HttpSession payload) {}
 
-<span class="directive">public</span> <span class="type">void</span> processSessionScopedDestroyed(<span class="annotation">@Observes</span> <span class="annotation">@Destroyed</span>(SessionScoped.class) HttpSession payload) {}
+public void processSessionScopedDestroyed(@Observes @Destroyed(SessionScoped.class) HttpSession payload) {}
 
-<span class="directive">public</span> <span class="type">void</span> processRequestScopedInit(<span class="annotation">@Observes</span> <span class="annotation">@Initialized</span>(RequestScoped.class) ServletRequest payload) {}
+public void processRequestScopedInit(@Observes @Initialized(RequestScoped.class) ServletRequest payload) {}
 
-<span class="directive">public</span> <span class="type">void</span> processRequestScopedDestroyed(<span class="annotation">@Observes</span> <span class="annotation">@Destroyed</span>(RequestScoped.class) ServletRequest payload) {}
+public void processRequestScopedDestroyed(@Observes @Destroyed(RequestScoped.class) ServletRequest payload) {}
 
-<span class="directive">public</span> <span class="type">void</span> processConversationScopedInit(<span class="annotation">@Observes</span> <span class="annotation">@Initialized</span>(ConversationScoped.class) ServletRequest payload) {}
+public void processConversationScopedInit(@Observes @Initialized(ConversationScoped.class) ServletRequest payload) {}
 
-<span class="directive">public</span> <span class="type">void</span> processConversationScopedDestroyed(<span class="annotation">@Observes</span> <span class="annotation">@Destroyed</span>(ConversationScoped.class) ServletRequest payload) {}</code></pre>
+public void processConversationScopedDestroyed(@Observes @Destroyed(ConversationScoped.class) ServletRequest payload) {}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1666,7 +2706,7 @@ You get the EventMetadata by adding it to the observer parameters :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> processPayload(<span class="annotation">@Observes</span> Payload event, EventMetadata meta) {}</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public void processPayload(@Observes Payload event, EventMetadata meta) {}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1732,7 +2772,7 @@ An other interesting fact is that this payload is mutable and can be modified by
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="directive">public</span> <span class="type">void</span> processPayload(<span class="annotation">@Observes</span> <span class="predefined-type">Object</span> event, EventMetadata meta) {}</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public void processPayload(@Observes Object event, EventMetadata meta) {}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1902,8 +2942,8 @@ CDI is probably one of most overlooked specification in Java EE, yet when versio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span> Instance&lt;MyBean&gt; myBeanInstances;
-<span class="directive">public</span> Mybean getMyBean() { <span class="keyword">return</span> myBeanInstances.get(); }</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Inject Instance&lt;MyBean&gt; myBeanInstances;
+public Mybean getMyBean() { return myBeanInstances.get(); }</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1911,7 +2951,7 @@ CDI is probably one of most overlooked specification in Java EE, yet when versio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="annotation">@Inject</span> <span class="annotation">@Transient</span> MyBean myBean;</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">@Inject @Transient MyBean myBean;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1928,7 +2968,7 @@ CDI is probably one of most overlooked specification in Java EE, yet when versio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="java">myBeanInstance.restrictedTo(BeanImp.class).withQualifier(<span class="keyword">new</span> <span class="annotation">@MyQualifier</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">Binding</span><span class="delimiter">&quot;</span></span>) AnnotationLiteral&lt;&gt;(), <span class="keyword">new</span> <span class="annotation">@MyOtherQualifier</span> AnnotationLiteral&lt;&gt;()).select();</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">myBeanInstance.restrictedTo(BeanImp.class).withQualifier(new @MyQualifier("Binding") AnnotationLiteral&lt;&gt;(), new @MyOtherQualifier AnnotationLiteral&lt;&gt;()).select();</code></pre>
 </div>
 </div>
 <div class="paragraph">
