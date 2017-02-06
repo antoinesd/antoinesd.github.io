@@ -6,7 +6,7 @@ authors: [asd]
 tags: [CDI,SPI,Extension]
 ---
 
-image::posts/2016/legobricks.jpg[width="285",float="left"]
+image::posts/2017/rainbow_lego.jpg[width="285",float="right"]
 Portable extensions are probably the coolest feature of CDI.
 
 Unfortunately, this gem is a bit hidden in the spec and some developers totally missed it while others may wrongly think that using extension is too complicated.
@@ -390,7 +390,7 @@ endif
 ....
 
 
-=== ProcessInjectionPoint event
+=== `ProcessInjectionPoint` event
 
 For each injection point encountered during this process, the container will fire a `ProcessInjectionPoint` event.
 Injection points are fired for managed beans, producer methods and observer methods.
@@ -416,15 +416,30 @@ For instance it can be used to collect all types for a given qualifier and later
 
 [source]
 ----
+public class ConvertExtension implements Extension {
 
-//TODO: example
+    Set<Type> convertTypes = new HashSet();
 
+    public void captureConfigTypes(@Observes ProcessInjectionPoint<?, ?> pip) {
+        InjectionPoint ip = pip.getInjectionPoint();
+        if (ip.getQualifiers().contains(Convert.Literal.Instance)) {
+            convertTypes.add(ip.getType());
+        }
+    }
+}
 ----
 
-=== ProcessInjectionTarget event
+The example above will create a set of types for all injection points in the application having the `@Convert` qualifier.
+
+Later it could use this collection to create custom beans matching each types found for instance.
+
+
+=== `ProcessInjectionTarget` event
 
 An `InjectionTarget` can be seen as a non managed bean.
 It mainly provides dependency injection mechanism and some callback feature.
+
+This event is fired for all elements supporting injection.
 
 [source]
 ----
@@ -435,56 +450,87 @@ public interface ProcessInjectionTarget<X> { <1>
     public void addDefinitionError(Throwable t); <5>
 }
 ----
-<1> the event is a paramterized type to target a specific base type of the `InjectionTarget` to process
+<1> the event is a parameterized type to target a specific base type of the `InjectionTarget` to process
 <2> returns the `AnnotatedType` which defined the processed `InjectionTarget`
 <3> returns the `InjectionTarget` processed by this event
 <4> allows replacing the processed `InjectionTarget`
 <5> allows observer to abort deployment by adding a definition error
 
 
+Observing this event allows an extension to override the default InjectionTarget behaviour and perform specific tasks during injection like calling specific feature on a 3rd party framework.
+
+
+=== `ProcessBeanAttributes` event
+
+This event is fired before registration of a discovered bean in the container.
+
+Observing this event allows attributes modification or registration canceling.
+
+This event is fired for all kind of beans:
+
+* Managed Beans
+* Session Beans
+* Producer Fields
+* Producer Method
+* Custom Beans
+
 [source]
 ----
+public interface ProcessBeanAttributes<T> { <1>
+    public Annotated getAnnotated(); <2>
+    public BeanAttributes<T> getBeanAttributes(); <3>
+    public void setBeanAttributes(BeanAttributes<T> beanAttributes); <4>
+    public void addDefinitionError(Throwable t); <5>
+    public void veto(); <6>
 
-//TODO: example with InjectionTargetFactory
-
+    /* New in CDI 2.0 */
+    public BeanAttributesConfigurator<T> configureBeanAttributes(); <4>
+    public void ignoreFinalMethods(); <7>
+}
 ----
+<1> The event being a parameterized type allows observing this event only for a given type
+<2> returns the Annotated defining the bean (i.e an `AnnotatedType` for managed Bean or a session bean, an `AnnotatedField` or `AnnotatedMethod` for a producer and null for a custom bean)
+<3> returns the processed `BeanAttributes`
+<4> allows replacement of processed `BeanAttributes` either by implementing the `BeanAttributes` interface or by using a `BeanAttributesConfigurator` (new in CDI 2.0)
+<5> allows observer to abort deployment by adding a definition error
+<6> requests the container to ignore the matching bean and skip its registration
+<7> new method in CDI 2.0 to explicitly skip some restriction in the spec regarding proxy creation
 
 
-=== ProcessBeanAttributes
-
-This event is fired before registration of a discovered bean.
+The following extension checks that no beans was added by developer for type `SpecialClass` and no qualifiers will be registered since it will register a custom bean for it
 
 [source]
 ----
-public interface ProcessBeanAttributes<T> {
+public class CheckExtension implements Extension {
 
-    public Annotated getAnnotated();
-    public BeanAttributes<T> getBeanAttributes();
-    public void setBeanAttributes(BeanAttributes<T> beanAttributes);
-    public void addDefinitionError(Throwable t);
-    public void veto();
-
-    public BeanAttributesConfigurator<T> configureBeanAttributes();
-    public void ignoreFinalMethods();
+public void filterSpecialClassBean(@Observes ProcessBeanAttributes<SpecialClass> pba) {
+        if(pba.getBeanAttributes().getQualifiers().contains(Default.Literal.INSTANCE))
+            pba.veto();
+    }
 }
 ----
 
-=== ProcessBean
+=== `ProcessBean` event
 
-ProcessProducerMethod
-
+This event is fired when a bean is registered in the container.
 
 [source]
 ----
-public interface ProcessBean<X> {
-
-    public Annotated getAnnotated();
-    public Bean<X> getBean();
-    public void addDefinitionError(Throwable t);
+public interface ProcessBean<X> { <1>
+    public Annotated getAnnotated(); <2>
+    public Bean<X> getBean(); <3>
+    public void addDefinitionError(Throwable t); <4>
 }
 ----
+<1> Parameterized type for better observer filtering
+<2> returns the Annotated defining the bean (i.e an `AnnotatedType` for managed Bean or a session bean, an `AnnotatedField` or `AnnotatedMethod` for a producer and null for a custom bean)
+<3> returns the created `Bean`
+<4> allows observer to abort deployment by adding a definition error
 
-edfezfez
+This event is mainly here to check that a specific bean is created and sometimes capture its definition for further use.
+
+An observer on `ProcessBean` for all kind of bean.
+If you want to be more specific, you can use a child of this event to only observe the event for a specific kind of bean.
 
 [plantuml, "processBean_hierarchy", "svg", width="100%"]
 ....
@@ -526,131 +572,177 @@ interface ProcessSessionBean<X> {
 ....
 
 
-=== ProcessProducer
+=== `ProcessProducer` event
+
+This event is fired for all producers find in the application.
+
+Remember that a producer is a kind of bean.
+But its definition and discovery depends on the bean that contains it.
+In other words, producer defined in a class that will not be discovered as bean will be ignored.
+
+It mainly allows overriding of the producing code (i.e. you can override the code written to produce a specific bean instance in the application from an extension )
 
 [source]
 ----
-public interface ProcessProducer<T, X> {
-    AnnotatedMember<T> getAnnotatedMember();
-    Producer<X> getProducer();
-    void addDefinitionError(Throwable t);
-    void setProducer(Producer<X> producer);
+public interface ProcessProducer<T, X> { <1>
+    AnnotatedMember<T> getAnnotatedMember(); <2>
+    Producer<X> getProducer(); <3>
+    void addDefinitionError(Throwable t); <4>
+    void setProducer(Producer<X> producer); <5>
 
-    ProducerConfigurator<X> configureProducer();
+    /* New in CDI 2.0 */
+    ProducerConfigurator<X> configureProducer(); <5>
 }
 ----
+<1> Parameterized type for better observer filtering.
+`T` is the bean class of the bean containing the producer, `X` is the type of the producer
+<2> returns the AnnotatedMember defining the producer (i.e an `AnnotatedField` for a field producer or `AnnotatedMethod` for a method producer)
+<3> returns the producer being processed
+<4> allows observer to abort deployment by adding a definition error
+<5> Allow replacement of the processed producer, either by implementing the `Producer` interface or using the `ProducerConfigurator` helper (new in CDI 2.0)
 
-=== ProcessObserverMethod
+
+The following example is inspired by https://github.com/astefanutti/metrics-cdi[Metrics-CDI extension].
+
+When user will declare a producer for a metric in the app, we want to check in the metric registry that it doesn't already exist.
+If it exist, instead of creating an new instance, we'll return the one in the registry.
+If it doesn't exist, we'll use the producer code to instantiate the metric, add it to the registry and returns it to the application.
 
 [source]
 ----
-public interface ProcessObserverMethod<T, X> {
-    AnnotatedMethod<X> getAnnotatedMethod();
-    ObserverMethod<T> getObserverMethod();
-    void addDefinitionError(Throwable t);
+public class MetricsExtension implements Extension {
 
+<T extends com.codahale.metrics.Metric> void processMetricProducer(@Observes ProcessProducer<?, T> pp, BeanManager bm) { <1>
+        Metric m = pp.getAnnotatedMember().getAnnotation(Metric.class); <2>
 
-    void setObserverMethod(ObserverMethod<T> observerMethod);
-    ObserverMethodConfigurator<T> configureObserverMethod();
-    void veto();
+        if (m != null) { <3>
+            String name = m.name(); <4>
+            pp.configureProducer() <5>
+                    .produceWith(ctx -> { <6>
+                        MetricRegistry reg = bm.createInstance().select(MetricRegistry.class).get(); <7>
+                        if (!reg.getMetrics().containsKey(name)) <8>
+                            reg.register(name, pp.getProducer().produce(ctx)); <9>
+                        return (T) reg.getMetrics().get(name);  <10>
+                    });
+        }
+    }
+}
+----
+<1> this observer needs `BeanManager`. This helper bean can be injected in any observer in an extension
+<2> retrieving `@Metric` annotation on the producer
+<3> treatment will be skip if no annotation found
+<4> retrieving name of the metric from the annotation
+<5> we use the new `ProducerConfigurator` helpers. In CDI 1.2 we would have created our own implementation of `Producer` interface
+<6> we define a functional callback for producing the instance of the producer
+<7> retrieving the registry bean instance
+<8> looking for a metric with the matching name
+<9> if it doesn't exist we create it by sing the original producer code and it to the registry
+<10> we return the metric with the matching name from the registry
+
+=== `ProcessObserverMethod` event
+
+This event is fired for all observers declared in enabled beans.
+
+Before CDI 2.0 it was mainly an event to check existence of an observer method.
+Since CDI 2.0, this gives more control by allowing `ObserverMethod` replacement or removing of it.
+
+[source]
+----
+public interface ProcessObserverMethod<T, X> { <1>
+    AnnotatedMethod<X> getAnnotatedMethod(); <2>
+    ObserverMethod<T> getObserverMethod(); <3>
+    void addDefinitionError(Throwable t); <4>
+
+    /* new in CDI 2.0 */
+    void setObserverMethod(ObserverMethod<T> observerMethod); <5>
+    ObserverMethodConfigurator<T> configureObserverMethod(); <5>
+    void veto(); <6>
+}
+----
+<1> Parameterized type for better observer filtering.
+`T` is the bean class of the bean containing the observer method, `X` is the type of the event
+<2> returns the `AnnotatedMethod` defining the `ObserverMethod`
+<3> returns the `ObserverMethod`
+<4> allows observer to abort deployment by adding a definition error
+<5> allow replacement or overriding of the `ObserverMethod` either by providing a custom `ObserverMethod` instance or by using an `ObserverMethodConfigurator` (new in CDI 2.0)
+
+The example below show how an extension can switch all synchronous observer for MyClass event type to asynchronous behaviour.
+
+[source]
+----
+public class SwitchExtension implements Extension {
+
+   public void switchToAsync(@Observes ProcessObserverMethod<?, MyClass> pom) {
+       pom.configureObserverMethod().async(true);
+   }
 }
 ----
 
-=== AfterBeanDiscovery
+
+=== `AfterBeanDiscovery` event
+
+This event is fired after all beans, producers and observer discovery.
+
+It is the last occasion to change or enhance discovered meta data.
 
 [source]
 ----
 public interface AfterBeanDiscovery {
-    void addDefinitionError(Throwable t);
-    void addBean(Bean<?> bean);
-    void addObserverMethod(ObserverMethod<?> observerMethod);
-    void addContext(Context context);
-    <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id);
-    <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type);
+    void addDefinitionError(Throwable t); <1>
+    void addBean(Bean<?> bean); <2>
+    void addObserverMethod(ObserverMethod<?> observerMethod); <3>
+    void addContext(Context context); <4>
+    <T> AnnotatedType<T> getAnnotatedType(Class<T> type, String id); <5>
+    <T> Iterable<AnnotatedType<T>> getAnnotatedTypes(Class<T> type); <6>
 
-    <T> BeanConfigurator<T> addBean();
-    <T> ObserverMethodConfigurator<T> addObserverMethod();
-
-
+    /* New in CDI 2.0 */
+    <T> BeanConfigurator<T> addBean(); <2>
+    <T> ObserverMethodConfigurator<T> addObserverMethod(); <3>
 }
 ----
+<1> allows observer to abort deployment by adding a definition error
+<2> allows creation of a custom bean either by creating a custom implementation of `Bean` interface or by using the `BeanConfigurator` helper (new in CDI 2.0).
+registering a custom bean will trigger all the events linked to bean discovery and creation.
+<3> allows  creation of an `ObserverMethod` either by creating a custom implementation of `ObserverMethod` interface or by using the `ObserverMethodConfigurator` helper (new in CDI 2.0).
+<4> add a nex context to the container
+<5> returns a discovered `AnnotatedType` for the given class and id.
+<6> returns an `Iterable` on all the discovered `AnnotatedType` in the application
 
 
-=== AfterDeploymentValidation
+=== `AfterDeploymentValidation` event
+
+This last bootstrapping event is only a hook to check that everything is as expected in the meta data (remember that the observer can inject BeanManager to inspect these meta data).
+
+When this event is fired, the meta data in the container are no more mutable and the application is ready to run
 
 [source]
 ----
 public interface AfterDeploymentValidation {
-    void addDeploymentProblem(Throwable t);
+    void addDeploymentProblem(Throwable t); <1>
+}
+----
+<1> allows observer to abort deployment by adding a definition error
+
+
+== Application life and death
+
+From the portable extension perspective we are nearly done.
+
+After this rich phase of bootstrapping, the application runs until an event request its shutting down.
+It's when the last portable extension event is fired.
+
+=== `BeforeShutdown` Event
+
+This event is a hook, to allow cleaning of specific resource created during application life
+
+[source]
+----
+public interface BeforeShutdown {
 }
 ----
 
-lnkjklj
+== Conclusion
 
+Portable extension are a very powerful tool.
 
-[plantuml, "lifecycle-complete", "svg", height="95%"]
-----
-@startuml
-
-skinparam shadowing false
-skinparam backgroundColor transparent
-skinparam defaultFontName Consolas
-skinparam titleFontSize 30
-
-skinparam activity {
-  BackgroundColor #337788
-  ArrowColor #888888
-  BarColor #888888
-  BorderColor White
-  FontName Consolas
-  FontColor White
-  FontSize 20
-  DiamondFontSize 14
-}
-
-|**Application Lifecycle**|
-start
-#BB3322:BeforeBeanDiscovery>
-
-|**Type Discovery**|
-
-while (<color:#FFFFFF>while types in</color>\n<color:#FFFFFF>deployment archive?</color>) is (yes)
-fork
-    :ProcessAnnotatedType<X> >
-/' fork again
-    :ProcessSyntheticAnnotatedType<X> > '/
-end fork
-endwhile (no)
-
-|**Application Lifecycle**|
-#BB3322:AfterTypeDiscovery>
-
-|**Bean Discovery**|
-fork
-partition "**For each discovered types during type discovery**" {
-    :ProcessInjectionPoint<T, X> >
-    :ProcessInjectionTarget<X> >
-    :ProcessBeanAttributes<T> >
-    :ProcessManagedBean<X> >
-}
-fork again
-partition "**For each producer methods / fields of enabled beans**" {
-    :ProcessInjectionPoint<T, X> >
-    :ProcessProducer<T, X> >
-    :ProcessBeanAttributes<T> >
-    :ProcessProducerMethod<T, X>\nProcessProducerField<T, X> >
-}
-fork again
-partition "**For each observer methods of enabled beans**" {
-    :ProcessInjectionPoint<T, X> >
-    :ProcessObserverMethod<T, X> >
-}
-end fork
-
-|**Application Lifecycle**|
-#BB3322:AfterBeanDiscovery>
-#BB3322:AfterDeploymentValidation>
-stop
-
-@enduml
-----
+Mastering them may seems difficult, but once you understand most of the SPI and the container lifecycle shown in this post, it's no more than a kind of big lego box only limited by your imagination.
