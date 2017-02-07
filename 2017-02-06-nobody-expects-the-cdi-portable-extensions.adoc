@@ -617,12 +617,13 @@ public class MetricsExtension implements Extension {
 
         if (m != null) { <3>
             String name = m.name(); <4>
-            pp.configureProducer() <5>
-                    .produceWith(ctx -> { <6>
-                        MetricRegistry reg = bm.createInstance().select(MetricRegistry.class).get(); <7>
-                        if (!reg.getMetrics().containsKey(name)) <8>
-                            reg.register(name, pp.getProducer().produce(ctx)); <9>
-                        return (T) reg.getMetrics().get(name);  <10>
+            Producer<T> prod = pp.getProducer(); <5>
+            pp.configureProducer() <6>
+                    .produceWith(ctx -> { <7>
+                        MetricRegistry reg = bm.createInstance().select(MetricRegistry.class).get(); <8>
+                        if (!reg.getMetrics().containsKey(name)) <9>
+                            reg.register(name, prod.produce(ctx)); <10>
+                        return (T) reg.getMetrics().get(name);  <11>
                     });
         }
     }
@@ -632,12 +633,13 @@ public class MetricsExtension implements Extension {
 <2> retrieving `@Metric` annotation on the producer
 <3> treatment will be skip if no annotation found
 <4> retrieving name of the metric from the annotation
-<5> we use the new `ProducerConfigurator` helpers. In CDI 1.2 we would have created our own implementation of `Producer` interface
-<6> we define a functional callback for producing the instance of the producer
-<7> retrieving the registry bean instance
-<8> looking for a metric with the matching name
-<9> if it doesn't exist we create it by sing the original producer code and it to the registry
-<10> we return the metric with the matching name from the registry
+<5> getting the initial producer to be able to use it in call back
+<6> we use the new `ProducerConfigurator` helpers. In CDI 1.2 we would have created our own implementation of `Producer` interface
+<7> we define a functional callback for producing the instance of the producer
+<8> retrieving the registry bean instance
+<9> looking for a metric with the matching name
+<10> if it doesn't exist we create it by using the original producer code and it to the registry
+<11> we return the metric with the matching name from the registry
 
 === `ProcessObserverMethod` event
 
