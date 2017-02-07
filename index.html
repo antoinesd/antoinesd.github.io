@@ -808,12 +808,13 @@ If it doesn&#8217;t exist, we&#8217;ll use the producer code to instantiate the 
 
         if (m != null) { <i class="conum" data-value="3"></i><b>(3)</b>
             String name = m.name(); <i class="conum" data-value="4"></i><b>(4)</b>
-            pp.configureProducer() <i class="conum" data-value="5"></i><b>(5)</b>
-                    .produceWith(ctx -&gt; { <i class="conum" data-value="6"></i><b>(6)</b>
-                        MetricRegistry reg = bm.createInstance().select(MetricRegistry.class).get(); <i class="conum" data-value="7"></i><b>(7)</b>
-                        if (!reg.getMetrics().containsKey(name)) <i class="conum" data-value="8"></i><b>(8)</b>
-                            reg.register(name, pp.getProducer().produce(ctx)); <i class="conum" data-value="9"></i><b>(9)</b>
-                        return (T) reg.getMetrics().get(name);  <i class="conum" data-value="10"></i><b>(10)</b>
+            Producer&lt;T&gt; prod = pp.getProducer();
+            pp.configureProducer() <i class="conum" data-value="6"></i><b>(6)</b>
+                    .produceWith(ctx -&gt; { <i class="conum" data-value="7"></i><b>(7)</b>
+                        MetricRegistry reg = bm.createInstance().select(MetricRegistry.class).get(); <i class="conum" data-value="8"></i><b>(8)</b>
+                        if (!reg.getMetrics().containsKey(name)) <i class="conum" data-value="9"></i><b>(9)</b>
+                            reg.register(name, prod.produce(ctx)); <i class="conum" data-value="10"></i><b>(10)</b>
+                        return (T) reg.getMetrics().get(name);  <i class="conum" data-value="11"></i><b>(11)</b>
                     });
         }
     }
@@ -840,26 +841,30 @@ If it doesn&#8217;t exist, we&#8217;ll use the producer code to instantiate the 
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>we use the new <code>ProducerConfigurator</code> helpers. In CDI 1.2 we would have created our own implementation of <code>Producer</code> interface</td>
+<td>getting the initial producer to be able to use it in call back</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>we define a functional callback for producing the instance of the producer</td>
+<td>we use the new <code>ProducerConfigurator</code> helpers. In CDI 1.2 we would have created our own implementation of <code>Producer</code> interface</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>retrieving the registry bean instance</td>
+<td>we define a functional callback for producing the instance of the producer</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="8"></i><b>8</b></td>
-<td>looking for a metric with the matching name</td>
+<td>retrieving the registry bean instance</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
-<td>if it doesn&#8217;t exist we create it by sing the original producer code and it to the registry</td>
+<td>looking for a metric with the matching name</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>if it doesn&#8217;t exist we create it by using the original producer code and it to the registry</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
 <td>we return the metric with the matching name from the registry</td>
 </tr>
 </table>
