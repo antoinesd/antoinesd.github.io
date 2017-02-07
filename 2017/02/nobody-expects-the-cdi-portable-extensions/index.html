@@ -808,7 +808,7 @@ If it doesn&#8217;t exist, we&#8217;ll use the producer code to instantiate the 
 
         if (m != null) { <i class="conum" data-value="3"></i><b>(3)</b>
             String name = m.name(); <i class="conum" data-value="4"></i><b>(4)</b>
-            Producer&lt;T&gt; prod = pp.getProducer();
+            Producer&lt;T&gt; prod = pp.getProducer(); <i class="conum" data-value="5"></i><b>(5)</b>
             pp.configureProducer() <i class="conum" data-value="6"></i><b>(6)</b>
                     .produceWith(ctx -&gt; { <i class="conum" data-value="7"></i><b>(7)</b>
                         MetricRegistry reg = bm.createInstance().select(MetricRegistry.class).get(); <i class="conum" data-value="8"></i><b>(8)</b>
