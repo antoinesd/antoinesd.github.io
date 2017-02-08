@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Next Presso | </title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/stylesheets/asciidoctor.css"><link rel="stylesheet" href="/stylesheets/styles.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/github.min.css"><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script><script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script><!--[if lt IE 9]><script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]--><script>hljs.initHighlightingOnLoad(); </script></head><body><div class="container"><div class="row"><div class="col-lg-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-lg-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://www.next-presso.com"><i class="fa fa-home fa-fw"></i> Home </a><a class="navbar-brand" href="/about"><i class="fa fa-user fa-fw"></i> About me </a></div></div></nav><script>var indexOfSharp = window.location.pathname.indexOf('#');
+var pathname = indexOfSharp > 0 ? window.location.pathname.substring(0, indexOfSharp) : window.location.pathname;
+var selector = "body > .container > .row > .col-md-12 > .navbar > .container-fluid > .navbar-collapse a[href='http://www.next-presso.com" + pathname + "']";
+$(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-lg-12"><div class="row"><div class="col-lg-9"><div class="posts"><article class="post"><div class="panel panel-primary"><div class="panel-body"><h1><a href="/2011/09/please-jboss-dont-let-cdi-become-the-betamax-of-java-by-destroying-seam-3/">Please JBoss don’t let CDI become the « Betamax » of Java by destroying Seam 3</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Sep 30, 2011</span> |  <a href="http://www.next-presso.com/2011/09/please-jboss-dont-let-cdi-become-the-betamax-of-java-by-destroying-seam-3/#disqus_thread">Comments</a> </strong></div><div class="content"><div class="paragraph">
+<p>Following the <a href="http://in.relation.to/2011/09/27/so-whats-happening-with-seam/" target="_blank">in.relation.to blog post</a> of last tuesday,as a tech lead on one Seam Module (Seam Social),I wrote this open Letter to Red Hat employees in charge of Seam project and community. I find useful to share my point of view with the community on this matter. You also might find interesting to read the <a href="https://hannelita.wordpress.com/2011/09/28/seam-3-whats-going-on/" target="_blank">blog post of Hannelita</a> on the same subject.</p>
+</div>
+<div class="paragraph">
+<p>Here is my letter:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>This email is a tentative to gather and synthesize all my thought following the yesterday announce on in.relation.to about Seam 3 reorganization. I want it to be seen as a positive feedback. I don’t pretend to have all the answers but being someone external to Red Hat and having worked with other frameworks / technologies give me (I think) a better « big picture »view and a more objective perception of the matter.</p>
+</div>
+<div class="paragraph">
+<p>== Who’s talking ?</p>
+</div>
+<div class="paragraph">
+<p>I’m not going to tell you all my life here. But it can help for my legitimacy to know that I graduated from a famous IT School in 1995 (yes I’m 40) and had been working in IT since then. I started with C / C++ and then Lotus Domino (talking about mistakes). I started looking into Java in 1997 as a hobby and more seriously for work in 2001. I worked with a lot of Java frameworks:pure servlet and JSP,Struts 1.X,iBatis,Spring,JSF,Hibernate,EJB3,Seam 2 (I started with 2 beta in 2007) to finally adopt Java EE 6.</p>
+</div>
+<div class="paragraph">
+<p>I’d been working alone for 10 years then after that as a CTO in a small Web Agency (where I learnt some web marketing) and I’ve bee working since 2009 as a consultant in an IT Consulting company specialized on Java. My Job is to audit applications,design new application as an architect and doing support to other developer on a bunch of technologies.</p>
+</div>
+<div class="paragraph">
+<p>== History (knowing our « opponent »)</p>
+</div>
+<div class="paragraph">
+<p>Again,I’m not going to write a novel here but I think it’s better to put things in perspective.</p>
+</div>
+<div class="paragraph">
+<p>JCP had clearly a bad start. Most of specification in J2EE before Java EE 5 were full of flaws (especially EJB 1.X and 2.X). That’s mainly the reason why Spring was created and has been so successful:it was a pragmatic and rather clean way to address Java Enterprise needs. From a lightweight solution spring grown to a heavy but quite consistent eco-system and today it has a big market share in the Java Industry. Meanwhile spring was getting bigger,the JCP somehow took notice of its past errors and worked to change things and provide nice specification for the new Java EE edition. But we had to wait for Java EE 6 to get an official standard that was able to compete with Spring (the de Facto Standard) thanks to CDI and the tremendous work that JBoss guys put in it.</p>
+</div>
+<div class="paragraph">
+<p>So today we are in a paradoxical situation where the official Java EE stack is the challenger of the de facto standard:Spring. To be honest,Java EE is better than core Spring but not way better. Also Spring has a lot of popular modules that help developers in their daily work (a big eco-system). A lot of company have invested on Spring (training,support,etc…) and they have no obvious reason to switch to Java EE 6. If we want to bring them to this switch we have to build something better and something bigger</p>
+</div>
+<div class="paragraph">
+<p>== What should be Red Hat goals ?</p>
+</div>
+<div class="paragraph">
+<p>The main goal for Red Hat is to sell licenses and support. I don’t know your exact income on JBoss activity but with a real big Java EE adoption,those incomes should rise very clearly. Right now most of the JBoss EAP server I see at my customer run Spring application and most of these server could be switched to Tomcat or Jetty tomorrow without any big trouble (the same for most WAS or Weblogic).</p>
+</div>
+<div class="paragraph">
+<p>A secondary goal (that interest me more) is philosophical. The Java EE 6 stack is a community creation,its blue print doesn’t belong to a single shop and tomorrow if someone want to propose something new he could contribute to this community. Ok,it’s not perfect but for me it’s far way better than having VMWare deciding what’s good and wrong for me. I often say to Spring Fanboys that if they want to have one editor to decide for them they’d better switch to .Net:Microsoft does a better Job than VMWare and C# is better than Java :-) . The advantage of Java eco-system is the community. So the Goal is to use the force of this community and bring open solutions to them.</p>
+</div>
+<div class="paragraph">
+<p>Creating a big and good CDI eco-system will create value,bring real competition to the Java stack and create more business for Red Hat (AS license or support on main CDI components)</p>
+</div>
+<div class="paragraph">
+<p>== Why CDI is so special</p>
+</div>
+<div class="paragraph">
+<p>CDI is not a spec among others. It’s the long awaited cement in Java EE stack. It could have been an extension of EJB spec but it was clever to create it as a separate spec and allow it to deal with EJBs. CDI is the first Java EE spec that contains in its DNA a natural extension mechanism. And last but not least CDI is probably the first Java EE spec to be usable in its V 1.0 (perhaps with Jax-RS).</p>
+</div>
+<div class="paragraph">
+<p>A common critic to Java EE is that it has a very long cycle between each iteration and that it delivers outdated specs. Another common critic is that it provides a bunch of specs that doesn’t work well together.</p>
+</div>
+<div class="paragraph">
+<p>This second critic was addressed by Seam 2. Seam was a big help to make Java EE 5 easy to use,but as you know it was proprietary.</p>
+</div>
+<div class="paragraph">
+<p>CDI address both critics:it has the potential to provide the same services than Seam 2 and it is a good way to extend Java EE between two versions.</p>
+</div>
+<div class="paragraph">
+<p>To sum up CDI is a central spec for Java EE (it’s its spine):</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>CDI is the cement between main Java EE spec</p>
+</li>
+<li>
+<p>CDI the « melting pot »engine for adding new spec in Java EE. First in a proprietary approach and then by standardization in next EE version.</p>
+</li>
+<li>
+<p>For extension that can’t be integrated in Java EE (like Seam social) it’s an elegant and seamless way to enhance the stack.
+Past and present Errors</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>== Error 1: A bad name</p>
+</div>
+<div class="paragraph">
+<p>The first error in my opinion was to call it « Seam 3 ». This bad choice triggered these pb:</p>
+</div>
+<div class="paragraph">
+<p>giving the impression that Seam 3 was an evolution of Seam 2. Which it is not.
+creating the obligation to build a compatibility module from Seam 2 to Seam 3. This module is costing a lot of energy to the community and will only produce deception
+Hiding the CDI nature of these extensions by calling them after the name of an « old »JBoss proprietary framework
+What is done is done,Seam 3 is now among us,but the legacy is heavy…</p>
+</div>
+<div class="paragraph">
+<p>== Error 2: pretending Spring doesn&#8217;t exist</p>
+</div>
+<div class="paragraph">
+<p>Ignore existing market is a big mistake. Spring is well implanted and doing as if it wasn&#8217;t there is wrong. I think a better way would be to adopt the following philosophy:« We know that you had to use this proprietary framework because there was nothing else but now we will show you something new,better,but <strong>that can use your Spring</strong> eco-system ». Yes the <strong>Spring bridge</strong> is not an option,It’s a priority. You have to help people switching by giving them a way to use their Spring components so they don’t feel lost and can use Spring module until Seam has the equivalent functionality.</p>
+</div>
+<div class="paragraph">
+<p>Spring team is totally ignoring Java EE. Their ref doc is full of J2EE,EJB 2.1 and nothing about CDI or EJB 3. We have to show the Java community that we’re more open than them and care about people using Spring to come,see and perhaps adopt the standard. The idea is to behave at the opposite of the locking VMWare strategy by being opened and avoiding trolls and misinformation like they do.</p>
+</div>
+<div class="paragraph">
+<p>== Error 3: eating our own dog food with Seam university.</p>
+</div>
+<div class="paragraph">
+<p>Don’t get me wrong: the idea of Seam University website is great. What is not so great is to use our tool to create the site. We don’t have time to build something neat,so it’ll be crappy and we’ll lost time on it. Result:bad impression and time wasted. Other Framework don’t use themselves to create their website,they use standard tools. We should do the same for the Seam website. People are waiting for simple demo and example not a big steam machine like the Seam Wiki is today.</p>
+</div>
+<div class="paragraph">
+<p>== Error 4: mix internal functioning with facade functioning of the project</p>
+</div>
+<div class="paragraph">
+<p>Having Seam module created near their mother project (Hibernate,Resteasy…) is not a bad idea. The bad idea is to make them disappear from the Seam stack. You can have CDI-persistence (note I didn&#8217;t wrote CDI-Hibernate) driven by Hibernate project ,but it should be visible in both Seam stack and hibernate. Because One can discover it while using Hibernate or while looking for a persistent CDI extension.</p>
+</div>
+<div class="paragraph">
+<p>== Error 5: giving the impression that those modules will have adherence to Jboss implementation</p>
+</div>
+<div class="paragraph">
+<p>Calling the module Hibernate-CDI or RestEasy-CDI is a big step back (even if you keep portability). Tomorrow developers on WAS or Glassfish won’t choose them because it doesn’t support JPA but hibernate (it’s in the name). A non sense after all the effort that Jboss has injected in working on standard.</p>
+</div>
+<div class="paragraph">
+<p>It’s important that Seam appear as collection of CDI extension that allow to leverage standard Java EE. Having them under one umbrella allow Red Hat to sell optional support for them if people want to use them on WAS,Glassfish,Tomcat or Resin.</p>
+</div>
+<div class="paragraph">
+<p>== What should Seam 3 be (according to me)</p>
+</div>
+<div class="paragraph">
+<p>Seam should be turned to the community. I don’t know if Red Hat would be ok to do that but the core project should be outside of JBoss and community driven. It would be the best solution to gather our effort with those of CDI Source,Codi,Caucho and others.</p>
+</div>
+<div class="paragraph">
+<p>Seam 3 should run on all CDI implementation. That’s a priority (today,Solder doesn’t work on Candi,I didn’t tested on Open WebBeans but I guess there are issues).</p>
+</div>
+<div class="paragraph">
+<p>Seam should provide light modules with good documentation and example. I mention that because i have he impression that Solder is becoming a kind of trash can. It’s not good. On the other way the split between persistence and transaction was a good move in my opinion</p>
+</div>
+<div class="paragraph">
+<p>Seam should have a clear roadmap and timeline. We have to communicate,communicate and communicate. Don’t forget that we have to convince people using an equivalent solution. We must show why we are better and that we have a clear Goal.</p>
+</div>
+<div class="paragraph">
+<p>Thanks for your time reading my long mail. I hope it’ll be useful and I’m ready to contribute to these orientation.</p>
+</div>
+<div class="paragraph">
+<p>regards,</p>
+</div>
+<div class="paragraph">
+<p>Antoine</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p><strong>UPDATE</strong>: Shane Bryzak project leader on Seam 3 posted an <a href="http://in.relation.to/Bloggers/SeamNextUpdate" target="_blank">update</a> this morning,to explain there is something in preparation around Seam.</p>
+</div></div><div class="footer"><a href="/2011/09/please-jboss-dont-let-cdi-become-the-betamax-of-java-by-destroying-seam-3/"> Permalink</a> <a href="http://www.next-presso.com/2011/09/please-jboss-dont-let-cdi-become-the-betamax-of-java-by-destroying-seam-3/#disqus_thread">Comments</a> </div></div></div></article></div>
+            <script type="text/javascript">
+            var disqus_shortname = 'nextpresso';
+            (function () {
+              var s = document.createElement('script'); s.async = true;
+              s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+              (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+            }());
+            </script>
+          <div class="visible-xs"><ul class="pager"><li class="previous"><a href="/"> Previous</a></li><li class="disabled"><a href="#">2 of 2</a></li><li class="next disabled"><a href="#"> Next</a></li></ul></div><div class="hidden-xs"><ul class="pager"><li><a href="http://www.next-presso.com/"> First</a></li><li><a href="/"> Previous</a></li><li><a href="/">1</a></li><li class="active"><a href="#">2 of 2</a></li><li class="disabled"><a href="#"> Next</a></li><li class="disabled"><a href="#"> Last</a></li></ul></div></div><div class="col-lg-3"><div class="follow-scroll hidden-xs"><div style="margin-bottom:20px;text-align:center;"><a class="btn btn-default" href="http://www.next-presso.com/news.atom">Subscribe RSS</a></div><a class="twitter-timeline" data-widget-id="666631820319019009" href="https://twitter.com/antoine_sd"> Tweets by @antoine_sd</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div><div class="visible-xs"><div style="margin-bottom:20px;text-align:center;"><a class="btn btn-default" href="http://www.next-presso.com/news.atom">Subscribe RSS</a></div></div></div></div></div></div></div><hr><footer></footer><script>
+ (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ 
+ga('create', 'UA-5919317-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+</body></html>
