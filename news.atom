@@ -2,13 +2,13 @@
 <feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">
   <id>http://www.next-presso.com/</id>
   <title>Next Presso</title>
-  <updated>2017-02-07T16:51:38+01:00</updated>
+  <updated>2017-02-08T20:34:29+01:00</updated>
   <link href="http://www.next-presso.com/news.atom" rel="self" type="application/atom+xml" />
   <link href="http://www.next-presso.com/" rel="alternate" type="text/html" />
   <entry>
     <id>http://www.next-presso.com/2017/02/nobody-expects-the-cdi-portable-extensions.html</id>
     <title>Nobody expects the CDI portable extensions</title>
-    <updated>2017-02-07T16:51:38+01:00</updated>
+    <updated>2017-02-08T20:34:29+01:00</updated>
     <published>2017-02-06T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2017/02/nobody-expects-the-cdi-portable-extensions.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1084,7 +1084,7 @@
   <entry>
     <id>http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html</id>
     <title>CDI, the SPI who loved me</title>
-    <updated>2017-02-07T16:51:38+01:00</updated>
+    <updated>2017-02-08T20:34:29+01:00</updated>
     <published>2016-02-20T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1613,7 +1613,7 @@
   <entry>
     <id>http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html</id>
     <title>How to recognize different types of beans from quite a long way away</title>
-    <updated>2017-02-07T16:51:38+01:00</updated>
+    <updated>2017-02-08T20:34:29+01:00</updated>
     <published>2015-12-14T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -2437,7 +2437,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html</id>
     <title>You think you know everything about CDI events… Think again!</title>
-    <updated>2017-02-07T16:51:38+01:00</updated>
+    <updated>2017-02-08T20:34:29+01:00</updated>
     <published>2014-06-10T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -2924,7 +2924,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/03/forward-cdi-2-0.html</id>
     <title>Forward CDI 2.0</title>
-    <updated>2017-02-07T16:51:38+01:00</updated>
+    <updated>2017-02-08T20:34:29+01:00</updated>
     <published>2014-03-15T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/03/forward-cdi-2-0.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -3198,7 +3198,7 @@
   <entry>
     <id>http://www.next-presso.com/2011/09/please-jboss-dont-let-cdi-become-the-betamax-of-java-by-destroying-seam-3.html</id>
     <title>Please JBoss don’t let CDI become the « Betamax » of Java by destroying Seam 3</title>
-    <updated>2017-02-08T20:33:33+01:00</updated>
+    <updated>2017-02-08T20:40:03+01:00</updated>
     <published>2011-09-30T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2011/09/please-jboss-dont-let-cdi-become-the-betamax-of-java-by-destroying-seam-3.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -3210,34 +3210,37 @@
       Here is my letter:
       
       
-      
-      
       This email is a tentative to gather and synthesize all my thought following the yesterday announce on in.relation.to about Seam 3 reorganization. I want it to be seen as a positive feedback. I don’t pretend...
     </summary>
     <content type="html">
+      &lt;div class=&quot;imageblock&quot; style=&quot;float: left&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img src=&quot;http://www.next-presso.com/images/posts/2011/betamax.jpg&quot; alt=&quot;betamax&quot; width=&quot;195&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Following the &lt;a href=&quot;http://in.relation.to/2011/09/27/so-whats-happening-with-seam/&quot; target=&quot;_blank&quot;&gt;in.relation.to blog post&lt;/a&gt; of last tuesday,as a tech lead on one Seam Module (Seam Social),I wrote this open Letter to Red Hat employees in charge of Seam project and community. I find useful to share my point of view with the community on this matter. You also might find interesting to read the &lt;a href=&quot;https://hannelita.wordpress.com/2011/09/28/seam-3-whats-going-on/&quot; target=&quot;_blank&quot;&gt;blog post of Hannelita&lt;/a&gt; on the same subject.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Here is my letter:&lt;/p&gt;
       &lt;/div&gt;
-      &lt;div class=&quot;quoteblock&quot;&gt;
-      &lt;blockquote&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;This email is a tentative to gather and synthesize all my thought following the yesterday announce on in.relation.to about Seam 3 reorganization. I want it to be seen as a positive feedback. I don’t pretend to have all the answers but being someone external to Red Hat and having worked with other frameworks / technologies give me (I think) a better « big picture »view and a more objective perception of the matter.&lt;/p&gt;
       &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;== Who’s talking ?&lt;/p&gt;
-      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;who-s-talking&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#who-s-talking&quot;&gt;&lt;/a&gt;Who’s talking ?&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;I’m not going to tell you all my life here. But it can help for my legitimacy to know that I graduated from a famous IT School in 1995 (yes I’m 40) and had been working in IT since then. I started with C / C++ and then Lotus Domino (talking about mistakes). I started looking into Java in 1997 as a hobby and more seriously for work in 2001. I worked with a lot of Java frameworks:pure servlet and JSP,Struts 1.X,iBatis,Spring,JSF,Hibernate,EJB3,Seam 2 (I started with 2 beta in 2007) to finally adopt Java EE 6.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;I’d been working alone for 10 years then after that as a CTO in a small Web Agency (where I learnt some web marketing) and I’ve bee working since 2009 as a consultant in an IT Consulting company specialized on Java. My Job is to audit applications,design new application as an architect and doing support to other developer on a bunch of technologies.&lt;/p&gt;
       &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;== History (knowing our « opponent »)&lt;/p&gt;
       &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;history-knowing-our-opponent&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#history-knowing-our-opponent&quot;&gt;&lt;/a&gt;History (knowing our « opponent »)&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Again,I’m not going to write a novel here but I think it’s better to put things in perspective.&lt;/p&gt;
       &lt;/div&gt;
@@ -3247,9 +3250,11 @@
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;So today we are in a paradoxical situation where the official Java EE stack is the challenger of the de facto standard:Spring. To be honest,Java EE is better than core Spring but not way better. Also Spring has a lot of popular modules that help developers in their daily work (a big eco-system). A lot of company have invested on Spring (training,support,etc…) and they have no obvious reason to switch to Java EE 6. If we want to bring them to this switch we have to build something better and something bigger&lt;/p&gt;
       &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;== What should be Red Hat goals ?&lt;/p&gt;
       &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;what-should-be-red-hat-goals&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#what-should-be-red-hat-goals&quot;&gt;&lt;/a&gt;What should be Red Hat goals ?&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;The main goal for Red Hat is to sell licenses and support. I don’t know your exact income on JBoss activity but with a real big Java EE adoption,those incomes should rise very clearly. Right now most of the JBoss EAP server I see at my customer run Spring application and most of these server could be switched to Tomcat or Jetty tomorrow without any big trouble (the same for most WAS or Weblogic).&lt;/p&gt;
       &lt;/div&gt;
@@ -3259,9 +3264,11 @@
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Creating a big and good CDI eco-system will create value,bring real competition to the Java stack and create more business for Red Hat (AS license or support on main CDI components)&lt;/p&gt;
       &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;== Why CDI is so special&lt;/p&gt;
       &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;why-cdi-is-so-special&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#why-cdi-is-so-special&quot;&gt;&lt;/a&gt;Why CDI is so special&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;CDI is not a spec among others. It’s the long awaited cement in Java EE stack. It could have been an extension of EJB spec but it was clever to create it as a separate spec and allow it to deal with EJBs. CDI is the first Java EE spec that contains in its DNA a natural extension mechanism. And last but not least CDI is probably the first Java EE spec to be usable in its V 1.0 (perhaps with Jax-RS).&lt;/p&gt;
       &lt;/div&gt;
@@ -3291,9 +3298,11 @@
       &lt;/li&gt;
       &lt;/ol&gt;
       &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;== Error 1: A bad name&lt;/p&gt;
       &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;error-1-a-bad-name&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#error-1-a-bad-name&quot;&gt;&lt;/a&gt;Error 1: A bad name&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;The first error in my opinion was to call it « Seam 3 ». This bad choice triggered these pb:&lt;/p&gt;
       &lt;/div&gt;
@@ -3303,39 +3312,49 @@
       Hiding the CDI nature of these extensions by calling them after the name of an « old »JBoss proprietary framework
       What is done is done,Seam 3 is now among us,but the legacy is heavy…&lt;/p&gt;
       &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;== Error 2: pretending Spring doesn’t exist&lt;/p&gt;
       &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;error-2-pretending-spring-doesn-t-exist&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#error-2-pretending-spring-doesn-t-exist&quot;&gt;&lt;/a&gt;Error 2: pretending Spring doesn’t exist&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Ignore existing market is a big mistake. Spring is well implanted and doing as if it wasn’t there is wrong. I think a better way would be to adopt the following philosophy:« We know that you had to use this proprietary framework because there was nothing else but now we will show you something new,better,but &lt;strong&gt;that can use your Spring&lt;/strong&gt; eco-system ». Yes the &lt;strong&gt;Spring bridge&lt;/strong&gt; is not an option,It’s a priority. You have to help people switching by giving them a way to use their Spring components so they don’t feel lost and can use Spring module until Seam has the equivalent functionality.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Spring team is totally ignoring Java EE. Their ref doc is full of J2EE,EJB 2.1 and nothing about CDI or EJB 3. We have to show the Java community that we’re more open than them and care about people using Spring to come,see and perhaps adopt the standard. The idea is to behave at the opposite of the locking VMWare strategy by being opened and avoiding trolls and misinformation like they do.&lt;/p&gt;
       &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;== Error 3: eating our own dog food with Seam university.&lt;/p&gt;
       &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;error-3-eating-our-own-dog-food-with-seam-university&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#error-3-eating-our-own-dog-food-with-seam-university&quot;&gt;&lt;/a&gt;Error 3: eating our own dog food with Seam university.&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Don’t get me wrong: the idea of Seam University website is great. What is not so great is to use our tool to create the site. We don’t have time to build something neat,so it’ll be crappy and we’ll lost time on it. Result:bad impression and time wasted. Other Framework don’t use themselves to create their website,they use standard tools. We should do the same for the Seam website. People are waiting for simple demo and example not a big steam machine like the Seam Wiki is today.&lt;/p&gt;
       &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;== Error 4: mix internal functioning with facade functioning of the project&lt;/p&gt;
       &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;error-4-mix-internal-functioning-with-facade-functioning-of-the-project&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#error-4-mix-internal-functioning-with-facade-functioning-of-the-project&quot;&gt;&lt;/a&gt;Error 4: mix internal functioning with facade functioning of the project&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Having Seam module created near their mother project (Hibernate,Resteasy…) is not a bad idea. The bad idea is to make them disappear from the Seam stack. You can have CDI-persistence (note I didn’t wrote CDI-Hibernate) driven by Hibernate project ,but it should be visible in both Seam stack and hibernate. Because One can discover it while using Hibernate or while looking for a persistent CDI extension.&lt;/p&gt;
       &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;== Error 5: giving the impression that those modules will have adherence to Jboss implementation&lt;/p&gt;
       &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;error-5-giving-the-impression-that-those-modules-will-have-adherence-to-jboss-implementation&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#error-5-giving-the-impression-that-those-modules-will-have-adherence-to-jboss-implementation&quot;&gt;&lt;/a&gt;Error 5: giving the impression that those modules will have adherence to Jboss implementation&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Calling the module Hibernate-CDI or RestEasy-CDI is a big step back (even if you keep portability). Tomorrow developers on WAS or Glassfish won’t choose them because it doesn’t support JPA but hibernate (it’s in the name). A non sense after all the effort that Jboss has injected in working on standard.&lt;/p&gt;
       &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;It’s important that Seam appear as collection of CDI extension that allow to leverage standard Java EE. Having them under one umbrella allow Red Hat to sell optional support for them if people want to use them on WAS,Glassfish,Tomcat or Resin.&lt;/p&gt;
       &lt;/div&gt;
-      &lt;div class=&quot;paragraph&quot;&gt;
-      &lt;p&gt;== What should Seam 3 be (according to me)&lt;/p&gt;
       &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;what-should-seam-3-be-according-to-me&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#what-should-seam-3-be-according-to-me&quot;&gt;&lt;/a&gt;What should Seam 3 be (according to me)&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Seam should be turned to the community. I don’t know if Red Hat would be ok to do that but the core project should be outside of JBoss and community driven. It would be the best solution to gather our effort with those of CDI Source,Codi,Caucho and others.&lt;/p&gt;
       &lt;/div&gt;
@@ -3357,10 +3376,10 @@
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;Antoine&lt;/p&gt;
       &lt;/div&gt;
-      &lt;/blockquote&gt;
-      &lt;/div&gt;
       &lt;div class=&quot;paragraph&quot;&gt;
       &lt;p&gt;&lt;strong&gt;UPDATE&lt;/strong&gt;: Shane Bryzak project leader on Seam 3 posted an &lt;a href=&quot;http://in.relation.to/Bloggers/SeamNextUpdate&quot; target=&quot;_blank&quot;&gt;update&lt;/a&gt; this morning,to explain there is something in preparation around Seam.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
       &lt;/div&gt;
     </content>
   </entry>
