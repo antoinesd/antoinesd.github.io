@@ -16,6 +16,8 @@ html lang='en'
       script type='text/javascript' src='//html5shim.googlecode.com/svn/trunk/html5.js'
     script
       'hljs.initHighlightingOnLoad();
+    - if site.google_analytics
+      = google_analytics_universal
   body
     .container
       .row
@@ -49,5 +51,4 @@ html lang='en'
           =content
     hr
     footer
-    - if site.google_analytics
-      = google_analytics_universal
+
