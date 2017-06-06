@@ -1,0 +1,236 @@
+---
+title: "Non Contextual Instances in CDI 2.0"
+summary: how to use non contextual instances in CDI and what's nez in 2.0
+layout: post
+authors: [asd]
+tags: [CDI,SPI,Extension]
+---
+
+
+image::posts/2017/fishbowl.png[width="285",float="right"]
+The king components in CDI are the Beans (check this http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans/[older post^] to all exisitng kind of beans).
+In CDI a bean is managed from A to Z by the container, which controls lifecycle of its instance and perform all tricks on it (injection, interception, etc..).
+
+But sometimes you need to have more control on your components, because you need to create it or destroy it yourself or because its provided by another container or framework, for instance.
+Yet, you'd ike to have access to some CDI services for your component like dependency injection or interception.
+In that case you'll need to use CDI non-contextual instances feature.
+
+Some Java EE spec use the non-contextual instance feature.
+You can think about being able to perform CDI injection in servlets or in entity listeners, for instance.
+These component are not managed by CDI container, but they are enhanced by some CDI services.
+
+== Two kind of non-contextual instances and two kind of classes
+
+so, we just see that, a non-contextual instance is an instance that is not managed by the CDI container but benefits some other CDI services like injection or interception.
+Non-contextual instance may have the following CDI services:
+
+* call of  `@PostConstruct` and `@Predestroy` callbacks.
+* CDI dependency injection
+* Destruction of dependent beans when the instance is destroyed
+* Interceptors and Decorators
+
+We can distinguish 2 kinds of non-contextual instances.
+
+The real (from the spec point of view) non-contextual instance which must be created (i.e. instantiated) by the container and the one instantiated outside the CDI container.
+
+The second kind exists, because he spec support support addition of some CDI services to an instance created by yourself or another framework.
+There's no official term for this kind of instance in the spec, in this post I'll call them "user instantiated non-contextual instance"
+Such an instance may benefit the following CDI services:
+
+* call of  `@PostConstruct` and `@Predestroy` callbacks.
+* CDI dependency injection
+* Destruction of dependent beans when the instance is destroyed
+* Interception thanks to the new `InterceptionFactory` spi in CDI 2.0
+
+
+Both kind of non-contextual instances are enhanced with the `InjectionTarget` SPI.
+The classic non-contextual instance is also created and destroyed with the same SPI, but CDI provides an helper class to perform this seamlessly if the class you want to use has already all required annotation (`@Inject` and qualifiers)
+
+== Different use case
+
+Thus, when you feel the need to use this contextual instance feature you have to answer 2 questions
+
+. Can I Let the CDI container create the instance for me >?
+. Does the class of the instance has already all annotations (@Inject, qualifiers) at class level ?
+
+Dealing with contextual instance will be more or less easy with your answers
+
+
+[cols="20,40,40"]
+|===
+| |Class has annotations |Class need to be annotated
+
+|Container can instantiate
+|You can use `Unmanaged` helper class
+|You'll have to use `InjectionTargetFactory` and `AnnotatedTypeConfigurator` SPI
+
+|You provide the instance
+|You'll have to use `InjectionTargetFactory` SPI
+|You'll have to use `InjectionTargetFactory` and `AnnotatedTypeConfigurator` SPI
+
+|===
+
+
+=== Non-contextual instance for a class having all needed annotations
+
+This is the simplest use case.
+
+Since CDI 1.1, the API provide the http://docs.jboss.org/cdi/api/2.0/javax/enterprise/inject/spi/Unmanaged.html[`Unmanaged` helper class^] that hides all the work done with `InjectionTargetFactory` produce a non-contextual instance
+
+
+[source,java]
+----
+public void doSomethingWithContextualMyClass() {
+    Unmanaged<MyClass> unmanagedMyClass = new Unmanaged<MyClass>(MyClass.class); //<1>
+    Unmanaged.UnmanagedInstance<MyClass> umc = unmanagedMyClass.newInstance(); //<2>
+    umc.produce().inject().postConstruct(); //<3>
+    MyClass myInstance = umc.get(); //<4>
+
+    //Do what you need with myInstance
+
+    umc.preDestroy(); //<5>
+    umc.dispose(); //<6>
+}
+----
+<1> Instantiate an instance of `Unmanaged` for `MyClass`
+<2> Request a new instance handler (providing all services and data for a given instance)
+<3> These invocation create the instance, perform dependency injection and call the `@PostConstruct` lifecycle call back
+<4> retrieving the effective instance
+<5> call the `@Predestroy` lifecycle callback
+<6> perform destruction of the instance context (i.e. release all `@Dependent` instances injected in the instance)
+
+Keep in mind that letting the container producing the instance (`produce()` method) activate optional interceptors and decorators on the instance.
+In this case, the class shouldn't be unproxyable as detailed in the http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#unproxyable[spec^].
+
+`Unmanaged.UnmanagedInstance` is an important handler that gives you access to all CDI services for the instance you want to obtain, but it should also be kept to perform the `dispose()` tasks, which mainly release all dependent beans instances that were created with your instance.
+ Without this call you may face memory leaks in your application
+
+=== Non-contextual instance whose class doesn't have the required annotation
+
+Unfortunately, `Unmanaged` doesn't provide access to the underlying `AnnotatedType` for the instance class.
+
+ So if you need to add annotation to the metadata model because they are missing on the original class, you'll have to use an `InjectionTargetFactory` provided by the container.
+ Note that Unmanaged does the same under the hood.
+
+To request an `InjectionTargetFactory` from the container, you'll need first to access the `BeanManager`.
+
+If you are in CDI programming model (i.e in a bean) simply inject the BeanManager to access it
+
+[source,java]
+----
+@Inject
+BeanManager bm;
+----
+
+If are not CDI programming model, the easiest way to access the `BeanManager` is ot use the `CDI` class available since CDI 1.1 (note that it also work in CDI programming model even if direct injection is still preferred to static method call done with `CDI.current()`).
+
+[source,java]
+----
+BeanManager bm = CDI.current().getBeanManager();
+----
+
+In certain circumstance, you may want to retrieve the `BeanManager` from a JNDI lookup thru the `java:comp/BeanManager`, JNDI name.
+
+The following example show how to create a non contextual instance from `MyClass` in which you need to create an injection point (add `@Inject`) on the field `MyField`
+
+[source,java]
+----
+public void doSomethingWithContextualMyClass() {
+        BeanManager bm = CDI.current().getBeanManager();  //<1>
+        InjectionTargetFactory<MyClass> itf = bm.getInjectionTargetFactory(bm.createAnnotatedType(MyClass.class)); //<2>
+        itf.configure() //<3>
+                .filterFields(f -> "MyField".equals(f.getJavaMember().getName()))
+                .findFirst()
+                .ifPresent(f -> f.add(InjectLiteral.INSTANCE)); //<4>
+        InjectionTarget<MyClass> it = itf.createInjectionTarget(null); //<5>
+        CreationalContext<MyClass> cctx = bm.createCreationalContext(null); //<6>
+        MyClass myInstance = it.produce(cctx); //<7>
+        it.postConstruct(myInstance); //<7>
+        it.inject(myInstance,cctx); //<7>
+
+        //Do what you need with myInstance
+
+        it.preDestroy(myInstance); //<8>
+        cctx.release(); //<9>
+}
+----
+<1> retrieving the `BeanManager`
+<2> requesting an `InjectionTargetFactory` from the `BeanManager`
+<3> using the new `AnnotatedTypeConfigurator` SPI in CDI 2.0 to configure the underlying `AnnotatedType`
+<4> looking for the `MyField` field and adding `@Inject` to it (we use the new InjectLiteral in CDI 2.0)
+<5> creating the `InjectionTarget`. As it's for a non-contextual instance, we create it by passing null (no bean) to the method
+<6> creating the `CreationalContext`. As it's for a non-contextual instance, we create it by passing null (no bean) to the method
+<7> creating the instance and performing `@PostConstruct` lifecycle call back and injection
+<8> call the `@Predestroy` lifecycle callback
+<9> release the `CreationalContext` and all the dependents bean instances
+
+Note, that, we could also have added an interceptor binding with the `configure()` method.
+
+Before CDI 2.0 it would have been necessary to implement a specific AnnotatedType and provide it in step 2 to achieve the same.
+
+=== User Instantiated non-contextual instance
+
+If the instance shouldn't be created by the container, code is roughly the same
+
+[source,java]
+----
+public void doSomethingWithContextualMyClass() {
+        BeanManager bm = CDI.current().getBeanManager();
+        InjectionTargetFactory<MyClass> itf = bm.getInjectionTargetFactory(bm.createAnnotatedType(MyClass.class));
+        itf.configure()
+                .filterFields(f -> "MyField".equals(f.getJavaMember().getName()))
+                .findFirst()
+                .ifPresent(f -> f.add(InjectLiteral.INSTANCE));
+        InjectionTarget<MyClass> it = itf.createInjectionTarget(null);
+        CreationalContext<MyClass> cctx = bm.createCreationalContext(null);
+        MyClass myInstance = new MyClass(); //<1>
+        it.postConstruct(myInstance);
+        it.inject(myInstance,cctx);
+
+        //Do what you need with myInstance
+
+        it.preDestroy(myInstance);
+        cctx.release();
+}
+----
+<1> instance is not created by the container
+
+In that case the instance won't have interceptor applied on it since the container didn't create it.
+
+In CDI 2.0, you can use the new `InterceptorFactory` SPI to fix that.
+
+[source,java]
+----
+public void doSomethingWithContextualMyClass() {
+        BeanManager bm = CDI.current().getBeanManager();
+        InjectionTargetFactory<MyClass> itf = bm.getInjectionTargetFactory(bm.createAnnotatedType(MyClass.class));
+        itf.configure()
+                .filterFields(f -> "MyField".equals(f.getJavaMember().getName()))
+                .findFirst()
+                .ifPresent(f -> f.add(InjectLiteral.INSTANCE));
+        InjectionTarget<MyClass> it = itf.createInjectionTarget(null);
+        CreationalContext<MyClass> cctx = bm.createCreationalContext(null);
+        InterceptionFactory<MyClass> ifm = bm.createInterceptionFactory(cctx, MyClass.class); //<1>
+        ifm.configure() //<2>
+                .add(new AnnotationLiteral<Transactional>() {
+                });
+
+        MyClass myInstance = ifm.createInterceptedInstance(new MyClass()); //<3>
+        it.postConstruct(myInstance);
+        it.inject(myInstance,cctx);
+
+        //Do what you need with myInstance
+
+        it.preDestroy(myInstance);
+        cctx.release();
+    }
+----
+<1> requesting an `InterceptionFactory` for `MyClass`.
+<2> configure the annotation on the underlying class. Here we add `@Transactional` on the class but we could have done it on a given method
+<3> Instantiating MyClass and applying interceptor on it
+
+== Conclusion
+
+So we covered all the use cases for non-contextual instance creation and management in CDI.
+Keep in mind that except for `Unmanaged`, all the SPI elements shown in this post are also very useful when creating custom bean.
+`InterceptionFactory` is also very useful to apply interceptors in a producer.
