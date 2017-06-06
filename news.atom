@@ -2,13 +2,417 @@
 <feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">
   <id>http://www.next-presso.com/</id>
   <title>Next Presso</title>
-  <updated>2017-02-09T11:44:08+01:00</updated>
+  <updated>2017-06-06T18:58:56+02:00</updated>
   <link href="http://www.next-presso.com/news.atom" rel="self" type="application/atom+xml" />
   <link href="http://www.next-presso.com/" rel="alternate" type="text/html" />
   <entry>
+    <id>http://www.next-presso.com/2017/06/non-contextual-instances-in-cdi.html</id>
+    <title>Non Contextual Instances in CDI 2.0</title>
+    <updated>2017-06-06T18:58:56+02:00</updated>
+    <published>2017-06-06T00:00:00+00:00</published>
+    <link href="http://www.next-presso.com/2017/06/non-contextual-instances-in-cdi.html" rel="alternate" type="text/html" />
+    <category term="CDI"></category>
+    <category term="SPI"></category>
+    <category term="Extension"></category>
+    <summary>
+      The king components in CDI are the Beans (check this older post to all exisitng kind of beans).
+      In CDI a bean is managed from A to Z by the container, which controls lifecycle of its instance and perform all tricks on it (injection, interception, etc..).
+      
+      
+      But sometimes you need to have more control on your components, because you need to create it or destroy it yourself or because its provided by another container or framework, for instance.
+      Yet, you&#8217;d ike to have access to some CDI services for your component like dependency injection or interception.
+      In that case you&#8217;ll need to use CDI...
+    </summary>
+    <content type="html">
+      &lt;div class=&quot;imageblock&quot; style=&quot;float: right&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img src=&quot;http://www.next-presso.com/images/posts/2017/fishbowl.png&quot; alt=&quot;fishbowl&quot; width=&quot;285&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The king components in CDI are the Beans (check this &lt;a href=&quot;http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans/&quot; target=&quot;_blank&quot;&gt;older post&lt;/a&gt; to all exisitng kind of beans).
+      In CDI a bean is managed from A to Z by the container, which controls lifecycle of its instance and perform all tricks on it (injection, interception, etc..).&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;But sometimes you need to have more control on your components, because you need to create it or destroy it yourself or because its provided by another container or framework, for instance.
+      Yet, you’d ike to have access to some CDI services for your component like dependency injection or interception.
+      In that case you’ll need to use CDI non-contextual instances feature.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Some Java EE spec use the non-contextual instance feature.
+      You can think about being able to perform CDI injection in servlets or in entity listeners, for instance.
+      These component are not managed by CDI container, but they are enhanced by some CDI services.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;two-kind-of-non-contextual-instances-and-two-kind-of-classes&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#two-kind-of-non-contextual-instances-and-two-kind-of-classes&quot;&gt;&lt;/a&gt;Two kind of non-contextual instances and two kind of classes&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;so, we just see that, a non-contextual instance is an instance that is not managed by the CDI container but benefits some other CDI services like injection or interception.
+      Non-contextual instance may have the following CDI services:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;ulist&quot;&gt;
+      &lt;ul&gt;
+      &lt;li&gt;
+      &lt;p&gt;call of  &lt;code&gt;@PostConstruct&lt;/code&gt; and &lt;code&gt;@Predestroy&lt;/code&gt; callbacks.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+      &lt;p&gt;CDI dependency injection&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+      &lt;p&gt;Destruction of dependent beans when the instance is destroyed&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+      &lt;p&gt;Interceptors and Decorators&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;We can distinguish 2 kinds of non-contextual instances.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The real (from the spec point of view) non-contextual instance which must be created (i.e. instantiated) by the container and the one instantiated outside the CDI container.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The second kind exists, because he spec support support addition of some CDI services to an instance created by yourself or another framework.
+      There’s no official term for this kind of instance in the spec, in this post I’ll call them &quot;user instantiated non-contextual instance&quot;
+      Such an instance may benefit the following CDI services:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;ulist&quot;&gt;
+      &lt;ul&gt;
+      &lt;li&gt;
+      &lt;p&gt;call of  &lt;code&gt;@PostConstruct&lt;/code&gt; and &lt;code&gt;@Predestroy&lt;/code&gt; callbacks.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+      &lt;p&gt;CDI dependency injection&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+      &lt;p&gt;Destruction of dependent beans when the instance is destroyed&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+      &lt;p&gt;Interception thanks to the new &lt;code&gt;InterceptionFactory&lt;/code&gt; spi in CDI 2.0&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Both kind of non-contextual instances are enhanced with the &lt;code&gt;InjectionTarget&lt;/code&gt; SPI.
+      The classic non-contextual instance is also created and destroyed with the same SPI, but CDI provides an helper class to perform this seamlessly if the class you want to use has already all required annotation (&lt;code&gt;@Inject&lt;/code&gt; and qualifiers)&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;different-use-case&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#different-use-case&quot;&gt;&lt;/a&gt;Different use case&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Thus, when you feel the need to use this contextual instance feature you have to answer 2 questions&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;olist arabic&quot;&gt;
+      &lt;ol class=&quot;arabic&quot;&gt;
+      &lt;li&gt;
+      &lt;p&gt;Can I Let the CDI container create the instance for me &amp;gt;?&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+      &lt;p&gt;Does the class of the instance has already all annotations (@Inject, qualifiers) at class level ?&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;/ol&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Dealing with contextual instance will be more or less easy with your answers&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;table class=&quot;tableblock frame-all grid-all spread&quot;&gt;
+      &lt;colgroup&gt;
+      &lt;col style=&quot;width: 20%;&quot; /&gt;
+      &lt;col style=&quot;width: 40%;&quot; /&gt;
+      &lt;col style=&quot;width: 40%;&quot; /&gt;
+      &lt;/colgroup&gt;
+      &lt;thead&gt;
+      &lt;tr&gt;
+      &lt;th class=&quot;tableblock halign-left valign-top&quot;&gt;&lt;/th&gt;
+      &lt;th class=&quot;tableblock halign-left valign-top&quot;&gt;Class has annotations&lt;/th&gt;
+      &lt;th class=&quot;tableblock halign-left valign-top&quot;&gt;Class need to be annotated&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+      &lt;tr&gt;
+      &lt;td class=&quot;tableblock halign-left valign-top&quot;&gt;&lt;p class=&quot;tableblock&quot;&gt;Container can instantiate&lt;/p&gt;&lt;/td&gt;
+      &lt;td class=&quot;tableblock halign-left valign-top&quot;&gt;&lt;p class=&quot;tableblock&quot;&gt;You can use &lt;code&gt;Unmanaged&lt;/code&gt; helper class&lt;/p&gt;&lt;/td&gt;
+      &lt;td class=&quot;tableblock halign-left valign-top&quot;&gt;&lt;p class=&quot;tableblock&quot;&gt;You’ll have to use &lt;code&gt;InjectionTargetFactory&lt;/code&gt; and &lt;code&gt;AnnotatedTypeConfigurator&lt;/code&gt; SPI&lt;/p&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td class=&quot;tableblock halign-left valign-top&quot;&gt;&lt;p class=&quot;tableblock&quot;&gt;You provide the instance&lt;/p&gt;&lt;/td&gt;
+      &lt;td class=&quot;tableblock halign-left valign-top&quot;&gt;&lt;p class=&quot;tableblock&quot;&gt;You’ll have to use &lt;code&gt;InjectionTargetFactory&lt;/code&gt; SPI&lt;/p&gt;&lt;/td&gt;
+      &lt;td class=&quot;tableblock halign-left valign-top&quot;&gt;&lt;p class=&quot;tableblock&quot;&gt;You’ll have to use &lt;code&gt;InjectionTargetFactory&lt;/code&gt; and &lt;code&gt;AnnotatedTypeConfigurator&lt;/code&gt; SPI&lt;/p&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/tbody&gt;
+      &lt;/table&gt;
+      &lt;div class=&quot;sect2&quot;&gt;
+      &lt;h3 id=&quot;non-contextual-instance-for-a-class-having-all-needed-annotations&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#non-contextual-instance-for-a-class-having-all-needed-annotations&quot;&gt;&lt;/a&gt;Non-contextual instance for a class having all needed annotations&lt;/h3&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;This is the simplest use case.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Since CDI 1.1, the API provide the &lt;a href=&quot;http://docs.jboss.org/cdi/api/2.0/javax/enterprise/inject/spi/Unmanaged.html&quot; target=&quot;_blank&quot;&gt;&lt;code&gt;Unmanaged&lt;/code&gt; helper class&lt;/a&gt; that hides all the work done with &lt;code&gt;InjectionTargetFactory&lt;/code&gt; produce a non-contextual instance&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;highlightjs highlight nowrap&quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;public void doSomethingWithContextualMyClass() {
+          Unmanaged&amp;lt;MyClass&amp;gt; unmanagedMyClass = new Unmanaged&amp;lt;MyClass&amp;gt;(MyClass.class); &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
+          Unmanaged.UnmanagedInstance&amp;lt;MyClass&amp;gt; umc = unmanagedMyClass.newInstance(); &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
+          umc.produce().inject().postConstruct(); &lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;(3)&lt;/b&gt;
+          MyClass myInstance = umc.get(); &lt;i class=&quot;conum&quot; data-value=&quot;4&quot;&gt;&lt;/i&gt;&lt;b&gt;(4)&lt;/b&gt;
+      
+          //Do what you need with myInstance
+      
+          umc.preDestroy(); &lt;i class=&quot;conum&quot; data-value=&quot;5&quot;&gt;&lt;/i&gt;&lt;b&gt;(5)&lt;/b&gt;
+          umc.dispose(); &lt;i class=&quot;conum&quot; data-value=&quot;6&quot;&gt;&lt;/i&gt;&lt;b&gt;(6)&lt;/b&gt;
+      }&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;colist arabic&quot;&gt;
+      &lt;table&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;Instantiate an instance of &lt;code&gt;Unmanaged&lt;/code&gt; for &lt;code&gt;MyClass&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;Request a new instance handler (providing all services and data for a given instance)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;3&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;These invocation create the instance, perform dependency injection and call the &lt;code&gt;@PostConstruct&lt;/code&gt; lifecycle call back&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;4&quot;&gt;&lt;/i&gt;&lt;b&gt;4&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;retrieving the effective instance&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;5&quot;&gt;&lt;/i&gt;&lt;b&gt;5&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;call the &lt;code&gt;@Predestroy&lt;/code&gt; lifecycle callback&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;6&quot;&gt;&lt;/i&gt;&lt;b&gt;6&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;perform destruction of the instance context (i.e. release all &lt;code&gt;@Dependent&lt;/code&gt; instances injected in the instance)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/table&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Keep in mind that letting the container producing the instance (&lt;code&gt;produce()&lt;/code&gt; method) activate optional interceptors and decorators on the instance.
+      In this case, the class shouldn’t be unproxyable as detailed in the &lt;a href=&quot;http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#unproxyable&quot; target=&quot;_blank&quot;&gt;spec&lt;/a&gt;.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;&lt;code&gt;Unmanaged.UnmanagedInstance&lt;/code&gt; is an important handler that gives you access to all CDI services for the instance you want to obtain, but it should also be kept to perform the &lt;code&gt;dispose()&lt;/code&gt; tasks, which mainly release all dependent beans instances that were created with your instance.
+       Without this call you may face memory leaks in your application&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect2&quot;&gt;
+      &lt;h3 id=&quot;non-contextual-instance-whose-class-doesn-t-have-the-required-annotation&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#non-contextual-instance-whose-class-doesn-t-have-the-required-annotation&quot;&gt;&lt;/a&gt;Non-contextual instance whose class doesn’t have the required annotation&lt;/h3&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Unfortunately, &lt;code&gt;Unmanaged&lt;/code&gt; doesn’t provide access to the underlying &lt;code&gt;AnnotatedType&lt;/code&gt; for the instance class.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;literalblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;nowrap&quot;&gt;So if you need to add annotation to the metadata model because they are missing on the original class, you'll have to use an `InjectionTargetFactory` provided by the container.
+      Note that Unmanaged does the same under the hood.&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;To request an &lt;code&gt;InjectionTargetFactory&lt;/code&gt; from the container, you’ll need first to access the &lt;code&gt;BeanManager&lt;/code&gt;.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;If you are in CDI programming model (i.e in a bean) simply inject the BeanManager to access it&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;highlightjs highlight nowrap&quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;@Inject
+      BeanManager bm;&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;If are not CDI programming model, the easiest way to access the &lt;code&gt;BeanManager&lt;/code&gt; is ot use the &lt;code&gt;CDI&lt;/code&gt; class available since CDI 1.1 (note that it also work in CDI programming model even if direct injection is still preferred to static method call done with &lt;code&gt;CDI.current()&lt;/code&gt;).&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;highlightjs highlight nowrap&quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;BeanManager bm = CDI.current().getBeanManager();&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;In certain circumstance, you may want to retrieve the &lt;code&gt;BeanManager&lt;/code&gt; from a JNDI lookup thru the &lt;code&gt;java:comp/BeanManager&lt;/code&gt;, JNDI name.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The following example show how to create a non contextual instance from &lt;code&gt;MyClass&lt;/code&gt; in which you need to create an injection point (add &lt;code&gt;@Inject&lt;/code&gt;) on the field &lt;code&gt;MyField&lt;/code&gt;&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;highlightjs highlight nowrap&quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;public void doSomethingWithContextualMyClass() {
+              BeanManager bm = CDI.current().getBeanManager();  &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
+              InjectionTargetFactory&amp;lt;MyClass&amp;gt; itf = bm.getInjectionTargetFactory(bm.createAnnotatedType(MyClass.class)); &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
+              itf.configure() &lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;(3)&lt;/b&gt;
+                      .filterFields(f -&amp;gt; &quot;MyField&quot;.equals(f.getJavaMember().getName()))
+                      .findFirst()
+                      .ifPresent(f -&amp;gt; f.add(InjectLiteral.INSTANCE)); &lt;i class=&quot;conum&quot; data-value=&quot;4&quot;&gt;&lt;/i&gt;&lt;b&gt;(4)&lt;/b&gt;
+              InjectionTarget&amp;lt;MyClass&amp;gt; it = itf.createInjectionTarget(null); &lt;i class=&quot;conum&quot; data-value=&quot;5&quot;&gt;&lt;/i&gt;&lt;b&gt;(5)&lt;/b&gt;
+              CreationalContext&amp;lt;MyClass&amp;gt; cctx = bm.createCreationalContext(null); &lt;i class=&quot;conum&quot; data-value=&quot;6&quot;&gt;&lt;/i&gt;&lt;b&gt;(6)&lt;/b&gt;
+              MyClass myInstance = it.produce(cctx); &lt;i class=&quot;conum&quot; data-value=&quot;7&quot;&gt;&lt;/i&gt;&lt;b&gt;(7)&lt;/b&gt;
+              it.postConstruct(myInstance); &lt;i class=&quot;conum&quot; data-value=&quot;7&quot;&gt;&lt;/i&gt;&lt;b&gt;(7)&lt;/b&gt;
+              it.inject(myInstance,cctx); &lt;i class=&quot;conum&quot; data-value=&quot;7&quot;&gt;&lt;/i&gt;&lt;b&gt;(7)&lt;/b&gt;
+      
+              //Do what you need with myInstance
+      
+              it.preDestroy(myInstance); &lt;i class=&quot;conum&quot; data-value=&quot;8&quot;&gt;&lt;/i&gt;&lt;b&gt;(8)&lt;/b&gt;
+              cctx.release(); &lt;i class=&quot;conum&quot; data-value=&quot;9&quot;&gt;&lt;/i&gt;&lt;b&gt;(9)&lt;/b&gt;
+      }&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;colist arabic&quot;&gt;
+      &lt;table&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;retrieving the &lt;code&gt;BeanManager&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;requesting an &lt;code&gt;InjectionTargetFactory&lt;/code&gt; from the &lt;code&gt;BeanManager&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;3&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;using the new &lt;code&gt;AnnotatedTypeConfigurator&lt;/code&gt; SPI in CDI 2.0 to configure the underlying &lt;code&gt;AnnotatedType&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;4&quot;&gt;&lt;/i&gt;&lt;b&gt;4&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;looking for the &lt;code&gt;MyField&lt;/code&gt; field and adding &lt;code&gt;@Inject&lt;/code&gt; to it (we use the new InjectLiteral in CDI 2.0)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;5&quot;&gt;&lt;/i&gt;&lt;b&gt;5&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;creating the &lt;code&gt;InjectionTarget&lt;/code&gt;. As it’s for a non-contextual instance, we create it by passing null (no bean) to the method&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;6&quot;&gt;&lt;/i&gt;&lt;b&gt;6&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;creating the &lt;code&gt;CreationalContext&lt;/code&gt;. As it’s for a non-contextual instance, we create it by passing null (no bean) to the method&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;7&quot;&gt;&lt;/i&gt;&lt;b&gt;7&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;creating the instance and performing &lt;code&gt;@PostConstruct&lt;/code&gt; lifecycle call back and injection&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;8&quot;&gt;&lt;/i&gt;&lt;b&gt;8&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;call the &lt;code&gt;@Predestroy&lt;/code&gt; lifecycle callback&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;9&quot;&gt;&lt;/i&gt;&lt;b&gt;9&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;release the &lt;code&gt;CreationalContext&lt;/code&gt; and all the dependents bean instances&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/table&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Note, that, we could also have added an interceptor binding with the &lt;code&gt;configure()&lt;/code&gt; method.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Before CDI 2.0 it would have been necessary to implement a specific AnnotatedType and provide it in step 2 to achieve the same.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect2&quot;&gt;
+      &lt;h3 id=&quot;user-instantiated-non-contextual-instance&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#user-instantiated-non-contextual-instance&quot;&gt;&lt;/a&gt;User Instantiated non-contextual instance&lt;/h3&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;If the instance shouldn’t be created by the container, code is roughly the same&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;highlightjs highlight nowrap&quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;public void doSomethingWithContextualMyClass() {
+              BeanManager bm = CDI.current().getBeanManager();
+              InjectionTargetFactory&amp;lt;MyClass&amp;gt; itf = bm.getInjectionTargetFactory(bm.createAnnotatedType(MyClass.class));
+              itf.configure()
+                      .filterFields(f -&amp;gt; &quot;MyField&quot;.equals(f.getJavaMember().getName()))
+                      .findFirst()
+                      .ifPresent(f -&amp;gt; f.add(InjectLiteral.INSTANCE));
+              InjectionTarget&amp;lt;MyClass&amp;gt; it = itf.createInjectionTarget(null);
+              CreationalContext&amp;lt;MyClass&amp;gt; cctx = bm.createCreationalContext(null);
+              MyClass myInstance = new MyClass(); &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
+              it.postConstruct(myInstance);
+              it.inject(myInstance,cctx);
+      
+              //Do what you need with myInstance
+      
+              it.preDestroy(myInstance);
+              cctx.release();
+      }&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;colist arabic&quot;&gt;
+      &lt;table&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;instance is not created by the container&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/table&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;In that case the instance won’t have interceptor applied on it since the container didn’t create it.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;In CDI 2.0, you can use the new &lt;code&gt;InterceptorFactory&lt;/code&gt; SPI to fix that.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;listingblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;pre class=&quot;highlightjs highlight nowrap&quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;public void doSomethingWithContextualMyClass() {
+              BeanManager bm = CDI.current().getBeanManager();
+              InjectionTargetFactory&amp;lt;MyClass&amp;gt; itf = bm.getInjectionTargetFactory(bm.createAnnotatedType(MyClass.class));
+              itf.configure()
+                      .filterFields(f -&amp;gt; &quot;MyField&quot;.equals(f.getJavaMember().getName()))
+                      .findFirst()
+                      .ifPresent(f -&amp;gt; f.add(InjectLiteral.INSTANCE));
+              InjectionTarget&amp;lt;MyClass&amp;gt; it = itf.createInjectionTarget(null);
+              CreationalContext&amp;lt;MyClass&amp;gt; cctx = bm.createCreationalContext(null);
+              InterceptionFactory&amp;lt;MyClass&amp;gt; ifm = bm.createInterceptionFactory(cctx, MyClass.class); &lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;(1)&lt;/b&gt;
+              ifm.configure() &lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;(2)&lt;/b&gt;
+                      .add(new AnnotationLiteral&amp;lt;Transactional&amp;gt;() {
+                      });
+      
+              MyClass myInstance = ifm.createInterceptedInstance(new MyClass()); &lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;(3)&lt;/b&gt;
+              it.postConstruct(myInstance);
+              it.inject(myInstance,cctx);
+      
+              //Do what you need with myInstance
+      
+              it.preDestroy(myInstance);
+              cctx.release();
+          }&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;colist arabic&quot;&gt;
+      &lt;table&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;1&quot;&gt;&lt;/i&gt;&lt;b&gt;1&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;requesting an &lt;code&gt;InterceptionFactory&lt;/code&gt; for &lt;code&gt;MyClass&lt;/code&gt;.&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;2&quot;&gt;&lt;/i&gt;&lt;b&gt;2&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;configure the annotation on the underlying class. Here we add &lt;code&gt;@Transactional&lt;/code&gt; on the class but we could have done it on a given method&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;&lt;i class=&quot;conum&quot; data-value=&quot;3&quot;&gt;&lt;/i&gt;&lt;b&gt;3&lt;/b&gt;&lt;/td&gt;
+      &lt;td&gt;Instantiating MyClass and applying interceptor on it&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/table&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;conclusion&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;#conclusion&quot;&gt;&lt;/a&gt;Conclusion&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;So we covered all the use cases for non-contextual instance creation and management in CDI.
+      Keep in mind that except for &lt;code&gt;Unmanaged&lt;/code&gt;, all the SPI elements shown in this post are also very useful when creating custom bean.
+      &lt;code&gt;InterceptionFactory&lt;/code&gt; is also very useful to apply interceptors in a producer.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+    </content>
+  </entry>
+  <entry>
     <id>http://www.next-presso.com/2017/02/nobody-expects-the-cdi-portable-extensions.html</id>
     <title>Nobody expects the CDI portable extensions</title>
-    <updated>2017-02-09T11:44:08+01:00</updated>
+    <updated>2017-02-09T11:45:20+01:00</updated>
     <published>2017-02-06T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2017/02/nobody-expects-the-cdi-portable-extensions.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1084,7 +1488,7 @@
   <entry>
     <id>http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html</id>
     <title>CDI, the SPI who loved me</title>
-    <updated>2017-02-09T11:44:08+01:00</updated>
+    <updated>2017-02-09T11:45:20+01:00</updated>
     <published>2016-02-20T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2016/02/cdi-the-spi-who-loved-me.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -1613,7 +2017,7 @@
   <entry>
     <id>http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html</id>
     <title>How to recognize different types of beans from quite a long way away</title>
-    <updated>2017-02-09T11:44:08+01:00</updated>
+    <updated>2017-02-09T11:45:20+01:00</updated>
     <published>2015-12-14T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -2437,7 +2841,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html</id>
     <title>You think you know everything about CDI events… Think again!</title>
-    <updated>2017-02-09T11:44:08+01:00</updated>
+    <updated>2017-02-09T11:45:20+01:00</updated>
     <published>2014-06-10T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/06/you-think-you-know-everything-about-cdi-events-think-again.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -2924,7 +3328,7 @@
   <entry>
     <id>http://www.next-presso.com/2014/03/forward-cdi-2-0.html</id>
     <title>Forward CDI 2.0</title>
-    <updated>2017-02-09T11:44:08+01:00</updated>
+    <updated>2017-02-09T11:45:20+01:00</updated>
     <published>2014-03-15T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2014/03/forward-cdi-2-0.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
@@ -3198,7 +3602,7 @@
   <entry>
     <id>http://www.next-presso.com/2011/09/please-jboss-dont-let-cdi-become-the-betamax-of-java-by-destroying-seam-3.html</id>
     <title>Please JBoss don’t let CDI become the « Betamax » of Java by destroying Seam 3</title>
-    <updated>2017-02-09T11:44:08+01:00</updated>
+    <updated>2017-02-09T11:45:20+01:00</updated>
     <published>2011-09-30T00:00:00+00:00</published>
     <link href="http://www.next-presso.com/2011/09/please-jboss-dont-let-cdi-become-the-betamax-of-java-by-destroying-seam-3.html" rel="alternate" type="text/html" />
     <category term="CDI"></category>
