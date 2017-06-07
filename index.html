@@ -11,45 +11,46 @@ ga('send', 'pageview');
 </head><body><div class="container"><div class="row"><div class="col-lg-12"><div class="bannerhome"><div class="container"><div class="row"><div class="col-lg-12 maintitle"><h1>Next Presso (CDI, Java EE and friends)</h1></div></div></div></div><nav class="navbar navbar-default navbar-static-top" role="navigation"><div class="container-fluid"><div class="navbar-header"><button class="navbar-toggle collasped" type="button" data-toggle="collapse" data-target=".navbar-collapse"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="http://www.next-presso.com"><i class="fa fa-home fa-fw"></i> Home </a><a class="navbar-brand" href="/about"><i class="fa fa-user fa-fw"></i> About me </a></div></div></nav><script>var indexOfSharp = window.location.pathname.indexOf('#');
 var pathname = indexOfSharp > 0 ? window.location.pathname.substring(0, indexOfSharp) : window.location.pathname;
 var selector = "body > .container > .row > .col-md-12 > .navbar > .container-fluid > .navbar-collapse a[href='http://www.next-presso.com" + pathname + "']";
-$(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-lg-12"><div class="row"><div class="col-lg-9"><div class="posts"><article class="post"><div class="panel panel-primary"><div class="panel-body"><h1><a href="/2017/06/non-contextual-instances-in-cdi/">Non Contextual Instances in CDI 2.0</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Jun 06, 2017</span> |  <a href="http://www.next-presso.com/2017/06/non-contextual-instances-in-cdi/#disqus_thread">Comments</a> </strong></div><div class="content"><div class="imageblock" style="float: right">
+$(selector).closest("li").addClass("active");</script></div></div><div class="row"><div class="col-lg-12"><div class="row"><div class="col-lg-9"><div class="posts"><article class="post"><div class="panel panel-primary"><div class="panel-body"><h1><a href="/2017/06/non-contextual-instances-in-cdi/">Non-Contextual Instances in CDI 2.0</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Jun 06, 2017</span> |  <a href="http://www.next-presso.com/2017/06/non-contextual-instances-in-cdi/#disqus_thread">Comments</a> </strong></div><div class="content"><div class="imageblock" style="float: right">
 <div class="content">
 <img src="/images/posts/2017/fishbowl.png" alt="fishbowl" width="285">
 </div>
 </div>
 <div class="paragraph">
 <p>The king components in CDI are the Beans (check this <a href="http://www.next-presso.com/2015/12/how-to-recognize-different-types-of-cdi-beans/" target="_blank">older post</a> to all exisitng kind of beans).
-In CDI a bean is managed from A to Z by the container, which controls lifecycle of its instance and perform all tricks on it (injection, interception, etc..).</p>
+In CDI a bean is managed from A to Z by the container, which controls lifecycle of its instance and add all CDI magic on it (injection, interception, etc..).</p>
 </div>
 <div class="paragraph">
-<p>But sometimes you need to have more control on your components, because you need to create it or destroy it yourself or because its provided by another container or framework, for instance.
-Yet, you&#8217;d ike to have access to some CDI services for your component like dependency injection or interception.
-In that case you&#8217;ll need to use CDI non-contextual instances feature.</p>
+<p>But sometimes you need to have more control on your components, because you need to create it or destroy it yourself or because it is provided by another container or framework, for instance.</p>
 </div>
 <div class="paragraph">
-<p>Some Java EE spec use the non-contextual instance feature.
-You can think about being able to perform CDI injection in servlets or in entity listeners, for instance.
-These component are not managed by CDI container, but they are enhanced by some CDI services.</p>
+<p>Yet, you&#8217;d like to have access to some CDI features for your component like dependency injection or interception.
+In that case you&#8217;ll need to use CDI "non-contextual instance" feature.</p>
+</div>
+<div class="paragraph">
+<p>To achieve CDI integration, some Java EE spec use the non-contextual instance feature.
+For instance, you can think about being able to perform CDI injection in servlets or in entity listeners.
+These component are not managed by CDI container, but they are enhanced with some CDI features.</p>
 </div>
 <div class="sect1">
 <h2 id="two-kind-of-non-contextual-instances-and-two-kind-of-classes"><a class="anchor" href="#two-kind-of-non-contextual-instances-and-two-kind-of-classes"></a>Two kind of non-contextual instances and two kind of classes</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>so, we just see that, a non-contextual instance is an instance that is not managed by the CDI container but benefits some other CDI services like injection or interception.
-Non-contextual instance may have the following CDI services:</p>
+<p>CDI Non-contextual instance may benefit the following services:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>call of  <code>@PostConstruct</code> and <code>@Predestroy</code> callbacks.</p>
+<p>Call of  <code>@PostConstruct</code> and <code>@Predestroy</code> lifecycle callbacks.</p>
 </li>
 <li>
-<p>CDI dependency injection</p>
+<p>Dependency injection.</p>
 </li>
 <li>
-<p>Destruction of dependent beans when the instance is destroyed</p>
+<p>Destruction of dependent beans instances when the instance is destroyed.</p>
 </li>
 <li>
-<p>Interceptors and Decorators</p>
+<p>Interceptors and Decorators.</p>
 </li>
 </ul>
 </div>
@@ -57,12 +58,11 @@ Non-contextual instance may have the following CDI services:</p>
 <p>We can distinguish 2 kinds of non-contextual instances.</p>
 </div>
 <div class="paragraph">
-<p>The real (from the spec point of view) non-contextual instance which must be created (i.e. instantiated) by the container and the one instantiated outside the CDI container.</p>
+<p>The "official" (from the spec point of view) non-contextual instance which is created (i.e. instantiated) by the container and the one instantiated outside the CDI container.</p>
 </div>
 <div class="paragraph">
-<p>The second kind exists, because he spec support support addition of some CDI services to an instance created by yourself or another framework.
-There&#8217;s no official term for this kind of instance in the spec, in this post I&#8217;ll call them "user instantiated non-contextual instance"
-Such an instance may benefit the following CDI services:</p>
+<p>This last kind has no official name in the spec (yet it is fully supported), in this post I&#8217;ll call them "user instantiated non-contextual instance"
+This second kind of non-contextual instance may benefit the following CDI services:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -76,34 +76,34 @@ Such an instance may benefit the following CDI services:</p>
 <p>Destruction of dependent beans when the instance is destroyed</p>
 </li>
 <li>
-<p>Interception thanks to the new <code>InterceptionFactory</code> spi in CDI 2.0</p>
+<p>Interception thanks to the new <code>InterceptionFactory</code> SPI in CDI 2.0</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Both kind of non-contextual instances are enhanced with the <code>InjectionTarget</code> SPI.
+<p>Both kind of non-contextual instances are enhanced through the <code>InjectionTargetFactory</code> SPI.
 The classic non-contextual instance is also created and destroyed with the same SPI, but CDI provides an helper class to perform this seamlessly if the class you want to use has already all required annotation (<code>@Inject</code> and qualifiers)</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="different-use-case"><a class="anchor" href="#different-use-case"></a>Different use case</h2>
+<h2 id="three-different-use-cases"><a class="anchor" href="#three-different-use-cases"></a>Three different use cases</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Thus, when you feel the need to use this contextual instance feature you have to answer 2 questions</p>
+<p>Thus, when you need to use non-contextual instances, you should first answer to 2 questions</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Can I Let the CDI container create the instance for me &gt;?</p>
+<p>Can I Let the CDI container create the instance for me?</p>
 </li>
 <li>
-<p>Does the class of the instance has already all annotations (@Inject, qualifiers) at class level ?</p>
+<p>Does the class of the instance has already all annotations (@Inject, qualifiers, Interceptor bindings) at class level?</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>Dealing with contextual instance will be more or less easy with your answers</p>
+<p>Your answers will make non-contextual instances more or less easy to use:</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
@@ -114,30 +114,29 @@ The classic non-contextual instance is also created and destroyed with the same 
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top"></th>
-<th class="tableblock halign-left valign-top">Class has annotations</th>
-<th class="tableblock halign-left valign-top">Class need to be annotated</th>
+<th class="tableblock halign-left valign-top">Class has all required annotations</th>
+<th class="tableblock halign-left valign-top">Class lacks some annotations</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Container can instantiate</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">You can use <code>Unmanaged</code> helper class</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">You&#8217;ll have to use <code>InjectionTargetFactory</code> and <code>AnnotatedTypeConfigurator</code> SPI</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2"><p class="tableblock">You&#8217;ll have to use <code>InjectionTargetFactory</code> and <code>AnnotatedTypeConfigurator</code> SPI</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">You provide the instance</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">You&#8217;ll have to use <code>InjectionTargetFactory</code> SPI</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">You&#8217;ll have to use <code>InjectionTargetFactory</code> and <code>AnnotatedTypeConfigurator</code> SPI</p></td>
 </tr>
 </tbody>
 </table>
 <div class="sect2">
-<h3 id="non-contextual-instance-for-a-class-having-all-needed-annotations"><a class="anchor" href="#non-contextual-instance-for-a-class-having-all-needed-annotations"></a>Non-contextual instance for a class having all needed annotations</h3>
+<h3 id="use-case-1-non-contextual-instance-for-a-class-having-all-required-annotations"><a class="anchor" href="#use-case-1-non-contextual-instance-for-a-class-having-all-required-annotations"></a>Use case 1: Non-contextual instance for a class having all required annotations</h3>
 <div class="paragraph">
 <p>This is the simplest use case.</p>
 </div>
 <div class="paragraph">
-<p>Since CDI 1.1, the API provide the <a href="http://docs.jboss.org/cdi/api/2.0/javax/enterprise/inject/spi/Unmanaged.html" target="_blank"><code>Unmanaged</code> helper class</a> that hides all the work done with <code>InjectionTargetFactory</code> produce a non-contextual instance</p>
+<p>Since CDI 1.1, the API provide the <a href="http://docs.jboss.org/cdi/api/2.0/javax/enterprise/inject/spi/Unmanaged.html" target="_blank"><code>Unmanaged</code> helper class</a> that hides all the work done with <code>InjectionTargetFactory</code> produce a non-contextual instance:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -183,30 +182,30 @@ The classic non-contextual instance is also created and destroyed with the same 
 </table>
 </div>
 <div class="paragraph">
-<p>Keep in mind that letting the container producing the instance (<code>produce()</code> method) activate optional interceptors and decorators on the instance.
-In this case, the class shouldn&#8217;t be unproxyable as detailed in the <a href="http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#unproxyable" target="_blank">spec</a>.</p>
+<p>Keep in mind that letting the container producing the instance (<code>produce()</code> method) activate optional interceptors and decorators on the instance.</p>
 </div>
 <div class="paragraph">
-<p><code>Unmanaged.UnmanagedInstance</code> is an important handler that gives you access to all CDI services for the instance you want to obtain, but it should also be kept to perform the <code>dispose()</code> tasks, which mainly release all dependent beans instances that were created with your instance.
+<p>In this case, the class shouldn&#8217;t be unproxyable as detailed in the <a href="http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#unproxyable" target="_blank">spec</a>.</p>
+</div>
+<div class="paragraph">
+<p><code>Unmanaged.UnmanagedInstance</code> is an important handler that gives you access to all CDI services for the instance you want to obtain, but it should also be kept to perform the <code>dispose()</code> task, which release all dependent beans instances that were created with your instance.
  Without this call you may face memory leaks in your application</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="non-contextual-instance-whose-class-doesn-t-have-the-required-annotation"><a class="anchor" href="#non-contextual-instance-whose-class-doesn-t-have-the-required-annotation"></a>Non-contextual instance whose class doesn&#8217;t have the required annotation</h3>
+<h3 id="use-case-2-non-contextual-instance-whose-class-doesn-t-have-the-required-annotation"><a class="anchor" href="#use-case-2-non-contextual-instance-whose-class-doesn-t-have-the-required-annotation"></a>Use case 2: Non-contextual instance whose class doesn&#8217;t have the required annotation</h3>
 <div class="paragraph">
 <p>Unfortunately, <code>Unmanaged</code> doesn&#8217;t provide access to the underlying <code>AnnotatedType</code> for the instance class.</p>
 </div>
-<div class="literalblock">
-<div class="content">
-<pre class="nowrap">So if you need to add annotation to the metadata model because they are missing on the original class, you'll have to use an `InjectionTargetFactory` provided by the container.
-Note that Unmanaged does the same under the hood.</pre>
-</div>
+<div class="paragraph">
+<p>So if you need to add annotations to the metadata model because they are missing on the original class, you&#8217;ll have to use the <code>InjectionTargetFactory</code> provided by the container.
+Note that Unmanaged does the same under the hood.</p>
 </div>
 <div class="paragraph">
 <p>To request an <code>InjectionTargetFactory</code> from the container, you&#8217;ll need first to access the <code>BeanManager</code>.</p>
 </div>
 <div class="paragraph">
-<p>If you are in CDI programming model (i.e in a bean) simply inject the BeanManager to access it</p>
+<p>If you are in CDI programming model (i.e in a CDI bean) simply inject the BeanManager to access it</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -215,7 +214,7 @@ BeanManager bm;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If are not CDI programming model, the easiest way to access the <code>BeanManager</code> is ot use the <code>CDI</code> class available since CDI 1.1 (note that it also work in CDI programming model even if direct injection is still preferred to static method call done with <code>CDI.current()</code>).</p>
+<p>If are not CDI programming model, the easiest way to access the <code>BeanManager</code> is ot use the <code>CDI</code> class available since CDI 1.1 (note that it also works in CDI programming model even if direct injection is still preferred to static call done with <code>CDI.current()</code>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -223,16 +222,17 @@ BeanManager bm;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In certain circumstance, you may want to retrieve the <code>BeanManager</code> from a JNDI lookup thru the <code>java:comp/BeanManager</code>, JNDI name.</p>
+<p>In certain circumstance, you may want to retrieve the <code>BeanManager</code> from a JNDI lookup through the <code>java:comp/BeanManager</code>, JNDI name.</p>
 </div>
 <div class="paragraph">
-<p>The following example show how to create a non contextual instance from <code>MyClass</code> in which you need to create an injection point (add <code>@Inject</code>) on the field <code>MyField</code></p>
+<p>The following example show how to create a non-contextual instance from <code>MyClass</code> in which you need to create an injection point (add <code>@Inject</code>) on the field <code>MyField</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-java" data-lang="java">public void doSomethingWithContextualMyClass() {
         BeanManager bm = CDI.current().getBeanManager();  <i class="conum" data-value="1"></i><b>(1)</b>
-        InjectionTargetFactory&lt;MyClass&gt; itf = bm.getInjectionTargetFactory(bm.createAnnotatedType(MyClass.class)); <i class="conum" data-value="2"></i><b>(2)</b>
+        InjectionTargetFactory&lt;MyClass&gt; itf = bm
+                .getInjectionTargetFactory(bm.createAnnotatedType(MyClass.class)); <i class="conum" data-value="2"></i><b>(2)</b>
         itf.configure() <i class="conum" data-value="3"></i><b>(3)</b>
                 .filterFields(f -&gt; "MyField".equals(f.getJavaMember().getName()))
                 .findFirst()
@@ -262,11 +262,11 @@ BeanManager bm;</code></pre>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>using the new <code>AnnotatedTypeConfigurator</code> SPI in CDI 2.0 to configure the underlying <code>AnnotatedType</code></td>
+<td>using the new <code>AnnotatedTypeConfigurator</code> SPI in CDI 2.0 to configure the underlying <code>AnnotatedType</code>. Before CDI 2.0 you&#8217;d have to implement <code>AnnotatedType</code> to add your annotation and use it in previous step (2)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>looking for the <code>MyField</code> field and adding <code>@Inject</code> to it (we use the new InjectLiteral in CDI 2.0)</td>
+<td>looking for the <code>MyField</code> field and adding <code>@Inject</code> to it (we use the new <code>InjectLiteral</code> introduced in CDI 2.0)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -278,7 +278,7 @@ BeanManager bm;</code></pre>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>creating the instance and performing <code>@PostConstruct</code> lifecycle call back and injection</td>
+<td>creating the instance, performing <code>@PostConstruct</code> lifecycle call back and injection</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="8"></i><b>8</b></td>
@@ -291,16 +291,14 @@ BeanManager bm;</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p>Note, that, we could also have added an interceptor binding with the <code>configure()</code> method.</p>
-</div>
-<div class="paragraph">
-<p>Before CDI 2.0 it would have been necessary to implement a specific AnnotatedType and provide it in step 2 to achieve the same.</p>
+<p>Note, that, we could also have added interceptor bindings to the <code>AnnotatedTypeConfigurator</code> during step (3).
+In this case, <code>MyClass</code> shouldn&#8217;t be unproxyable as detailed in the <a href="http://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#unproxyable" target="_blank">spec</a>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="user-instantiated-non-contextual-instance"><a class="anchor" href="#user-instantiated-non-contextual-instance"></a>User Instantiated non-contextual instance</h3>
+<h3 id="use-case-3-user-instantiated-non-contextual-instance"><a class="anchor" href="#use-case-3-user-instantiated-non-contextual-instance"></a>Use case 3: User Instantiated non-contextual instance</h3>
 <div class="paragraph">
-<p>If the instance shouldn&#8217;t be created by the container, code is roughly the same</p>
+<p>If the instance is provided by the user, code is roughly the same</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -388,9 +386,16 @@ BeanManager bm;</code></pre>
 <h2 id="conclusion"><a class="anchor" href="#conclusion"></a>Conclusion</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>So we covered all the use cases for non-contextual instance creation and management in CDI.
-Keep in mind that except for <code>Unmanaged</code>, all the SPI elements shown in this post are also very useful when creating custom bean.
-<code>InterceptionFactory</code> is also very useful to apply interceptors in a producer.</p>
+<p>So we covered all the use cases for non-contextual instance creation and management in CDI.</p>
+</div>
+<div class="paragraph">
+<p>All these use cases can also be implemented in CDI 1.1 with more verbose code (except the last example, since <code>InterceptionFactory</code> was only introduced in 2.0).</p>
+</div>
+<div class="paragraph">
+<p>Keep in mind that except for <code>Unmanaged</code>, all the SPI elements shown in this post are also very useful when creating custom bean.</p>
+</div>
+<div class="paragraph">
+<p><code>InterceptionFactory</code> is also very useful to apply interceptors in a producer.</p>
 </div>
 </div>
 </div></div><div class="footer"><a href="/2017/06/non-contextual-instances-in-cdi/"> Permalink</a> <a href="http://www.next-presso.com/2017/06/non-contextual-instances-in-cdi/#disqus_thread">Comments</a> </div></div></div></article><article class="post"><div class="panel panel-primary"><div class="panel-body"><h1><a href="/2017/02/nobody-expects-the-cdi-portable-extensions/">Nobody expects the CDI portable extensions</a></h1><div class="meta"><strong>Posted by <span class="authors">Antoine Sabot-Durand</span> on <span class="date">Feb 06, 2017</span> |  <a href="http://www.next-presso.com/2017/02/nobody-expects-the-cdi-portable-extensions/#disqus_thread">Comments</a> </strong></div><div class="content"><div class="imageblock" style="float: right">
