@@ -10,6 +10,8 @@ assignees: ''
 
 Migrate this blog from Awestruct (Ruby-based) to Quarkus Roq (Quarkus-based static site generator) to modernize the technology stack while maintaining all existing functionality and content.
 
+⚠️ **CRITICAL REQUIREMENT**: All URLs must remain identical to preserve SEO rankings and avoid broken external links. Current WordPress-compatible URL format (`/YYYY/MM/DD/post-slug/`) must be maintained exactly.
+
 ## Documentation
 
 See the detailed migration guide: [MIGRATION_TO_QUARKUS_ROQ.md](../../MIGRATION_TO_QUARKUS_ROQ.md)
@@ -39,12 +41,14 @@ See the detailed migration guide: [MIGRATION_TO_QUARKUS_ROQ.md](../../MIGRATION_
 
 ### Phase 2: Configuration ⏳
 - [ ] Migrate site.yml to application.properties
+- [ ] **Configure URL format to match existing WordPress-compatible structure: `/YYYY/MM/DD/post-slug/`**
 - [ ] Configure AsciiDoc settings
 - [ ] Set up profiles (dev/production)
 
 ### Phase 3: Content ⏳
 - [ ] Move blog posts to content/posts/
 - [ ] Update frontmatter format
+- [ ] **Verify each post URL matches original format exactly**
 - [ ] Migrate pages (about, etc.)
 - [ ] Handle archives
 
@@ -83,12 +87,13 @@ See the detailed migration guide: [MIGRATION_TO_QUARKUS_ROQ.md](../../MIGRATION_
 - [ ] Configure custom domain (www.next-presso.com)
 
 ### Phase 10: Testing ⏳
+- [ ] **Verify all URLs match original site exactly (CRITICAL)**
 - [ ] Verify all posts render correctly
 - [ ] Test responsive design
 - [ ] Validate RSS feed
 - [ ] Cross-browser testing
 - [ ] Performance audit
-- [ ] SEO validation
+- [ ] SEO validation and URL comparison
 
 ### Phase 11: Cutover ⏳
 - [ ] Backup current site
@@ -113,6 +118,7 @@ See the detailed migration guide: [MIGRATION_TO_QUARKUS_ROQ.md](../../MIGRATION_
 
 ## Success Criteria
 
+- ✅ **All URLs identical to original site (CRITICAL for SEO)**
 - ✅ All blog posts accessible and properly formatted
 - ✅ Responsive design works on all devices
 - ✅ RSS feed functional
@@ -131,7 +137,7 @@ See the detailed migration guide: [MIGRATION_TO_QUARKUS_ROQ.md](../../MIGRATION_
 ## Questions
 
 - [ ] Target Quarkus Roq version?
-- [ ] Maintain exact URL structure?
+- [ ] **Confirm Quarkus Roq can maintain WordPress-compatible URL format: `/YYYY/MM/DD/post-slug/`**
 - [ ] Upgrade dependencies (Bootstrap, Font Awesome)?
 - [ ] Add new features during migration?
 - [ ] Acceptable downtime window?
