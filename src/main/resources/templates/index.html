@@ -1,0 +1,170 @@
+{#include main.html}
+{#body}
+<div class="row">
+    <div class="col-lg-9">
+        <div class="posts">
+            {#for post in paginator.posts}
+            <article class="post">
+                <div class="panel panel-primary">
+                    <div class="panel-body">
+                        <h1>
+                            <a href="{post.url}">{post.title}</a>
+                        </h1>
+                        
+                        <div class="meta">
+                            <strong>
+                                Posted by 
+                                <span class="authors">{#for author in post.authors}{author}{#if post.authors.size > 1 && !author_hasNext}, {/if}{/for}</span>
+                                on 
+                                <span class="date">{post.date.format('MMM dd, yyyy')}</span>
+                                {#if site.disqus-shortname}
+                                | <a href="{post.url}#disqus_thread" data-disqus-identifier="{post.url}">Comments</a>
+                                {/if}
+                            </strong>
+                        </div>
+                        
+                        <div class="content">
+                            {post.content}
+                        </div>
+                        
+                        <div class="footer">
+                            <a href="{post.url}">Permalink</a>
+                            {#if site.disqus-shortname}
+                            | <a href="{post.url}#disqus_thread" data-disqus-identifier="{post.url}">Comments</a>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {/for}
+        </div>
+        
+        {#if site.disqus-shortname}
+        <script id="dsq-count-scr" src="//{site.disqus-shortname}.disqus.com/count.js" async></script>
+        {/if}
+        
+        <!-- Pagination for mobile -->
+        <div class="visible-xs">
+            <ul class="pager">
+                {#if paginator.hasPrevious}
+                <li class="previous">
+                    <a href="{paginator.previousUrl}">Previous</a>
+                </li>
+                {#else}
+                <li class="previous disabled">
+                    <a href="#">Previous</a>
+                </li>
+                {/if}
+                <li class="disabled">
+                    <a href="#">{paginator.currentPage} of {paginator.totalPages}</a>
+                </li>
+                {#if paginator.hasNext}
+                <li class="next">
+                    <a href="{paginator.nextUrl}">Next</a>
+                </li>
+                {#else}
+                <li class="next disabled">
+                    <a href="#">Next</a>
+                </li>
+                {/if}
+            </ul>
+        </div>
+        
+        <!-- Pagination for desktop -->
+        <div class="hidden-xs">
+            <ul class="pager">
+                {#if paginator.hasPrevious}
+                <li>
+                    <a href="{site.url}/">First</a>
+                </li>
+                <li>
+                    <a href="{paginator.previousUrl}">Previous</a>
+                </li>
+                {#else}
+                <li class="disabled">
+                    <a href="#">First</a>
+                </li>
+                <li class="disabled">
+                    <a href="#">Previous</a>
+                </li>
+                {/if}
+                
+                {#if paginator.currentPage > 3}
+                <li class="disabled">
+                    <a href="#">...</a>
+                </li>
+                <li>
+                    <a href="{site.url}/page/{paginator.currentPage - 2}/">{paginator.currentPage - 2}</a>
+                </li>
+                {#else if paginator.currentPage == 3}
+                <li>
+                    <a href="{site.url}/">1</a>
+                </li>
+                {/if}
+                
+                {#if paginator.currentPage > 2}
+                <li>
+                    <a href="{#if paginator.currentPage == 2}{site.url}/{#else}{site.url}/page/{paginator.currentPage - 1}/{/if}">{paginator.currentPage - 1}</a>
+                </li>
+                {/if}
+                
+                <li class="active">
+                    <a href="#">{paginator.currentPage} of {paginator.totalPages}</a>
+                </li>
+                
+                {#if paginator.totalPages - paginator.currentPage > 0}
+                <li>
+                    <a href="{site.url}/page/{paginator.currentPage + 1}/">{paginator.currentPage + 1}</a>
+                </li>
+                {/if}
+                
+                {#if paginator.totalPages - paginator.currentPage > 1}
+                <li>
+                    <a href="{site.url}/page/{paginator.currentPage + 2}/">{paginator.currentPage + 2}</a>
+                </li>
+                {/if}
+                
+                {#if paginator.totalPages - paginator.currentPage > 2}
+                <li class="disabled">
+                    <a href="#">...</a>
+                </li>
+                {/if}
+                
+                {#if paginator.hasNext}
+                <li>
+                    <a href="{paginator.nextUrl}">Next</a>
+                </li>
+                <li>
+                    <a href="{site.url}/page/{paginator.totalPages}/">Last</a>
+                </li>
+                {#else}
+                <li class="disabled">
+                    <a href="#">Next</a>
+                </li>
+                <li class="disabled">
+                    <a href="#">Last</a>
+                </li>
+                {/if}
+            </ul>
+        </div>
+    </div>
+    
+    <div class="col-lg-3">
+        <div class="follow-scroll hidden-xs">
+            <div style="margin-bottom:20px;text-align:center;">
+                <a class="btn btn-default" href="{site.url}/news.atom">Subscribe RSS</a>
+            </div>
+            
+            <a class="twitter-timeline" data-widget-id="{site.twitter-widget-id}" href="https://twitter.com/{site.twitter-handle}">Tweets by {site.twitter-handle}</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        </div>
+        
+        <div class="visible-xs">
+            <div style="margin-bottom:20px;text-align:center;">
+                <a class="btn btn-default" href="{site.url}/news.atom">Subscribe RSS</a>
+            </div>
+        </div>
+    </div>
+</div>
+{/body}
+{/include}

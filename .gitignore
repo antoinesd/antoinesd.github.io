@@ -57,3 +57,12 @@ crashlytics.properties
 crashlytics-build.properties
 
 /.asciidoctor/
+
+# Maven
+target/
+.settings/
+.project
+.classpath
+
+# Quarkus
+.quarkus/
