@@ -130,7 +130,7 @@ Content is Copyright © Antoine Sabot-Durand
 
 **Antoine Sabot-Durand**
 - Twitter: [@antoine_sd](https://twitter.com/antoine_sd)
-- Website: [www.next-presso.com](http://www.next-presso.com/)
+- Website: [www.next-presso.com](https://www.next-presso.com/)
 
 ---
 

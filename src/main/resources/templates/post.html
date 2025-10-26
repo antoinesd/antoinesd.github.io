@@ -1,0 +1,127 @@
+{#include main.html}
+{#body}
+<div class="row">
+    <div class="col-lg-9">
+        <article class="post">
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    {#if previous || next}
+                    <ul class="pager visible-md-block visible-lg-block">
+                        {#if previous}
+                        <li class="previous">
+                            <a href="{previous.url}">Previous: {previous.title}</a>
+                        </li>
+                        {/if}
+                        {#if next}
+                        <li class="next">
+                            <a href="{next.url}">Next: {next.title}</a>
+                        </li>
+                        {/if}
+                    </ul>
+                    
+                    <ul class="pager visible-sm-block visible-xs-block">
+                        {#if previous}
+                        <li class="previous">
+                            <a href="{previous.url}">Previous</a>
+                        </li>
+                        {/if}
+                        {#if next}
+                        <li class="next">
+                            <a href="{next.url}">Next</a>
+                        </li>
+                        {/if}
+                    </ul>
+                    {/if}
+                    
+                    <h1>
+                        <a href="{url}">{title}</a>
+                    </h1>
+                    
+                    <div class="meta">
+                        <strong>
+                            Posted by 
+                            <span class="authors">{#for author in authors}{author}{#if count > 1 && !author_hasNext}, {/if}{/for}</span>
+                            on 
+                            <span class="date">{date.format('MMM dd, yyyy')}</span>
+                            {#if site.disqus-shortname}
+                            | <a href="{url}#disqus_thread" data-disqus-identifier="{url}">Comments</a>
+                            {/if}
+                        </strong>
+                    </div>
+                    
+                    <div class="content">
+                        {#insert content/}
+                    </div>
+                    
+                    <div class="footer">
+                        <a href="{url}">Permalink</a>
+                        {#if site.disqus-shortname}
+                        | <a href="{url}#disqus_thread" data-disqus-identifier="{url}">Comments</a>
+                        {/if}
+                    </div>
+                    
+                    {#if previous || next}
+                    <ul class="pager visible-md-block visible-lg-block">
+                        {#if previous}
+                        <li class="previous">
+                            <a href="{previous.url}">Previous: {previous.title}</a>
+                        </li>
+                        {/if}
+                        {#if next}
+                        <li class="next">
+                            <a href="{next.url}">Next: {next.title}</a>
+                        </li>
+                        {/if}
+                    </ul>
+                    
+                    <ul class="pager visible-sm-block visible-xs-block">
+                        {#if previous}
+                        <li class="previous">
+                            <a href="{previous.url}">Previous</a>
+                        </li>
+                        {/if}
+                        {#if next}
+                        <li class="next">
+                            <a href="{next.url}">Next</a>
+                        </li>
+                        {/if}
+                    </ul>
+                    {/if}
+                    
+                    {#if site.disqus-shortname}
+                    <div class="comments">
+                        <div id="disqus_thread"></div>
+                        <script>
+                            var disqus_config = function () {
+                                this.page.url = '{site.url}{url}';
+                                this.page.identifier = '{url}';
+                            };
+                            (function() {
+                                var d = document, s = d.createElement('script');
+                                s.src = 'https://{site.disqus-shortname}.disqus.com/embed.js';
+                                s.setAttribute('data-timestamp', +new Date());
+                                (d.head || d.body).appendChild(s);
+                            })();
+                        </script>
+                        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                    </div>
+                    {/if}
+                </div>
+            </div>
+        </article>
+    </div>
+    
+    <div class="col-lg-3">
+        <aside class="hidden-xs">
+            <a class="twitter-timeline" data-widget-id="{site.twitter-widget-id}" href="https://twitter.com/{site.twitter-handle}">Tweets by {site.twitter-handle}</a>
+            <script>!function(d,s,id){lvar js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        </aside>
+        
+        <aside class="visible-xs">
+            <a class="twitter-timeline" data-widget-id="{site.twitter-widget-id}" href="https://twitter.com/{site.twitter-handle}">Tweets by {site.twitter-handle}</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        </aside>
+    </div>
+</div>
+{/body}
+{/include}
