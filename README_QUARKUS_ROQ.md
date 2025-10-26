@@ -56,7 +56,7 @@ The generated static site in `target/roq/` can be deployed to GitHub Pages.
 
 1. Build the site:
    ```bash
-   mvn clean package -Dquarkus.roq.site.url=http://www.next-presso.com
+   mvn clean package -Dquarkus.roq.site.url=https://www.next-presso.com
    ```
 
 2. Copy the contents of `target/roq/` to your GitHub Pages branch
@@ -86,7 +86,7 @@ jobs:
           distribution: 'temurin'
       
       - name: Build with Maven
-        run: mvn clean package -Dquarkus.roq.site.url=http://www.next-presso.com
+        run: mvn clean package -Dquarkus.roq.site.url=https://www.next-presso.com
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -107,7 +107,7 @@ quarkus.roq.site.description=CDI, Java EE and friends
 
 # URLs (CRITICAL for SEO - must match existing structure)
 quarkus.roq.site.url=http://localhost:8080
-%prod.quarkus.roq.site.url=http://www.next-presso.com
+%prod.quarkus.roq.site.url=https://www.next-presso.com
 
 # Blog Settings
 quarkus.roq.blog.posts-per-page=5

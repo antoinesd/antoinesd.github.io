@@ -27,7 +27,7 @@ jobs:
       - name: Build Quarkus Roq site
         run: |
           # Use Quarkus dev mode to generate static site
-          timeout 120 mvn quarkus:dev -Dquarkus.roq.site.url=http://www.next-presso.com &
+          timeout 120 mvn quarkus:dev -Dquarkus.roq.site.url=https://www.next-presso.com &
           DEV_PID=$!
           
           # Wait for the server to start

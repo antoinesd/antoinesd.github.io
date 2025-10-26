@@ -55,7 +55,7 @@ quarkus.roq.site.description=CDI, Java EE and friends
 
 # URLs (CRITICAL for SEO)
 quarkus.roq.site.url=http://localhost:8080
-%prod.quarkus.roq.site.url=http://www.next-presso.com
+%prod.quarkus.roq.site.url=https://www.next-presso.com
 
 # Blog settings
 quarkus.roq.blog.posts-per-page=5

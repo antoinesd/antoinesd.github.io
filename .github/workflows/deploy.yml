@@ -42,7 +42,7 @@ jobs:
           
           # Start Quarkus in dev mode to generate the static site
           timeout 180 mvn quarkus:dev \
-            -Dquarkus.roq.site.url=http://www.next-presso.com \
+            -Dquarkus.roq.site.url=https://www.next-presso.com \
             -Dquarkus.analytics.disabled=true &
           DEV_PID=$!
           

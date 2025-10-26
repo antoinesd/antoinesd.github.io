@@ -131,7 +131,7 @@ The current Awestruct setup uses WordPress-compatible URLs (`:wp_compat=>true`),
   
   # URLs
   quarkus.roq.site.url=http://localhost:8080
-  %prod.quarkus.roq.site.url=http://www.next-presso.com
+  %prod.quarkus.roq.site.url=https://www.next-presso.com
   
   # Blog configuration
   roq.blog.posts-per-page=5
@@ -392,7 +392,7 @@ The current Awestruct setup uses WordPress-compatible URLs (`:wp_compat=>true`),
 - [ ] Current deployment: GitHub Pages, master branch
 - [ ] Generate static output:
   ```bash
-  quarkus build -Dquarkus.roq.site.url=http://www.next-presso.com
+  quarkus build -Dquarkus.roq.site.url=https://www.next-presso.com
   ```
 - [ ] Output directory: `target/roq/`
 
@@ -424,7 +424,7 @@ The current Awestruct setup uses WordPress-compatible URLs (`:wp_compat=>true`),
             java-version: '17'
             distribution: 'temurin'
         - name: Build with Maven
-          run: mvn clean package -Dquarkus.roq.site.url=http://www.next-presso.com
+          run: mvn clean package -Dquarkus.roq.site.url=https://www.next-presso.com
         - name: Deploy to GitHub Pages
           uses: peaceiris/actions-gh-pages@v3
           with:
